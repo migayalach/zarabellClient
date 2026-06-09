@@ -1,7 +1,8 @@
 "use client";
 
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { getMonthPurchaseBuys } from "../store/role.slice";
+
 import { MonthBuyData } from "../types";
 
 export const useMonthPBuys = () => {

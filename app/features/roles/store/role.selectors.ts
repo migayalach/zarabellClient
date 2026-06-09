@@ -1,4 +1,4 @@
-import { RootState } from "@/store/store";
+import { RootState } from "@/app/store/store";
 
 export const selectMonthPurchaseBuysResults = (state: RootState) =>
   state.monthPurchaseBuy.results;

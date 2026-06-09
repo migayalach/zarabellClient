@@ -1,6 +1,6 @@
 import React from "react";
-import FormRoles from "@/features/roles/components/FormRoles";
-import TableRoles from "@/features/roles/components/TableRoles";
+import FormRoles from "@/app/features/roles/components/FormRoles";
+import TableRoles from "@/app/features/roles/components/TableRoles";
 
 function page() {
   return (

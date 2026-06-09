@@ -1,6 +1,6 @@
 export { default as monthPurchaseBuyReducer } from "./role.slice";
 
-export { getMonthPurchaseBuys, clearInfoMonthPurchaseBuy } from "./role.slice";
+export { getRole, clearInfoRol } from "./role.slice";
 
 export {
   selectMonthPurchaseBuysResults,
