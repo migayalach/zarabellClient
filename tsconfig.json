@@ -20,9 +20,9 @@
     ],
     "paths": {
       "@/*": ["./*"],
-      "@features/*": ["./features/*"],
-      "@shared/*": ["./shared/*"],
-      "@store/*": ["./store/*"]
+      // "@features/*": ["app/features/*"],
+      // "@shared/*": ["app/shared/*"],
+      // "@store/*": ["app/store/*"]
     }
   },
   "include": [
