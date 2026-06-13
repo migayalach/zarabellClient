@@ -22,8 +22,7 @@ export const getAllRoles = async (page?: number) => {
       page,
     },
   });
-
-  return response.data.getAllRole;
+  return response.data.data.getAllRole;
 };
 
 export const getOneRoleByID = async (idRole: number) => {
