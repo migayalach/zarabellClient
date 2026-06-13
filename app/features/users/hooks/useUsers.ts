@@ -2,11 +2,11 @@
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import {
   selectCurrentUser,
-  selectSuccesUserFlag,
   selectUsersError,
   selectUsersInfo,
   selectUsersLoading,
   selectUsersResults,
+  selectInfoWatchUser,
 } from "../store/user.selector";
 import {
   getAllListUsers,
@@ -15,14 +15,11 @@ import {
   updateOneUserByID,
   deleteOneUserByID,
   clearCurrentUserData,
-  clearSuccessFlagUser,
   resetAllDataUser,
+  addInfoWatch,
+  clearInfoWatch,
 } from "../store/user.slice";
-
-import {
-  IUserInfo,
-  IUserUpdate,
-} from "../types";
+import { IUserInfo, IUserUpdate } from "../types";
 
 export const useUsers = () => {
   const dispatch = useAppDispatch();
@@ -31,7 +28,7 @@ export const useUsers = () => {
   const currentUser = useAppSelector(selectCurrentUser);
   const loading = useAppSelector(selectUsersLoading);
   const error = useAppSelector(selectUsersError);
-  const successUser = useAppSelector(selectSuccesUserFlag);
+  const watch = useAppSelector(selectInfoWatchUser);
 
   const getAllUsers = (page?: number) => {
     dispatch(getAllListUsers(page));
@@ -59,28 +56,33 @@ export const useUsers = () => {
     dispatch(clearCurrentUserData());
   };
 
-  const resetCurrentStateUser = () => {
-    dispatch(clearSuccessFlagUser());
-  };
-
   const resetDataUser = () => {
     dispatch(resetAllDataUser());
+  };
+
+  const addInfoWatchAction = (action: string) => {
+    dispatch(addInfoWatch(action));
+  };
+
+  const clearInfoWatchAction = () => {
+    dispatch(clearInfoWatch());
   };
 
   return {
     info,
     results,
-    successUser,
     currentUser,
     loading,
     error,
+    watch,
     getAllUsers,
     getOneUser,
     createNewUser,
     deleteOneUser,
     updateOneUser,
     clearDataCurrentUser,
-    resetCurrentStateUser,
     resetDataUser,
+    addInfoWatchAction,
+    clearInfoWatchAction,
   };
 };
