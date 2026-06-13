@@ -5,4 +5,4 @@ export const selectUsersResults = (state: RootState) => state.users.results;
 export const selectUsersLoading = (state: RootState) => state.users.loading;
 export const selectUsersError = (state: RootState) => state.users.error;
 export const selectCurrentUser = (state: RootState) => state.users.currentUser;
-export const selectSuccesUserFlag = (state: RootState) => state.users.success;
+export const selectInfoWatchUser = (state: RootState) => state.users.actionWatch;
