@@ -11,24 +11,24 @@ export interface IPaginationRole {
 }
 
 export interface IErrorRole {
-  success: false;
+  // success: false;
   message: string;
 }
 
 export interface IApiResponse<T> {
-  success: boolean;
+  // success: boolean;
   message: string;
   results: T;
 }
-export interface IResponseRole {
-  success: boolean;
+export interface IResponseRoles {
+  // success: boolean;
   message: string;
   info: IPaginationRole;
   results: IRole[];
 }
 
 export interface IResponseRole {
-  success: boolean;
+  // success: boolean;
   message: string;
   value: IRole;
 }
