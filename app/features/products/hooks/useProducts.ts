@@ -6,11 +6,9 @@ import {
   selectProductsInfo,
   selectProductsLoading,
   selectProductsResults,
-  selectSuccesProductFlag,
 } from "../store/product.selector";
 import {
   clearCurrentProductData,
-  clearSuccessFlagProduct,
   createProduct,
   deleteOneProductByID,
   getAllListProducts,
@@ -27,7 +25,6 @@ export const useProducts = () => {
   const currentProduct = useAppSelector(selectCurrentProduct);
   const loading = useAppSelector(selectProductsLoading);
   const error = useAppSelector(selectProductsError);
-  const successProduct = useAppSelector(selectSuccesProductFlag);
 
   const getAllProducts = (page?: number) => {
     dispatch(getAllListProducts(page));
@@ -53,10 +50,6 @@ export const useProducts = () => {
     dispatch(clearCurrentProductData());
   };
 
-  const resetCurrentStateProduct = () => {
-    dispatch(clearSuccessFlagProduct());
-  };
-
   const resetDataProduct = () => {
     dispatch(resetAllDataProduct());
   };
@@ -64,7 +57,6 @@ export const useProducts = () => {
   return {
     info,
     results,
-    successProduct,
     currentProduct,
     loading,
     error,
@@ -74,7 +66,6 @@ export const useProducts = () => {
     deleteOneProduct,
     updateOneProduct,
     clearDataCurrentProduct,
-    resetCurrentStateProduct,
     resetDataProduct,
   };
 };

@@ -6,11 +6,9 @@ import {
   selectCategoryInfo,
   selectCategoryLoading,
   selectCurrentCategory,
-  selectSuccesCategoryFlag,
 } from "../store/category.selector";
 import {
   clearCurrentCategoryData,
-  clearSuccessFlagCategory,
   createCategory,
   deleteOneCategoryByID,
   getAllListCategories,
@@ -27,7 +25,6 @@ export const useCategory = () => {
   const currentCategory = useAppSelector(selectCurrentCategory);
   const loading = useAppSelector(selectCategoryLoading);
   const error = useAppSelector(selectCategoryError);
-  const successCategory = useAppSelector(selectSuccesCategoryFlag);
 
   const getAllCategoriess = (page?: number) => {
     dispatch(getAllListCategories(page));
@@ -53,10 +50,6 @@ export const useCategory = () => {
     dispatch(clearCurrentCategoryData());
   };
 
-  const resetCurrentStateCategory = () => {
-    dispatch(clearSuccessFlagCategory());
-  };
-
   const resetDataCategory = () => {
     dispatch(resetAllDataCategory());
   };
@@ -64,7 +57,6 @@ export const useCategory = () => {
   return {
     info,
     results,
-    successCategory,
     currentCategory,
     loading,
     error,
@@ -74,7 +66,6 @@ export const useCategory = () => {
     deleteOneCategory,
     updateOneCategory,
     clearDataCurrentCategory,
-    resetCurrentStateCategory,
     resetDataCategory,
   };
 };

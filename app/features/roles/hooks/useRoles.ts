@@ -2,7 +2,6 @@
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import {
   selectCurrentRole,
-  selectSuccesRoleFlag,
   selectRolesError,
   selectRolesInfo,
   selectRolesLoading,
@@ -16,7 +15,6 @@ import {
   deleteOneRoleByID,
   clearCurrentRoleData,
   resetAllDataRole,
-  clearSuccessFlagRole,
 } from "../store/role.slice";
 
 import { IRole } from "../types";
@@ -28,7 +26,6 @@ export const useRoles = () => {
   const currentRole = useAppSelector(selectCurrentRole);
   const loading = useAppSelector(selectRolesLoading);
   const error = useAppSelector(selectRolesError);
-  const successRole = useAppSelector(selectSuccesRoleFlag);
 
   const getAllRoles = (page?: number) => {
     dispatch(getAllListRole(page));
@@ -54,10 +51,6 @@ export const useRoles = () => {
     dispatch(clearCurrentRoleData());
   };
 
-  const resetCurrentStateRole = () => {
-    dispatch(clearSuccessFlagRole());
-  };
-
   const resetDataRole = () => {
     dispatch(resetAllDataRole());
   };
@@ -65,7 +58,6 @@ export const useRoles = () => {
   return {
     info,
     results,
-    successRole,
     currentRole,
     loading,
     error,
@@ -75,7 +67,6 @@ export const useRoles = () => {
     deleteOneRole,
     updateOneRole,
     clearDataCurrentRole,
-    resetCurrentStateRole,
     resetDataRole,
   };
 };
