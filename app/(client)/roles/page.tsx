@@ -1,14 +1,11 @@
 import React from "react";
-import FormRoles from "@/app/features/roles/components/FormRoles";
-import TableRoles from "@/app/features/roles/components/TableRoles";
 
-function page() {
+function Page() {
   return (
     <div>
-      <FormRoles />
-      <TableRoles />
+      <h1>Roles</h1>
     </div>
   );
 }
 
-export default page;
+export default Page;
