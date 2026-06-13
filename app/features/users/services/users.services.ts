@@ -128,7 +128,17 @@ export const updateOneUser = async (infoUser: IUserUpdate) => {
             stateUser: $stateUser
           }
         ) {
-          nameUser
+          message
+          value {
+            idUser
+            idRole
+            nameRole
+            nameUser
+            lastNameUser
+            emailUser
+            phoneUser
+            stateUser
+          }
         }
       }
     `,
@@ -152,7 +162,16 @@ export const deleteOneUser = async (idUser: number) => {
       mutation($idUser: Int!) {
         deleteUser(idUser: $idUser) {
           message
-          value
+          value {
+            idUser
+            idRole
+            nameRole
+            nameUser
+            lastNameUser
+            emailUser
+            phoneUser
+            stateUser
+          }
         }
       }
     `,
