@@ -13,6 +13,7 @@ import {
   IResponseUser,
   IUserInfo,
   IUserUpdate,
+  TUserActionWatch,
 } from "../types";
 
 interface IUserState {
@@ -21,7 +22,7 @@ interface IUserState {
   currentUser: IUserInfo | null;
   loading: boolean;
   error: string | null;
-  success: boolean;
+  actionWatch: TUserActionWatch | null;
 }
 
 const initialState: IUserState = {
@@ -30,7 +31,7 @@ const initialState: IUserState = {
   currentUser: null,
   loading: false,
   error: null,
-  success: false,
+  actionWatch: null,
 };
 
 export const getAllListUsers = createAsyncThunk<
@@ -73,7 +74,7 @@ export const updateOneUserByID = createAsyncThunk<
   IResponseUser,
   IUserUpdate,
   { rejectValue: IErrorUser }
->("users/updateClient", async (dataUser, { rejectWithValue }) => {
+>("users/updateUser", async (dataUser, { rejectWithValue }) => {
   try {
     return await updateOneUser(dataUser);
   } catch (error) {
@@ -85,7 +86,7 @@ export const deleteOneUserByID = createAsyncThunk<
   IResponseUser,
   number,
   { rejectValue: IErrorUser }
->("users/deleteClient", async (idUser, { rejectWithValue }) => {
+>("users/deleteUser", async (idUser, { rejectWithValue }) => {
   try {
     return await deleteOneUser(idUser);
   } catch (error) {
@@ -97,14 +98,17 @@ const userSlice = createSlice({
   name: "users",
   initialState,
   reducers: {
+    addInfoWatch: (state, action) => {
+      state.actionWatch = action.payload;
+    },
+    clearInfoWatch: (state) => {
+      state.actionWatch = null;
+    },
     clearInfoUserError: (state) => {
       state.error = null;
     },
     clearCurrentUserData: (state) => {
       state.currentUser = null;
-    },
-    clearSuccessFlagUser: (state) => {
-      state.success = false;
     },
     resetAllDataUser: (state) => {
       state.info = null;
@@ -112,7 +116,6 @@ const userSlice = createSlice({
       state.currentUser = null;
       state.loading = false;
       state.error = null;
-      state.success = false;
     },
   },
 
@@ -127,7 +130,6 @@ const userSlice = createSlice({
         state.loading = false;
         state.info = action.payload.info;
         state.results = action.payload.results;
-        state.success = action.payload.success;
       })
       .addCase(getAllListUsers.rejected, (state, action) => {
         state.loading = false;
@@ -142,7 +144,6 @@ const userSlice = createSlice({
       .addCase(getUserByID.fulfilled, (state, action) => {
         state.loading = false;
         state.currentUser = action.payload.value;
-        state.success = action.payload.success;
       })
       .addCase(getUserByID.rejected, (state, action) => {
         state.loading = false;
@@ -156,8 +157,7 @@ const userSlice = createSlice({
       })
       .addCase(createUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.results.unshift(action.payload.value);
-        state.success = action.payload.success;
+        // state.results.unshift(action.payload.value);
       })
       .addCase(createUser.rejected, (state, action) => {
         state.loading = false;
@@ -175,7 +175,6 @@ const userSlice = createSlice({
         state.results = state.results.map((item) =>
           item.idUser === updated.idUser ? updated : item,
         );
-        state.success = action.payload.success;
       })
       .addCase(updateOneUserByID.rejected, (state, action) => {
         state.loading = false;
@@ -189,9 +188,8 @@ const userSlice = createSlice({
       })
       .addCase(deleteOneUserByID.fulfilled, (state, action) => {
         state.loading = false;
-        const idUser = action.payload.value.idUser;
-        state.results = state.results.filter((item) => item.idUser !== idUser);
-        state.success = action.payload.success;
+        // const idUser = action.payload.value.idUser;
+        // state.results = state.results.filter((item) => item.idUser !== idUser);
       })
       .addCase(deleteOneUserByID.rejected, (state, action) => {
         state.loading = false;
@@ -205,6 +203,7 @@ export default userSlice.reducer;
 export const {
   clearInfoUserError,
   clearCurrentUserData,
-  clearSuccessFlagUser,
   resetAllDataUser,
+  addInfoWatch,
+  clearInfoWatch,
 } = userSlice.actions;
