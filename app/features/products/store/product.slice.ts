@@ -20,7 +20,6 @@ interface IProductState {
   currentProduct: IProduct | null;
   loading: boolean;
   error: string | null;
-  success: boolean;
 }
 
 const initialState: IProductState = {
@@ -29,7 +28,6 @@ const initialState: IProductState = {
   currentProduct: null,
   loading: false,
   error: null,
-  success: false,
 };
 
 export const getAllListProducts = createAsyncThunk<
@@ -102,16 +100,12 @@ const productsSlice = createSlice({
     clearCurrentProductData: (state) => {
       state.currentProduct = null;
     },
-    clearSuccessFlagProduct: (state) => {
-      state.success = false;
-    },
     resetAllDataProduct: (state) => {
       state.info = null;
       state.results = [];
       state.currentProduct = null;
       state.loading = false;
       state.error = null;
-      state.success = false;
     },
   },
 
@@ -126,7 +120,6 @@ const productsSlice = createSlice({
         state.loading = false;
         state.info = action.payload.info;
         state.results = action.payload.results;
-        state.success = action.payload.success;
       })
       .addCase(getAllListProducts.rejected, (state, action) => {
         state.loading = false;
@@ -141,7 +134,6 @@ const productsSlice = createSlice({
       .addCase(getProductByID.fulfilled, (state, action) => {
         state.loading = false;
         state.currentProduct = action.payload.value;
-        state.success = action.payload.success;
       })
       .addCase(getProductByID.rejected, (state, action) => {
         state.loading = false;
@@ -156,7 +148,6 @@ const productsSlice = createSlice({
       .addCase(createProduct.fulfilled, (state, action) => {
         state.loading = false;
         state.results.unshift(action.payload.value);
-        state.success = action.payload.success;
       })
       .addCase(createProduct.rejected, (state, action) => {
         state.loading = false;
@@ -174,7 +165,6 @@ const productsSlice = createSlice({
         state.results = state.results.map((item) =>
           item.idProduct === updated.idProduct ? updated : item,
         );
-        state.success = action.payload.success;
       })
       .addCase(updateOneProductByID.rejected, (state, action) => {
         state.loading = false;
@@ -192,7 +182,6 @@ const productsSlice = createSlice({
         state.results = state.results.filter(
           (item) => item.idProduct !== idProduct,
         );
-        state.success = action.payload.success;
       })
       .addCase(deleteOneProductByID.rejected, (state, action) => {
         state.loading = false;
@@ -206,6 +195,5 @@ export default productsSlice.reducer;
 export const {
   clearInfoProductError,
   clearCurrentProductData,
-  clearSuccessFlagProduct,
   resetAllDataProduct,
 } = productsSlice.actions;

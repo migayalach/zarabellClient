@@ -20,7 +20,6 @@ interface ICategoryState {
   currentCategory: ICategory | null;
   loading: boolean;
   error: string | null;
-  success: boolean;
 }
 
 const initialState: ICategoryState = {
@@ -29,7 +28,6 @@ const initialState: ICategoryState = {
   currentCategory: null,
   loading: false,
   error: null,
-  success: false,
 };
 
 export const getAllListCategories = createAsyncThunk<
@@ -102,16 +100,12 @@ const categorySlice = createSlice({
     clearCurrentCategoryData: (state) => {
       state.currentCategory = null;
     },
-    clearSuccessFlagCategory: (state) => {
-      state.success = false;
-    },
     resetAllDataCategory: (state) => {
       state.info = null;
       state.results = [];
       state.currentCategory = null;
       state.loading = false;
       state.error = null;
-      state.success = false;
     },
   },
 
@@ -126,7 +120,6 @@ const categorySlice = createSlice({
         state.loading = false;
         state.info = action.payload.info;
         state.results = action.payload.results;
-        state.success = action.payload.success;
       })
       .addCase(getAllListCategories.rejected, (state, action) => {
         state.loading = false;
@@ -141,7 +134,6 @@ const categorySlice = createSlice({
       .addCase(getCategoryByID.fulfilled, (state, action) => {
         state.loading = false;
         state.currentCategory = action.payload.value;
-        state.success = action.payload.success;
       })
       .addCase(getCategoryByID.rejected, (state, action) => {
         state.loading = false;
@@ -156,7 +148,6 @@ const categorySlice = createSlice({
       .addCase(createCategory.fulfilled, (state, action) => {
         state.loading = false;
         state.results.unshift(action.payload.value);
-        state.success = action.payload.success;
       })
       .addCase(createCategory.rejected, (state, action) => {
         state.loading = false;
@@ -174,7 +165,6 @@ const categorySlice = createSlice({
         state.results = state.results.map((item) =>
           item.idCategory === updated.idCategory ? updated : item,
         );
-        state.success = action.payload.success;
       })
       .addCase(updateOneCategoryByID.rejected, (state, action) => {
         state.loading = false;
@@ -192,7 +182,6 @@ const categorySlice = createSlice({
         state.results = state.results.filter(
           (item) => item.idCategory !== idCategory,
         );
-        state.success = action.payload.success;
       })
       .addCase(deleteOneCategoryByID.rejected, (state, action) => {
         state.loading = false;
@@ -206,6 +195,5 @@ export default categorySlice.reducer;
 export const {
   clearInfoCategoryError,
   clearCurrentCategoryData,
-  clearSuccessFlagCategory,
   resetAllDataCategory,
 } = categorySlice.actions;
