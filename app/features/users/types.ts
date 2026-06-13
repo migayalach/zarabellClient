@@ -53,3 +53,5 @@ export interface IResponseUser {
 }
 
 export type IClientSingleResponse = IApiResponse<IUserInfo>;
+
+export type TUserActionWatch = "create" | "delete" | "update";
