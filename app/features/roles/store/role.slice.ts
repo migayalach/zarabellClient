@@ -6,7 +6,13 @@ import {
   deleteOneRole,
   updateOneRole,
 } from "../services/roles.services";
-import { IErrorRole, IPaginationRole, IResponseRole, IRole } from "../types";
+import {
+  IErrorRole,
+  IPaginationRole,
+  IResponseRole,
+  IResponseRoles,
+  IRole,
+} from "../types";
 
 interface IRoleState {
   info: IPaginationRole | null;
@@ -14,7 +20,6 @@ interface IRoleState {
   currentRole: IRole | null;
   loading: boolean;
   error: string | null;
-  success: boolean;
 }
 
 const initialState: IRoleState = {
@@ -23,11 +28,10 @@ const initialState: IRoleState = {
   currentRole: null,
   loading: false,
   error: null,
-  success: false,
 };
 
 export const getAllListRole = createAsyncThunk<
-  IResponseRole,
+  IResponseRoles,
   number | undefined,
   { rejectValue: IErrorRole }
 >("roles/getAllRoles", async (page, { rejectWithValue }) => {
@@ -96,16 +100,12 @@ const roleSlice = createSlice({
     clearCurrentRoleData: (state) => {
       state.currentRole = null;
     },
-    clearSuccessFlagRole: (state) => {
-      state.success = false;
-    },
     resetAllDataRole: (state) => {
       state.info = null;
       state.results = [];
       state.currentRole = null;
       state.loading = false;
       state.error = null;
-      state.success = false;
     },
   },
 
@@ -120,7 +120,6 @@ const roleSlice = createSlice({
         state.loading = false;
         state.info = action.payload.info;
         state.results = action.payload.results;
-        state.success = action.payload.success;
       })
       .addCase(getAllListRole.rejected, (state, action) => {
         state.loading = false;
@@ -135,7 +134,6 @@ const roleSlice = createSlice({
       .addCase(getRoleByID.fulfilled, (state, action) => {
         state.loading = false;
         state.currentRole = action.payload.value;
-        state.success = action.payload.success;
       })
       .addCase(getRoleByID.rejected, (state, action) => {
         state.loading = false;
@@ -150,7 +148,6 @@ const roleSlice = createSlice({
       .addCase(createRole.fulfilled, (state, action) => {
         state.loading = false;
         state.results.unshift(action.payload.value);
-        state.success = action.payload.success;
       })
       .addCase(createRole.rejected, (state, action) => {
         state.loading = false;
@@ -168,7 +165,6 @@ const roleSlice = createSlice({
         state.results = state.results.map((item) =>
           item.idRole === updated.idRole ? updated : item,
         );
-        state.success = action.payload.success;
       })
       .addCase(updateOneRoleByID.rejected, (state, action) => {
         state.loading = false;
@@ -184,7 +180,6 @@ const roleSlice = createSlice({
         state.loading = false;
         const idRole = action.payload.value.idRole;
         state.results = state.results.filter((item) => item.idRole !== idRole);
-        state.success = action.payload.success;
       })
       .addCase(deleteOneRoleByID.rejected, (state, action) => {
         state.loading = false;
@@ -195,9 +190,5 @@ const roleSlice = createSlice({
 
 export default roleSlice.reducer;
 
-export const {
-  clearInfoRoleError,
-  clearCurrentRoleData,
-  clearSuccessFlagRole,
-  resetAllDataRole,
-} = roleSlice.actions;
+export const { clearInfoRoleError, clearCurrentRoleData, resetAllDataRole } =
+  roleSlice.actions;
