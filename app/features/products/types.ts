@@ -3,12 +3,20 @@ export interface IProduct {
   idCategory: number;
   nameCategory: string;
   nameProduct: string;
-  stateProduct: string;
+  stateProduct: boolean;
 }
 
-export type ICreateProduct = Omit<IProduct, "idProduct" | "stateProduct">;
+export interface IProductCreate {
+  idCategory: number;
+  nameProduct: string;
+}
 
-export type IUpdateProduct = IProduct;
+export interface IProductUpdate {
+  idProduct: number;
+  idCategory: number;
+  nameProduct: string;
+  stateProduct: boolean;
+}
 
 export interface IPaginationProduct {
   count: number;
