@@ -26,7 +26,7 @@ export const useCategory = () => {
   const loading = useAppSelector(selectCategoryLoading);
   const error = useAppSelector(selectCategoryError);
 
-  const getAllCategoriess = (page?: number) => {
+  const getAllCategories = (page?: number) => {
     dispatch(getAllListCategories(page));
   };
 
@@ -60,7 +60,7 @@ export const useCategory = () => {
     currentCategory,
     loading,
     error,
-    getAllCategoriess,
+    getAllCategories,
     getOneCategory,
     createNewCategory,
     deleteOneCategory,
