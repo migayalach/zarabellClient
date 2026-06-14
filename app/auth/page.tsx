@@ -1,6 +1,5 @@
 "use client";
-import React from "react";
-import SignInForm from "../features/auth/components/SignInForm";
+import { SignInForm } from "../features/auth/components";
 
 function Page() {
   return (
