@@ -42,7 +42,7 @@ function NavBarMenu() {
     <div className="hidden md:flex items-center w-full justify-between">
       {/* IZQUIERDA */}
       <div className="flex items-center gap-2 text-white">
-        <HomeOutlined onClick={() => router.push("/sales")} />
+        <HomeOutlined onClick={() => router.push("/home")} />
       </div>
 
       {/* DERECHA */}
@@ -78,7 +78,7 @@ function NavBarMenu() {
       {/* HOME */}
       <div
         className="flex items-center gap-2"
-        onClick={() => router.push("/sales")}
+        onClick={() => router.push("/home")}
       >
         <HomeOutlined />
       </div>
