@@ -35,8 +35,8 @@ export const useRoles = () => {
     dispatch(getRoleByID(idRole));
   };
 
-  const createNewRole = (dataRole: Omit<IRole, "idRole">) => {
-    dispatch(createRole(dataRole));
+  const createNewRole = (nameRole: string) => {
+    dispatch(createRole(nameRole));
   };
 
   const deleteOneRole = (idRole: number) => {
