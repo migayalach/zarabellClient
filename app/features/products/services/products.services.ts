@@ -1,5 +1,5 @@
 import { api } from "@/app/shared/api/axios";
-import { ICreateProduct, IUpdateProduct } from "../types";
+import { IProductCreate, IProductUpdate } from "../types";
 
 export const getAllProducts = async (page?: number) => {
   const response = await api.post("", {
@@ -54,7 +54,7 @@ export const getOneProductByID = async (idProduct: number) => {
   return response.data.data.findOneProduct;
 };
 
-export const createNewProduct = async (infoProduct: ICreateProduct) => {
+export const createNewProduct = async (infoProduct: IProductCreate) => {
   const response = await api.post("", {
     query: `
       mutation($idCategory: Int!, $nameProduct: String!) {
@@ -84,7 +84,7 @@ export const createNewProduct = async (infoProduct: ICreateProduct) => {
   return response.data.data.createProduct;
 };
 
-export const updateOneProduct = async (infoProduct: IUpdateProduct) => {
+export const updateOneProduct = async (infoProduct: IProductUpdate) => {
   const response = await api.post("", {
     query: `
       mutation(
