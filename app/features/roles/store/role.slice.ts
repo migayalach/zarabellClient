@@ -56,11 +56,11 @@ export const getRoleByID = createAsyncThunk<
 
 export const createRole = createAsyncThunk<
   IResponseRole,
-  Omit<IRole, "idRole">,
+  string,
   { rejectValue: IErrorRole }
->("roles/createRole", async (dataRole, { rejectWithValue }) => {
+>("roles/createRole", async (nameRole, { rejectWithValue }) => {
   try {
-    return await createNewRole(dataRole);
+    return await createNewRole(nameRole);
   } catch (error) {
     return rejectWithValue(error as IErrorRole);
   }
@@ -147,7 +147,7 @@ const roleSlice = createSlice({
       })
       .addCase(createRole.fulfilled, (state, action) => {
         state.loading = false;
-        state.results.unshift(action.payload.value);
+        // state.results.unshift(action.payload.value);
       })
       .addCase(createRole.rejected, (state, action) => {
         state.loading = false;
