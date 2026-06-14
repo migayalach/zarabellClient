@@ -46,7 +46,7 @@ export const getOneRoleByID = async (idRole: number) => {
   return response.data.data.findOneRole;
 };
 
-export const createNewRole = async (infoRole: { nameRole: string }) => {
+export const createNewRole = async (nameRole: string) => {
   const response = await api.post("", {
     query: `
       mutation($nameRole: String!) {
@@ -57,7 +57,7 @@ export const createNewRole = async (infoRole: { nameRole: string }) => {
       }
     `,
     variables: {
-      nameRole: infoRole.nameRole,
+      nameRole,
     },
   });
 
