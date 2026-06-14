@@ -27,6 +27,9 @@
         └── 📁features
             └── 📁auth
                 └── 📁components
+                    ├── AuthChangePassword.tsx
+                    ├── AuthFormInformation.tsx
+                    ├── index.ts
                     ├── SignInForm.tsx
                 └── 📁hooks
                     ├── useAuth.ts
@@ -41,8 +44,8 @@
             └── 📁categories
                 └── 📁components
                     ├── CategoryButtonModal.tsx
+                    ├── CategoryList.tsx
                     ├── CategoryPagination.tsx
-                    ├── CategorySelect.tsx
                     ├── CategoryTable.tsx
                     ├── index.ts
                 └── 📁hooks
@@ -69,7 +72,27 @@
                     ├── product.slice.ts
                 ├── types.ts
             └── 📁providers
+                └── 📁components
+                    ├── index.ts
+                └── 📁hooks
+                    ├── useProvides.ts
+                └── 📁services
+                    ├── providers.services.ts
+                └── 📁store
+                    ├── provider.selector.ts
+                    ├── provider.slice.ts
+                ├── types.ts
             └── 📁reasons
+                └── 📁components
+                    ├── index.ts
+                └── 📁hooks
+                    ├── useReason.ts
+                └── 📁services
+                    ├── reasons.services.ts
+                └── 📁store
+                    ├── reason.selector.ts
+                    ├── reason.slice.ts
+                ├── types.ts
             └── 📁roles
                 └── 📁components
                     ├── index.ts
@@ -86,6 +109,16 @@
                     ├── role.slice.ts
                 ├── types.ts
             └── 📁typeOutputs
+                └── 📁components
+                    ├── index.ts
+                └── 📁hooks
+                    ├── useTypeOutputs.ts
+                └── 📁services
+                    ├── typeOutputs.services.ts
+                └── 📁store
+                    ├── typeOutput.selector.ts
+                    ├── typeOutput.slice.ts
+                ├── types.ts
             └── 📁users
                 └── 📁components
                     ├── UserButtonModal.tsx
