@@ -74,6 +74,9 @@
             └── 📁providers
                 └── 📁components
                     ├── index.ts
+                    ├── ProviderButtonModal.tsx
+                    ├── ProviderPagination.tsx
+                    ├── ProviderTable.tsx
                 └── 📁hooks
                     ├── useProvides.ts
                 └── 📁services
@@ -85,6 +88,9 @@
             └── 📁reasons
                 └── 📁components
                     ├── index.ts
+                    ├── ReasonButtonModal.tsx
+                    ├── ReasonPagination.tsx
+                    ├── ReasonTable.tsx
                 └── 📁hooks
                     ├── useReason.ts
                 └── 📁services
@@ -111,6 +117,9 @@
             └── 📁typeOutputs
                 └── 📁components
                     ├── index.ts
+                    ├── OutputTypeButtonModal.tsx
+                    ├── OutputTypePagination.tsx
+                    ├── OutputTypeTable.tsx
                 └── 📁hooks
                     ├── useTypeOutputs.ts
                 └── 📁services
