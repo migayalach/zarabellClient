@@ -10,6 +10,8 @@ import {
   IErrorProduct,
   IPaginationProduct,
   IProduct,
+  IProductCreate,
+  IProductUpdate,
   IResponseProduct,
   IResponseProducts,
 } from "../types";
@@ -56,7 +58,7 @@ export const getProductByID = createAsyncThunk<
 
 export const createProduct = createAsyncThunk<
   IResponseProduct,
-  Omit<IProduct, "idProduct">,
+  IProductCreate,
   { rejectValue: IErrorProduct }
 >("products/createProduct", async (dataProduct, { rejectWithValue }) => {
   try {
@@ -68,7 +70,7 @@ export const createProduct = createAsyncThunk<
 
 export const updateOneProductByID = createAsyncThunk<
   IResponseProduct,
-  IProduct,
+  IProductUpdate,
   { rejectValue: IErrorProduct }
 >("products/updateProduct", async (dataProduct, { rejectWithValue }) => {
   try {
