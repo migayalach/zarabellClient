@@ -16,7 +16,7 @@ import {
   resetAllDataProduct,
   updateOneProductByID,
 } from "../store/product.slice";
-import { IProduct } from "../types";
+import { IProductCreate, IProductUpdate } from "../types";
 
 export const useProducts = () => {
   const dispatch = useAppDispatch();
@@ -34,7 +34,7 @@ export const useProducts = () => {
     dispatch(getProductByID(idProduct));
   };
 
-  const createNewProduct = (dataProduct: Omit<IProduct, "idProduct">) => {
+  const createNewProduct = (dataProduct: IProductCreate) => {
     dispatch(createProduct(dataProduct));
   };
 
@@ -42,7 +42,7 @@ export const useProducts = () => {
     dispatch(deleteOneProductByID(idProduct));
   };
 
-  const updateOneProduct = (dataProduct: IProduct) => {
+  const updateOneProduct = (dataProduct: IProductUpdate) => {
     dispatch(updateOneProductByID(dataProduct));
   };
 
