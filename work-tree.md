@@ -1,5 +1,7 @@
 ```
 └── 📁zarabell-client
+    └── 📁.vscode
+        ├── settings.json
     └── 📁app
         └── 📁(client)
             └── 📁categories
@@ -8,7 +10,13 @@
                 ├── page.tsx
             └── 📁products
                 ├── page.tsx
+            └── 📁providers
+                ├── page.tsx
+            └── 📁reasons
+                ├── page.tsx
             └── 📁roles
+                ├── page.tsx
+            └── 📁typeOutputs
                 ├── page.tsx
             └── 📁users
                 ├── page.tsx
@@ -29,11 +37,14 @@
                 └── 📁store
                     ├── auth.selector.ts
                     ├── auth.slice.ts
-                ├── index.ts
                 ├── types.ts
             └── 📁categories
                 └── 📁components
-                    ├── TableCategory.ts
+                    ├── CategoryButtonModal.tsx
+                    ├── CategoryPagination.tsx
+                    ├── CategorySelect.tsx
+                    ├── CategoryTable.tsx
+                    ├── index.ts
                 └── 📁hooks
                     ├── useCategories.ts
                 └── 📁services
@@ -41,11 +52,14 @@
                 └── 📁store
                     ├── category.selector.ts
                     ├── category.slice.ts
-                ├── index.ts
                 ├── types.ts
             └── 📁products
                 └── 📁components
-                    ├── TableProduct.ts
+                    ├── index.ts
+                    ├── ProductButtonModal.tsx
+                    ├── ProductPagination.tsx
+                    ├── ProductSelect.tsx
+                    ├── ProductTable.tsx
                 └── 📁hooks
                     ├── useProducts.ts
                 └── 📁services
@@ -53,25 +67,30 @@
                 └── 📁store
                     ├── product.selector.ts
                     ├── product.slice.ts
-                ├── index.ts
                 ├── types.ts
+            └── 📁providers
+            └── 📁reasons
             └── 📁roles
                 └── 📁components
-                    ├── ButtonRoles.tsx
-                    ├── FormRoles.tsx
-                    ├── TableRoles.tsx
-                └── 📁hooks
-                    ├── useRole.ts
-                    ├── userRequireRole.ts
-                └── 📁store
                     ├── index.ts
-                    ├── role.selectors.ts
+                    ├── RoleButtonModal.tsx
+                    ├── RolePagination.tsx
+                    ├── RoleSelect.tsx
+                    ├── RoleTable.tsx
+                └── 📁hooks
+                    ├── useRoles.ts
+                └── 📁services
+                    ├── roles.services.ts
+                └── 📁store
+                    ├── role.selector.ts
                     ├── role.slice.ts
-                ├── index.ts
                 ├── types.ts
+            └── 📁typeOutputs
             └── 📁users
                 └── 📁components
-                    ├── TableUser.tsx
+                    ├── UserButtonModal.tsx
+                    ├── UserPagination.tsx
+                    ├── UserTable.tsx
                 └── 📁hooks
                     ├── useUsers.ts
                 └── 📁services
@@ -79,7 +98,6 @@
                 └── 📁store
                     ├── user.selector.ts
                     ├── user.slice.ts
-                ├── index.ts
                 ├── types.ts
         └── 📁helpers
             ├── constans.helpers.ts
@@ -87,13 +105,11 @@
             └── 📁api
                 ├── api.interface.ts
                 ├── axios.ts
-            └── 📁common
-                └── 📁interfaces
-                └── 📁types
             └── 📁components
+                ├── SCNavBar.tsx
+                ├── SNotifications.tsx
             └── 📁helpers
                 ├── index.ts
-            └── 📁ui
         └── 📁store
             ├── hooks.ts
             ├── provider.tsx
