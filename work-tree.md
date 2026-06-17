@@ -34,6 +34,7 @@
                 └── 📁hooks
                     ├── useAuth.ts
                     ├── useRequireAuth.ts
+                    ├── useRestoreSession.ts
                     ├── useSignIn.ts
                 └── 📁services
                     ├── auth.services.ts
@@ -165,7 +166,6 @@
         ├── next.svg
         ├── vercel.svg
         ├── window.svg
-    ├── .env
     ├── .gitignore
     ├── AGENTS.md
     ├── CLAUDE.md
