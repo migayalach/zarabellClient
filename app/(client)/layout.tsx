@@ -1,8 +1,9 @@
 "use client";
 
 import { Layout } from "antd";
-import { useRequireAuth } from "@/app/features/auth/hooks/useRequireAuth";
 import NavBarMenu from "../shared/components/SCNavBar";
+import { useRequireAuth } from "@/app/features/auth/hooks/useRequireAuth";
+import { useRestoreSession } from "../features/auth/hooks/useRestoreSession";
 
 const { Content, Footer } = Layout;
 
@@ -11,6 +12,7 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  useRestoreSession();
   useRequireAuth();
 
   return (
@@ -29,7 +31,7 @@ export default function DashboardLayout({
         {children}
       </Content>
       <Footer style={{ textAlign: "center" }}>
-        ZaraBell © {new Date().getFullYear()}
+        CentroBell © {new Date().getFullYear()}
       </Footer>
     </Layout>
   );
