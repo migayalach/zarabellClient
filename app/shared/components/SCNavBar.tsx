@@ -23,11 +23,13 @@ import {
   AuthChangePassword,
   AuthFormInformation,
 } from "@/app/features/auth/components";
+import { useAuth } from "@/app/features/auth/hooks/useAuth";
 
 const { Header } = Layout;
 
 function NavBarMenu() {
   const [open, setOpen] = useState(false);
+  const { user } = useAuth();
   const router = useRouter();
 
   const mobileItems = [
@@ -150,7 +152,7 @@ function NavBarMenu() {
         <Dropdown menu={infoMenu} placement="bottomRight">
           <div className="flex items-center gap-1 cursor-pointer">
             <UserOutlined />
-            <span>Pepito</span>
+            <span>{user?.nameUser?.split(" ")[0]}</span>
           </div>
         </Dropdown>
       </div>
