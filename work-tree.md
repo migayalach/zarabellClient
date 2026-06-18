@@ -6,13 +6,25 @@
         └── 📁(client)
             └── 📁categories
                 ├── page.tsx
+            └── 📁history
+                └── 📁[idHistory]
+                    ├── page.tsx
+                ├── page.tsx
             └── 📁home
+                ├── page.tsx
+            └── 📁outputs
+                └── 📁[idOutput]
+                    ├── page.tsx
                 ├── page.tsx
             └── 📁products
                 ├── page.tsx
             └── 📁providers
                 ├── page.tsx
             └── 📁reasons
+                ├── page.tsx
+            └── 📁registers
+                └── 📁[idRegister]
+                    ├── page.tsx
                 ├── page.tsx
             └── 📁roles
                 ├── page.tsx
@@ -29,10 +41,12 @@
                 └── 📁components
                     ├── AuthChangePassword.tsx
                     ├── AuthFormInformation.tsx
+                    ├── AuthSignOut.tsx
                     ├── index.ts
                     ├── SignInForm.tsx
                 └── 📁hooks
                     ├── useAuth.ts
+                    ├── useProfile.ts
                     ├── useRequireAuth.ts
                     ├── useRestoreSession.ts
                     ├── useSignIn.ts
