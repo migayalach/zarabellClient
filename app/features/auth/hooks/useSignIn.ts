@@ -10,24 +10,22 @@ export const useSignIn = () => {
   const auth = useAppSelector((state) => state.auth);
   const router = useRouter();
 
-  const signIn = (data: { email: string; password: string }) => {
-    dispatch(signInSession(data));
+  const signIn = async (data: { email: string; password: string }) => {
+    const results = await dispatch(signInSession(data));
+    if (signInSession.fulfilled.match(results)) {
+      localStorage.setItem("accessToken", results.payload.access_token);
+      router.push("/home");
+    }
   };
 
   useEffect(() => {
-    if (auth.access_token) {
-      localStorage.setItem("accessToken", auth.access_token);
-      router.push("/home");
-    }
-
     if (auth.error) {
       const timer = setTimeout(() => {
         dispatch(clearInfoSessionError());
       }, 2000);
-
       return () => clearTimeout(timer);
     }
-  }, [auth.access_token, auth.error, dispatch, router]);
+  }, [auth.error, dispatch]);
 
   return {
     signIn,

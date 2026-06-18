@@ -5,12 +5,12 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "./useAuth";
 
 export const useRequireAuth = () => {
-  const { loading, isAuthenticated } = useAuth();
+  const { user, loading, initialized } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      router.push("/auth");
+    if (initialized && !loading && !user) {
+      router.push("/");
     }
-  }, [loading, isAuthenticated, router]);
+  }, [user, loading, initialized, router]);
 };
