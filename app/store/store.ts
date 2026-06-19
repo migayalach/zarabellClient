@@ -7,7 +7,7 @@ import products from "@/app/features/products/store/product.slice";
 import providers from "@/app/features/providers/store/provider.slice";
 import reasons from "@/app/features/reasons/store/reason.slice";
 import typeOutputs from "@/app/features/typeOutputs/store/typeOutput.slice";
-import inputRecords from "@/app/features/entriesInventory/store/entriesInventory.slice";
+import inputRecords from "@/app/features/inputRecord/store/entriesInventory.slice";
 import priceHistory from "@/app/features/priceHistory/store/priceHistory.slice";
 
 export const store = configureStore({
