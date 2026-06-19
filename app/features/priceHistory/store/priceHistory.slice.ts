@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
-  createNewInputRecord,
-  updateOneInputRecord,
-  getAllInputRecords,
+  createNewPriceHistory,
+  getAllPriceHistories,
+  updateOnePriceHistory,
 } from "../services/priceHistory.services";
 import {
   IErrorPriceHistory,
@@ -35,10 +35,10 @@ export const getAllPriceHistoryByID = createAsyncThunk<
   { idProduct: number; page: number | undefined },
   { rejectValue: IErrorPriceHistory }
 >(
-  "roles/getAllPriceHistorys",
+  "price-history/getAllPriceHistories",
   async ({ idProduct, page }, { rejectWithValue }) => {
     try {
-      return await getAllInputRecords(idProduct, page);
+      return await getAllPriceHistories(idProduct, page);
     } catch (error) {
       return rejectWithValue(error as IErrorPriceHistory);
     }
@@ -49,9 +49,9 @@ export const createPriceHistory = createAsyncThunk<
   IResponsePriceHistory,
   IPriceHistoryCreate,
   { rejectValue: IErrorPriceHistory }
->("roles/createPriceHistory", async (data, { rejectWithValue }) => {
+>("price-history/createPriceHistory", async (data, { rejectWithValue }) => {
   try {
-    return await createNewInputRecord(data);
+    return await createNewPriceHistory(data);
   } catch (error) {
     return rejectWithValue(error as IErrorPriceHistory);
   }
@@ -61,9 +61,9 @@ export const updateOnePriceHistoryByID = createAsyncThunk<
   IResponsePriceHistory,
   IPriceHistoryUpdate,
   { rejectValue: IErrorPriceHistory }
->("roles/updatePriceHistory", async (data, { rejectWithValue }) => {
+>("price-history/updatePriceHistory", async (data, { rejectWithValue }) => {
   try {
-    return await updateOneInputRecord(data);
+    return await updateOnePriceHistory(data);
   } catch (error) {
     return rejectWithValue(error as IErrorPriceHistory);
   }
