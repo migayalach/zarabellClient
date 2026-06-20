@@ -7,7 +7,6 @@ import {
   ShoppingCartOutlined,
   UserOutlined,
   MenuOutlined,
-  LogoutOutlined,
   AuditOutlined,
   ReadOutlined,
   UserSwitchOutlined,
@@ -17,6 +16,9 @@ import {
   ContactsOutlined,
   ProfileOutlined,
   SolutionOutlined,
+  HistoryOutlined,
+  FormOutlined,
+  FileSearchOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import {
@@ -24,6 +26,7 @@ import {
   AuthFormInformation,
 } from "@/app/features/auth/components";
 import { useAuth } from "@/app/features/auth/hooks/useAuth";
+import AuthSignOut from "@/app/features/auth/components/AuthSignOut";
 
 const { Header } = Layout;
 
@@ -60,8 +63,7 @@ function NavBarMenu() {
       },
       {
         key: "logout",
-        label: "Salir",
-        icon: <LogoutOutlined />,
+        icon: <AuthSignOut />,
       },
     ],
   };
@@ -119,6 +121,37 @@ function NavBarMenu() {
     ],
   };
 
+  const optionsHistory = {
+    onClick: ({ key }: { key: string }) => handleMenuClick(key),
+    items: [
+      {
+        key: "reasons",
+        icon: <FormOutlined />,
+        label: "Nuevo ingreso",
+      },
+      {
+        key: "productOuts",
+        icon: <ProfileOutlined />,
+        label: "Nueva Salida",
+      },
+      // {
+      //   key: "priceHistory",
+      //   icon: <ReadOutlined />,
+      //   label: "Historial de precios",
+      // },
+      // {
+      //   key: "detailOutput",
+      //   icon: <SolutionOutlined />,
+      //   label: "Detalle de salida",
+      // },
+      {
+        key: "backHistory",
+        icon: <FileSearchOutlined />,
+        label: "Historial de regreso",
+      },
+    ],
+  };
+
   const desktopMenu = (
     <div className="hidden md:flex items-center w-full justify-between">
       {/* IZQUIERDA */}
@@ -128,6 +161,13 @@ function NavBarMenu() {
 
       {/* DERECHA */}
       <div className="flex items-center gap-6 text-white">
+        <Dropdown menu={optionsHistory} placement="bottomRight">
+          <div className="flex items-center gap-1 cursor-pointer">
+            <HistoryOutlined />
+            <span>Historial</span>
+          </div>
+        </Dropdown>
+
         <Dropdown menu={optionsMenu} placement="bottomRight">
           <div className="flex items-center gap-1 cursor-pointer">
             <UserOutlined />
@@ -202,8 +242,7 @@ function NavBarMenu() {
             </div>
           ))}
           <div className="flex items-center gap-2 cursor-pointer">
-            <LogoutOutlined />
-            Salir
+            <AuthSignOut />
           </div>
         </div>
       </Drawer>

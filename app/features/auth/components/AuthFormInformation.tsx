@@ -1,43 +1,34 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import type { FormProps } from "antd";
-import { Modal, Form, Input } from "antd";
+import { Modal, Form, Input, message } from "antd";
 import { UserOutlined } from "@ant-design/icons";
-// import { useUser } from "../hooks/useUser";
+import { useAuth } from "../hooks/useAuth";
+import { useProfile } from "../hooks/useProfile";
 
 type FieldType = {
-  fullNameUser: string;
-  nitUser: string;
-  numberPhoneUser: string;
-  codeUser: string;
+  nameUser: string;
+  lastNameUser: string;
   emailUser: string;
-  numberSucursal: string;
-  locality: string;
-  numberLocality: string;
-  city: string;
+  phoneUser: string;
 };
 
 function AuthFormInformation() {
-  // const { info, updateInfoUser } = useUser();
+  const { updateProfile } = useProfile();
+  const { user, initialized } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [form] = Form.useForm();
 
   const showModal = () => {
     setIsModalOpen(true);
-
-    // if (info) {
-    //   form.setFieldsValue({
-    //     fullNameUser: info.fullNameUser,
-    //     nitUser: info.nitUser,
-    //     numberPhoneUser: info.numberPhoneUser,
-    //     codeUser: info.codeUser,
-    //     emailUser: info.emailUser,
-    //     numberSucursal: info.numberSucursal,
-    //     locality: info.locality,
-    //     numberLocality: info.numberLocality,
-    //     city: info.city,
-    //   });
-    // }
+    if (initialized && user) {
+      form.setFieldsValue({
+        nameUser: user.nameUser,
+        lastNameUser: user.lastNameUser,
+        emailUser: user.emailUser,
+        phoneUser: user.phoneUser,
+      });
+    }
   };
 
   const handleOk = () => {
@@ -49,7 +40,12 @@ function AuthFormInformation() {
   };
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
-    // updateInfoUser(values);
+    try {
+      await updateProfile(values);
+      message.success("Perfil actualizado");
+    } catch (error) {
+      message.error("Error al actualizar perfil");
+    }
   };
 
   return (
@@ -65,89 +61,59 @@ function AuthFormInformation() {
         onOk={handleOk}
         onCancel={handleCancel}
         okText="Actualizar"
+        width={500}
       >
         <Form
           form={form}
-          layout="vertical"
+          layout="horizontal"
           onFinish={onFinish}
           autoComplete="off"
+          labelCol={{ span: 10 }}
+          wrapperCol={{ span: 20 }}
+          style={{ maxWidth: 400 }}
         >
-          <h1>VER INFORMACION XD</h1>
-          {/* <Form.Item
-            label="Email"
-            name="emailUser"
-            rules={[{ required: true, message: "Ingrese su email" }]}
-          >
-            <Input disabled={true} />
+          <Form.Item label="Rol">
+            <Input
+              disabled
+              value={
+                user?.nameRole === "Admin" ? "Administrador" : user?.nameRole
+              }
+            />
           </Form.Item>
 
           <Form.Item
-            label="Nombre completo"
-            name="fullNameUser"
+            label="Nombre"
+            name="nameUser"
             rules={[{ required: true, message: "Ingrese su nombre" }]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item
-            label="NIT"
-            name="nitUser"
-            rules={[{ required: true, message: "Ingrese su NIT" }]}
+            label="Apellido"
+            name="lastNameUser"
+            rules={[{ required: true, message: "Ingrese su apellido" }]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item
-            label="Celular"
-            name="numberPhoneUser"
-            rules={[{ required: true, message: "Ingrese su celular" }]}
+            label="Email"
+            name="emailUser"
+            rules={[{ required: true, message: "Ingrese su email" }]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item
-            label="Código de usuario"
-            name="codeUser"
-            rules={[{ required: true, message: "Ingrese su código" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Numero de sucursal"
-            name="numberSucursal"
-            rules={[{ required: true, message: "Ingrese nro de sucursal" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Localidad"
-            name="locality"
-            rules={[{ required: true, message: "Ingrese localidad" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Numero de localidad"
-            name="numberLocality"
+            label="Número de celular"
+            name="phoneUser"
             rules={[
-              { required: true, message: "Ingrese el numero de localidad" },
+              { required: true, message: "Ingrese su celular / Telefono" },
             ]}
           >
             <Input />
           </Form.Item>
-
-          <Form.Item
-            label="Ciudad"
-            name="city"
-            rules={[
-              { required: true, message: "Ingrese el nombre de la ciudad" },
-            ]}
-          >
-            <Input />
-          </Form.Item> */}
         </Form>
       </Modal>
     </>

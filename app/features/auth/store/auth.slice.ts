@@ -5,8 +5,16 @@ import {
   UserStore,
   SignInResponse,
   IResponseCurrentUser,
+  PasswordChangeSuccess,
+  IPasswordInfo,
+  IUpdateProfile,
 } from "../types";
-import { getCurrentInfoUser, signInRequest } from "../services/auth.services";
+import {
+  getCurrentInfoUser,
+  signInRequest,
+  changePassword,
+  updateInfoUser,
+} from "../services/auth.services";
 
 export interface SignState {
   info: IUserInfo | null;
@@ -41,6 +49,30 @@ export const getCurrentUserInfo = createAsyncThunk<
 >("auth/getCurrentUser", async (_, { rejectWithValue }) => {
   try {
     return await getCurrentInfoUser();
+  } catch (error) {
+    return rejectWithValue(error as LoginError);
+  }
+});
+
+export const updatePasswordUser = createAsyncThunk<
+  PasswordChangeSuccess,
+  IPasswordInfo,
+  { rejectValue: LoginError }
+>("auth/updatePassword", async (data, { rejectWithValue }) => {
+  try {
+    return await changePassword(data);
+  } catch (error) {
+    return rejectWithValue(error as LoginError);
+  }
+});
+
+export const updateInfoProfile = createAsyncThunk<
+  IResponseCurrentUser,
+  IUpdateProfile,
+  { rejectValue: LoginError }
+>("auth/updateProfile", async (data, { rejectWithValue }) => {
+  try {
+    return await updateInfoUser(data);
   } catch (error) {
     return rejectWithValue(error as LoginError);
   }
@@ -86,6 +118,33 @@ const authSlice = createSlice({
       .addCase(getCurrentUserInfo.rejected, (state, action) => {
         state.loading = false;
         state.initialized = true;
+        state.error = action.payload?.message ?? null;
+      })
+
+      .addCase(updatePasswordUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updatePasswordUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.initialized = action.payload.success;
+      })
+      .addCase(updatePasswordUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message ?? null;
+      })
+
+      .addCase(updateInfoProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateInfoProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.info = action.payload.value;
+        state.initialized = action.payload.success;
+      })
+      .addCase(updateInfoProfile.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.payload?.message ?? null;
       });
   },
