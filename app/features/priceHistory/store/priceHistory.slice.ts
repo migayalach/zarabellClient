@@ -111,7 +111,7 @@ const priceHistorySlice = createSlice({
       })
       .addCase(createPriceHistory.fulfilled, (state, action) => {
         state.loading = false;
-        state.results.unshift(action.payload.value);
+        // state.results.unshift(action.payload.value);
       })
       .addCase(createPriceHistory.rejected, (state, action) => {
         state.loading = false;
@@ -125,10 +125,10 @@ const priceHistorySlice = createSlice({
       })
       .addCase(updateOnePriceHistoryByID.fulfilled, (state, action) => {
         state.loading = false;
-        const updated = action.payload.value;
-        state.results = state.results.map((item) =>
-          item.idPriceHistory === updated.idPriceHistory ? updated : item,
-        );
+        // const updated = action.payload.value;
+        // state.results = state.results.map((item) =>
+        //   item.idPriceHistory === updated.idPriceHistory ? updated : item,
+        // );
       })
       .addCase(updateOnePriceHistoryByID.rejected, (state, action) => {
         state.loading = false;
