@@ -127,6 +127,7 @@ export const updateOnePriceHistory = async (data: IPriceHistoryUpdate) => {
       detailHistory: data.detailHistory,
     },
   });
-
+  console.log(response.data);
+  
   return response.data.data.updateOnePriceHistory;
 };
