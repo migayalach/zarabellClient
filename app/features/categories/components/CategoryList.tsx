@@ -97,6 +97,8 @@ function CategoryList({
       </div>
     ) : null;
 
+  // console.log(index);
+
   return (
     <ConfigProvider
       warning={{
@@ -117,7 +119,7 @@ function CategoryList({
         </div>
 
         <Modal
-          title="Lista de clientes"
+          title="Lista de categorias"
           open={isModalOpen}
           onCancel={closeModal}
           footer={null}
