@@ -125,12 +125,12 @@ function NavBarMenu() {
     onClick: ({ key }: { key: string }) => handleMenuClick(key),
     items: [
       {
-        key: "reasons",
+        key: "inventory-entries",
         icon: <FormOutlined />,
         label: "Nuevo ingreso",
       },
       {
-        key: "productOuts",
+        key: "inventory-outputs",
         icon: <ProfileOutlined />,
         label: "Nueva Salida",
       },
