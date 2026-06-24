@@ -4,7 +4,7 @@ import { IRecordICreate, IRecordIUpdate } from "../types";
 export const getAllInputRecords = async (page?: number) => {
   const response = await api.post("", {
     query: `
-      query($page: Int!){
+      query($page: Int){
         getAllIRecords(page: $page){
           info {
             count
@@ -70,14 +70,14 @@ export const getOneInputRecordByID = async (idInputRecord: number) => {
 export const createNewInputRecord = async (data: IRecordICreate) => {
   const response = await api.post("", {
     query: `
-      mutation($idProduct:Int!, $idProvider:Int!, $dateInputRecord:String!, $expirationDate:String!, $countRecord:Int!, $priceBuyRecord: Float!){
+      mutation($idProduct:Int!, $idProvider:Int!, $dateInputRecord:String!, $expirationDateIRecord:String!, $countIRecord:Int!, $priceBuyIRecord: Float!){
         createIRecord(dataInputRecord:{
           idProduct: $idProduct
           idProvider: $idProvider
           dateInputRecord: $dateInputRecord
-          expirationDate: $expirationDate
-          countRecord: $countRecord
-          priceBuyRecord: $priceBuyRecord
+          expirationDateIRecord: $expirationDateIRecord
+          countIRecord: $countIRecord
+          priceBuyIRecord: $priceBuyIRecord
         }){
           message
           value {
@@ -101,9 +101,9 @@ export const createNewInputRecord = async (data: IRecordICreate) => {
       idProduct: data.idProduct,
       idProvider: data.idProvider,
       dateInputRecord: data.dateInputRecord,
-      expirationDate: data.expirationDate,
-      countRecord: data.countRecord,
-      priceBuyRecord: data.priceBuyRecord,
+      expirationDateIRecord: data.expirationDateIRecord,
+      countIRecord: data.countIRecord,
+      priceBuyIRecord: data.priceBuyIRecord,
     },
   });
 
@@ -113,31 +113,31 @@ export const createNewInputRecord = async (data: IRecordICreate) => {
 export const updateOneInputRecord = async (data: IRecordIUpdate) => {
   const response = await api.post("", {
     query: `
-      mutation($idInputRecord: Int!, $idProduct:Int!, $idProvider:Int!, $dateInputRecord:String!, $expirationDate:String!, $countRecord:Int!, $priceBuyRecord: Float!, $statusIRecord: Boolean){
+      mutation($idInputRecord: Int!, $idProduct:Int!, $idProvider:Int!, $dateInputRecord:String!, $expirationDateIRecord:String!, $countIRecord:Int!, $priceBuyIRecord: Float!, $statusIRecord: Boolean){
         updateOneIRecord(dataInputRecord: {
           idInputRecord: $idInputRecord
           idProduct: $idProduct
           idProvider: $idProvider
           dateInputRecord: $dateInputRecord
-          expirationDate: $expirationDate
-          countRecord: $countRecord
-          priceBuyRecord: $priceBuyRecord
+          expirationDateIRecord: $expirationDateIRecord
+          countIRecord: $countIRecord
+          priceBuyIRecord: $priceBuyIRecord
           statusIRecord: $statusIRecord
         }){
           message
           value {
-            idInputRecord
-            idCategory
-            idProduct
-            idProvider
-            nameProvider
-            nameCategory
-            nameProduct
-            dateInputRecord
-            expirationDateIRecord
-            priceBuyIRecord
-            countIRecord
-            statusIRecord
+              idInputRecord
+              idCategory
+              idProduct
+              idProvider
+              nameProvider
+              nameCategory
+              nameProduct
+              dateInputRecord
+              expirationDateIRecord
+              priceBuyIRecord
+              countIRecord
+              statusIRecord
           }
         }
       }
@@ -147,9 +147,9 @@ export const updateOneInputRecord = async (data: IRecordIUpdate) => {
       idProduct: data.idProduct,
       idProvider: data.idProvider,
       dateInputRecord: data.dateInputRecord,
-      expirationDate: data.expirationDate,
-      countRecord: data.countRecord,
-      priceBuyRecord: data.priceBuyRecord,
+      expirationDateIRecord: data.expirationDateIRecord,
+      countIRecord: data.countIRecord,
+      priceBuyIRecord: data.priceBuyIRecord,
       statusIRecord: data.statusIRecord,
     },
   });
