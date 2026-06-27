@@ -20,6 +20,7 @@ interface IPriceHistoryState {
   currentPriceHistory: IPriceHistory | null;
   loading: boolean;
   error: string | null;
+  success: boolean;
 }
 
 const initialState: IPriceHistoryState = {
@@ -28,6 +29,7 @@ const initialState: IPriceHistoryState = {
   currentPriceHistory: null,
   loading: false,
   error: null,
+  success: false,
 };
 
 export const getAllPriceHistoryByID = createAsyncThunk<
@@ -86,6 +88,10 @@ const priceHistorySlice = createSlice({
       state.loading = false;
       state.error = null;
     },
+    resetCreateUpdateData: (state) => {
+      state.success = false;
+      state.currentPriceHistory = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -111,6 +117,8 @@ const priceHistorySlice = createSlice({
       })
       .addCase(createPriceHistory.fulfilled, (state, action) => {
         state.loading = false;
+        state.success = action.payload.success;
+        state.currentPriceHistory = action.payload.value;
         // state.results.unshift(action.payload.value);
       })
       .addCase(createPriceHistory.rejected, (state, action) => {
@@ -125,6 +133,8 @@ const priceHistorySlice = createSlice({
       })
       .addCase(updateOnePriceHistoryByID.fulfilled, (state, action) => {
         state.loading = false;
+        state.success = action.payload.success;
+        // state.currentPriceHistory = action.payload.value;
         // const updated = action.payload.value;
         // state.results = state.results.map((item) =>
         //   item.idPriceHistory === updated.idPriceHistory ? updated : item,
@@ -143,4 +153,5 @@ export const {
   clearInfoPriceHistoryError,
   clearCurrentPriceHistoryData,
   resetAllDataPriceHistory,
+  resetCreateUpdateData,
 } = priceHistorySlice.actions;
