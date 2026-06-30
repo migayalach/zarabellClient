@@ -28,7 +28,7 @@ function Page({ params }: IParams) {
   return (
     <div className="flex flex-col flex-1">
       <div className="flex items-center justify-between">
-        <h1 className="text-[30px] font-bold">Lista de entradas</h1>
+        <h1 className="text-[30px] font-bold">Historial de precios</h1>
         {/* <InputRecordButtonModal text="Crear" action="create" /> */}
         {/* <PriceHistoryModalAction /> */}
       </div>
@@ -38,8 +38,10 @@ function Page({ params }: IParams) {
       </div>
 
       <div className="flex justify-center mt-6">
-        {/* <InputRecordPagination pages={info?.pages ?? 1} /> */}
-        <PriceHistoryPagination />
+        <PriceHistoryPagination
+          idInputRecord={+idInventoryEntry}
+          pages={info?.pages ?? 1}
+        />
       </div>
     </div>
   );
