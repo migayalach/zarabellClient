@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { message } from "antd";
-import { usePriceHistory, usePriceHistoryActions } from "../hooks";
+import { usePriceHistoryActions } from "../hooks";
 import { IPriceHistory } from "../types";
 
 function PriceHistoryTable({
@@ -13,7 +13,6 @@ function PriceHistoryTable({
   const [data, setData] = useState<IPriceHistory[]>([]);
   const [editId, setEditId] = useState<number | null>(null);
   const [backupData, setBackupData] = useState<IPriceHistory | null>(null);
-  const { info, error, loading, results } = usePriceHistory();
   const { createNewPriceHistory, updatePriceHistory } =
     usePriceHistoryActions();
 
