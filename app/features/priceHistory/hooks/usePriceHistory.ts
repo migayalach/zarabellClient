@@ -8,6 +8,7 @@ import {
   selectPriceHistoryError,
   selectPriceHistoryLoading,
   selectPriceHistoryResults,
+  selectSuccess,
 } from "../store/priceHistory.selector";
 
 export const usePriceHistory = () => {
@@ -16,6 +17,7 @@ export const usePriceHistory = () => {
   const currentPriceHistory = useAppSelector(selectCurrentPriceHistory);
   const loading = useAppSelector(selectPriceHistoryLoading);
   const error = useAppSelector(selectPriceHistoryError);
+  const success = useAppSelector(selectSuccess);
 
   return {
     info,
@@ -23,5 +25,6 @@ export const usePriceHistory = () => {
     currentPriceHistory,
     loading,
     error,
+    success,
   };
 };
