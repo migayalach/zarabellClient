@@ -50,6 +50,7 @@ export const createNewPriceHistory = async (data: IPriceHistoryCreate) => {
           mayorPriceHistory: $mayorPriceHistory
           detailHistory: $detailHistory
         }){
+          success
           message
           value {
             idPriceHistory
@@ -97,6 +98,7 @@ export const updateOnePriceHistory = async (data: IPriceHistoryUpdate) => {
           mayorPriceHistory: $mayorPriceHistory
           detailHistory: $detailHistory
         }){
+          success
           message
           value {
             idPriceHistory
@@ -127,7 +129,6 @@ export const updateOnePriceHistory = async (data: IPriceHistoryUpdate) => {
       detailHistory: data.detailHistory,
     },
   });
-  console.log(response.data);
   
   return response.data.data.updateOnePriceHistory;
 };
