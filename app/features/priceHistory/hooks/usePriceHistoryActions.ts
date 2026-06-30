@@ -8,6 +8,8 @@ import {
   getAllPriceHistoryByID,
   resetAllDataPriceHistory,
   updateOnePriceHistoryByID,
+  resetCreateUpdateData,
+  clearInfoPriceHistoryError,
 } from "../store/priceHistory.slice";
 
 import { IPriceHistoryCreate, IPriceHistoryUpdate } from "../types";
@@ -44,11 +46,21 @@ export const usePriceHistoryActions = () => {
     dispatch(resetAllDataPriceHistory());
   };
 
+  const resetActionCreateUpdate = () => {
+    dispatch(resetCreateUpdateData());
+  };
+
+  const clearErrorInfo = () => {
+    dispatch(clearInfoPriceHistoryError());
+  };
+
   return {
     getAllPriceHistory,
     createNewPriceHistory,
     updatePriceHistory,
     clearCurrentPriceHistory,
     resetPriceHistory,
+    resetActionCreateUpdate,
+    clearErrorInfo,
   };
 };
