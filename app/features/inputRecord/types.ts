@@ -17,9 +17,9 @@ export interface IRecordICreate {
   idProduct: number;
   idProvider: number;
   dateInputRecord: string;
-  expirationDate: string;
-  countRecord: boolean;
-  priceBuyRecord: number;
+  expirationDateIRecord: string;
+  countIRecord: number;
+  priceBuyIRecord: number;
 }
 
 export interface IRecordIUpdate {
@@ -27,9 +27,9 @@ export interface IRecordIUpdate {
   idProduct: number;
   idProvider: number;
   dateInputRecord: string;
-  expirationDate: string;
-  countRecord: boolean;
-  priceBuyRecord: number;
+  expirationDateIRecord: string;
+  countIRecord: number;
+  priceBuyIRecord: number;
   statusIRecord: boolean;
 }
 

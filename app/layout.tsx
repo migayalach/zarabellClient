@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import StoreProvider from "@/app/store/provider";
-// import icon_consulta from "@/app/images/icons/update_svg.svg";
-
+import dayjs from "dayjs";
+import "dayjs/locale/es";
 import "./globals.css";
+
+dayjs.locale("es");
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

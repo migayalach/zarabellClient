@@ -52,6 +52,7 @@ export interface IResponsePriceHistories {
 }
 
 export interface IResponsePriceHistory {
+  success: boolean;
   message: string;
   value: IPriceHistory;
 }

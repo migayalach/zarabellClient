@@ -9,6 +9,7 @@ import reasons from "@/app/features/reasons/store/reason.slice";
 import typeOutputs from "@/app/features/typeOutputs/store/typeOutput.slice";
 import inputRecords from "@/app/features/inputRecord/store/entriesInventory.slice";
 import priceHistory from "@/app/features/priceHistory/store/priceHistory.slice";
+import outputs from "@/app/features/outputsInventory/store/outputsInventory.slice";
 
 export const store = configureStore({
   reducer: {
@@ -22,7 +23,9 @@ export const store = configureStore({
     typeOutputs: typeOutputs,
     inputRecords: inputRecords,
     priceHistory: priceHistory,
+    outputs: outputs,
   },
+  // devTools: process.env.AROUND_DEVELOP === "develop",
 });
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -6,14 +6,14 @@
         └── 📁(client)
             └── 📁categories
                 ├── page.tsx
-            └── 📁history
-                └── 📁[idHistory]
-                    ├── page.tsx
-                ├── page.tsx
             └── 📁home
                 ├── page.tsx
-            └── 📁outputs
-                └── 📁[idOutput]
+            └── 📁inventory-entries
+                └── 📁[idInventoryEntry]
+                    ├── page.tsx
+                ├── page.tsx
+            └── 📁inventory-outputs
+                └── 📁[idInventoryOutputs]
                     ├── page.tsx
                 ├── page.tsx
             └── 📁products
@@ -21,10 +21,6 @@
             └── 📁providers
                 ├── page.tsx
             └── 📁reasons
-                ├── page.tsx
-            └── 📁registers
-                └── 📁[idRegister]
-                    ├── page.tsx
                 ├── page.tsx
             └── 📁roles
                 ├── page.tsx
@@ -71,12 +67,59 @@
                     ├── category.selector.ts
                     ├── category.slice.ts
                 ├── types.ts
+            └── 📁inputRecord
+                └── 📁components
+                    ├── index.ts
+                    ├── InputRecodTable.tsx
+                    ├── InputRecordBtnAction.tsx
+                    ├── InputRecordButtonModal.tsx
+                    ├── InputRecordPagination.tsx
+                └── 📁hooks
+                    ├── useCreateInputRecord.ts
+                    ├── useDeleteInputRecord.ts
+                    ├── useInputRecord.ts
+                    ├── useInputRecordActions.ts
+                    ├── useInputRecordPagination.ts
+                    ├── useUpdateInputRecord.ts
+                └── 📁services
+                    ├── entriesInventory.services.ts
+                └── 📁store
+                    ├── entriesInventory.selector.ts
+                    ├── entriesInventory.slice.ts
+                ├── types.ts
+            └── 📁outputsInventory
+                └── 📁components
+                    ├── index.ts
+                └── 📁hooks
+                    ├── useOutputRegister.ts
+                └── 📁services
+                    ├── outputsInventory.services.ts
+                └── 📁store
+                    ├── outputsInventory.selector.ts
+                    ├── outputsInventory.slice.ts
+                ├── types.ts
+            └── 📁priceHistory
+                └── 📁components
+                    ├── index.ts
+                    ├── PriceHistoryModalAction.tsx
+                    ├── PriceHistoryPagination.tsx
+                    ├── PriceHistoryTable.tsx
+                └── 📁hooks
+                    ├── index.ts
+                    ├── usePriceHistory.ts
+                    ├── usePriceHistoryActions.ts
+                └── 📁services
+                    ├── priceHistory.services.ts
+                └── 📁store
+                    ├── priceHistory.selector.ts
+                    ├── priceHistory.slice.ts
+                ├── types.ts
             └── 📁products
                 └── 📁components
                     ├── index.ts
                     ├── ProductButtonModal.tsx
+                    ├── ProductList.tsx
                     ├── ProductPagination.tsx
-                    ├── ProductSelect.tsx
                     ├── ProductTable.tsx
                 └── 📁hooks
                     ├── useProducts.ts
@@ -91,6 +134,7 @@
                     ├── index.ts
                     ├── ProviderButtonModal.tsx
                     ├── ProviderPagination.tsx
+                    ├── ProviderSelect.tsx
                     ├── ProviderTable.tsx
                 └── 📁hooks
                     ├── useProvides.ts

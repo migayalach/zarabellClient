@@ -1,44 +1,45 @@
 import { useEffect, useState } from "react";
 import { Button, List, Skeleton, ConfigProvider, Modal, Input } from "antd";
-import { useCategory } from "../hooks/useCategories";
+import { useProviders } from "../../providers/hooks/useProvides";
 
 interface DataType {
-  idCategory: number;
-  nameCategory: string;
+  idProvider: number;
+  nameProvider: string;
 }
 
-function CategoryList({
-  handleCategory,
+function ProviderSelect({
+  handleProvider,
 }: {
-  handleCategory: (idCategory: number) => void;
+  handleProvider: (idProvider: number) => void;
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [initLoading, setInitLoading] = useState(true);
   const [list, setList] = useState<DataType[]>([]);
   const [page, setPage] = useState(1);
   const {
-    getAllCategories,
-    resetDataCategory,
+    getAllProviders,
+    resetDataProvider,
+    clearDataCurrentProvider,
+    currentProvider,
     info,
     results,
-    currentCategory,
-    clearDataCurrentCategory,
-  } = useCategory();
+  } = useProviders();
+
   const [index, setIndex] = useState({
-    idCategory: 0,
-    nameCategory: "",
+    idProvider: 0,
+    nameProvider: "",
   });
 
   const showModal = () => {
     setIsModalOpen(true);
     setPage(1);
     setInitLoading(true);
-    getAllCategories(1);
+    getAllProviders(1);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    resetDataCategory();
+    resetDataProvider();
     // resetCurrentStateClient();
     setList([]);
     setPage(1);
@@ -47,20 +48,20 @@ function CategoryList({
 
   const fetchData = () => {
     const nextPage = page + 1;
-    getAllCategories(nextPage);
+    getAllProviders(nextPage);
     setPage(nextPage);
   };
 
-  const handleChooseClient = (idCategory: number) => {
-    const category = list.find((item) => item.idCategory === idCategory);
+  const handleChooseClient = (idProvider: number) => {
+    const category = list.find((item) => item.idProvider === idProvider);
     if (!category) return;
-    handleCategory(idCategory);
+    handleProvider(idProvider);
     setIndex({
-      idCategory: category.idCategory,
-      nameCategory: category.nameCategory,
+      idProvider: category.idProvider,
+      nameProvider: category.nameProvider,
     });
-    if (currentCategory) {
-      clearDataCurrentCategory();
+    if (currentProvider) {
+      clearDataCurrentProvider();
     }
     closeModal();
   };
@@ -75,13 +76,13 @@ function CategoryList({
   }, [results, page]);
 
   useEffect(() => {
-    if (currentCategory) {
+    if (currentProvider) {
       setIndex({
-        idCategory: currentCategory.idCategory,
-        nameCategory: currentCategory.nameCategory,
+        idProvider: currentProvider.idProvider,
+        nameProvider: currentProvider.nameProvider,
       });
     }
-  }, [currentCategory]);
+  }, [currentProvider]);
 
   const loadMore =
     !initLoading && page < (info?.pages || 1) ? (
@@ -97,8 +98,6 @@ function CategoryList({
       </div>
     ) : null;
 
-  // console.log(index);
-
   return (
     <ConfigProvider
       warning={{
@@ -108,10 +107,10 @@ function CategoryList({
       <>
         <div className="flex flex-row">
           <Input
-            placeholder="Nombre categoria"
+            placeholder="Nombre proveedor"
             readOnly
             disabled
-            value={index.nameCategory}
+            value={index.nameProvider}
           />
           <Button className="ml-4" type="primary" onClick={showModal}>
             ...
@@ -119,7 +118,7 @@ function CategoryList({
         </div>
 
         <Modal
-          title="Lista de categorias"
+          title="Lista de proveedores"
           open={isModalOpen}
           onCancel={closeModal}
           footer={null}
@@ -131,18 +130,18 @@ function CategoryList({
             dataSource={list}
             renderItem={(item) => (
               <List.Item
-                key={item.idCategory}
+                key={item.idProvider}
                 actions={[
                   <a
                     key="select"
-                    onClick={() => handleChooseClient(item.idCategory)}
+                    onClick={() => handleChooseClient(item.idProvider)}
                   >
                     Seleccionar
                   </a>,
                 ]}
               >
                 <Skeleton loading={false} active>
-                  <div>{item.nameCategory}</div>
+                  <div>{item.nameProvider}</div>
                 </Skeleton>
               </List.Item>
             )}
@@ -153,4 +152,4 @@ function CategoryList({
   );
 }
 
-export default CategoryList;
+export default ProviderSelect;

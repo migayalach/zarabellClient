@@ -1,3 +1,4 @@
-export { default as EntriesInvButtonModal } from "./EntriesInvButtonModal";
-export { default as EntriesInvPagination } from "./EntriesInvPagination";
-export { default as EntriesInvTable } from "./EntriesInvTable";
+export { default as InputRecodTable } from "./InputRecodTable";
+export { default as InputRecordButtonModal } from "./InputRecordButtonModal";
+export { default as InputRecordPagination } from "./InputRecordPagination";
+export { default as InputRecordBtnAction } from "./InputRecordBtnAction";

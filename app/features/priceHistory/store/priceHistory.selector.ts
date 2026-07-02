@@ -10,3 +10,4 @@ export const selectPriceHistoryError = (state: RootState) =>
   state.priceHistory.error;
 export const selectCurrentPriceHistory = (state: RootState) =>
   state.priceHistory.currentPriceHistory;
+export const selectSuccess = (state: RootState) => state.priceHistory.success;
