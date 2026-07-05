@@ -45,6 +45,7 @@ export interface IPaginationPriceHistory {
 export interface IErrorPriceHistory {
   message: string;
 }
+
 export interface IResponsePriceHistories {
   message: string;
   info: IPaginationPriceHistory;
