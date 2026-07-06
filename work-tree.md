@@ -13,7 +13,11 @@
                     ├── page.tsx
                 ├── page.tsx
             └── 📁inventory-outputs
-                └── 📁[idInventoryOutputs]
+                └── 📁[idOutput]
+                    ├── page.tsx
+                ├── page.tsx
+            └── 📁inventory-returns
+                └── 📁[idReturn]
                     ├── page.tsx
                 ├── page.tsx
             └── 📁products
@@ -67,6 +71,17 @@
                     ├── category.selector.ts
                     ├── category.slice.ts
                 ├── types.ts
+            └── 📁detailReturns
+                └── 📁components
+                    ├── index.ts
+                └── 📁hooks
+                    ├── index.ts
+                └── 📁services
+                    ├── detailReturn.services.ts
+                └── 📁store
+                    ├── detailReturn.selector.ts
+                    ├── detailReturn.slice.ts
+                ├── type.ts
             └── 📁inputRecord
                 └── 📁components
                     ├── index.ts
@@ -87,11 +102,33 @@
                     ├── entriesInventory.selector.ts
                     ├── entriesInventory.slice.ts
                 ├── types.ts
+            └── 📁outputHistory
+                └── 📁components
+                    ├── index.ts
+                    ├── OutputHistoryModalAction.tsx
+                    ├── OutputHistoryPagination.tsx
+                    ├── OutputHistoryTable.tsx
+                └── 📁hooks
+                    ├── index.ts
+                    ├── useOutputHistory.ts
+                    ├── useOutputHistoryActions.ts
+                └── 📁service
+                    ├── outputHistory.services.ts
+                └── 📁store
+                    ├── outputHistory.selector.ts
+                    ├── outputHistory.slice.ts
+                ├── types.ts
             └── 📁outputsInventory
                 └── 📁components
                     ├── index.ts
+                    ├── OutputBtnAction.tsx
+                    ├── OutputButtonModal.tsx
+                    ├── OutputPagination.tsx
+                    ├── OutputTable.tsx
                 └── 📁hooks
-                    ├── useOutputRegister.ts
+                    ├── index.ts
+                    ├── useOutput.ts
+                    ├── useOutputActions.ts
                 └── 📁services
                     ├── outputsInventory.services.ts
                 └── 📁store
@@ -158,6 +195,17 @@
                     ├── reason.selector.ts
                     ├── reason.slice.ts
                 ├── types.ts
+            └── 📁returns
+                └── 📁components
+                    ├── index.ts
+                └── 📁hooks
+                    ├── index.ts
+                └── 📁services
+                    ├── return.services.ts
+                └── 📁store
+                    ├── return.selector.ts
+                    ├── return.slice.ts
+                ├── type.ts
             └── 📁roles
                 └── 📁components
                     ├── index.ts
