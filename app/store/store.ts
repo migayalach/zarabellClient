@@ -10,6 +10,7 @@ import typeOutputs from "@/app/features/typeOutputs/store/typeOutput.slice";
 import inputRecords from "@/app/features/inputRecord/store/entriesInventory.slice";
 import priceHistory from "@/app/features/priceHistory/store/priceHistory.slice";
 import outputs from "@/app/features/outputsInventory/store/outputsInventory.slice";
+import outputHistory from "@/app/features/outputHistory/store/outputHistory.slice";
 
 export const store = configureStore({
   reducer: {
@@ -24,6 +25,7 @@ export const store = configureStore({
     inputRecords: inputRecords,
     priceHistory: priceHistory,
     outputs: outputs,
+    outputHistory: outputHistory,
   },
   // devTools: process.env.AROUND_DEVELOP === "develop",
 });

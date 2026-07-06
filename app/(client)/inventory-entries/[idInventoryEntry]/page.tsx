@@ -5,7 +5,6 @@ import {
   usePriceHistoryActions,
 } from "@/app/features/priceHistory/hooks";
 import {
-  PriceHistoryModalAction,
   PriceHistoryPagination,
   PriceHistoryTable,
 } from "@/app/features/priceHistory/components";

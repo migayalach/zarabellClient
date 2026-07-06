@@ -89,7 +89,7 @@ export const deleteOneOutputByID = createAsyncThunk<
   IResponseOutput,
   number,
   { rejectValue: IErrorOutput }
->("output/updateOutput", async (idProduct, { rejectWithValue }) => {
+>("output/deleteOutput", async (idProduct, { rejectWithValue }) => {
   try {
     return await deleteOneOutput(idProduct);
   } catch (error) {
