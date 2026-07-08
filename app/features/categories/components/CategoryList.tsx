@@ -39,7 +39,6 @@ function CategoryList({
   const closeModal = () => {
     setIsModalOpen(false);
     resetDataCategory();
-    // resetCurrentStateClient();
     setList([]);
     setPage(1);
     setInitLoading(false);
@@ -96,8 +95,6 @@ function CategoryList({
         <Button onClick={fetchData}>Cargar más</Button>
       </div>
     ) : null;
-
-  // console.log(index);
 
   return (
     <ConfigProvider
