@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
+import { usePagInputRecords } from "../../inputRecord/hooks/useInputRecordPagination";
 import { Button, List, Skeleton, ConfigProvider, Modal, Input } from "antd";
-import { useCategory } from "../hooks/useCategories";
+import { useInputRecordByID } from "../hooks/useInputRecord";
+import { useInputRecordActions } from "../hooks/useInputRecordActions";
 
 interface DataType {
   idCategory: number;
   nameCategory: string;
 }
 
-function CategoryList({
+function InputRecordList({
   handleCategory,
 }: {
   handleCategory: (idCategory: number) => void;
@@ -16,14 +18,9 @@ function CategoryList({
   const [initLoading, setInitLoading] = useState(true);
   const [list, setList] = useState<DataType[]>([]);
   const [page, setPage] = useState(1);
-  const {
-    getAllCategories,
-    resetDataCategory,
-    info,
-    results,
-    currentCategory,
-    clearDataCurrentCategory,
-  } = useCategory();
+  const { pagRecordInput, results, info } = usePagInputRecords();
+  const { currentInputRecord, getRecordInputByID } = useInputRecordByID();
+  const { clearCurrentData } = useInputRecordActions();
   const [index, setIndex] = useState({
     idCategory: 0,
     nameCategory: "",
@@ -33,12 +30,12 @@ function CategoryList({
     setIsModalOpen(true);
     setPage(1);
     setInitLoading(true);
-    getAllCategories(1);
+    pagRecordInput(1);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    resetDataCategory();
+    pagRecordInput();
     setList([]);
     setPage(1);
     setInitLoading(false);
@@ -46,7 +43,7 @@ function CategoryList({
 
   const fetchData = () => {
     const nextPage = page + 1;
-    getAllCategories(nextPage);
+    pagRecordInput(nextPage);
     setPage(nextPage);
   };
 
@@ -58,8 +55,8 @@ function CategoryList({
       idCategory: category.idCategory,
       nameCategory: category.nameCategory,
     });
-    if (currentCategory) {
-      clearDataCurrentCategory();
+    if (currentInputRecord) {
+      clearCurrentData();
     }
     closeModal();
   };
@@ -74,13 +71,13 @@ function CategoryList({
   }, [results, page]);
 
   useEffect(() => {
-    if (currentCategory) {
+    if (currentInputRecord) {
       setIndex({
-        idCategory: currentCategory.idCategory,
-        nameCategory: currentCategory.nameCategory,
+        idCategory: currentInputRecord.idCategory,
+        nameCategory: currentInputRecord.nameCategory,
       });
     }
-  }, [currentCategory]);
+  }, [currentInputRecord]);
 
   const loadMore =
     !initLoading && page < (info?.pages || 1) ? (
@@ -150,4 +147,4 @@ function CategoryList({
   );
 }
 
-export default CategoryList;
+export default InputRecordList;

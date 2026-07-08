@@ -145,7 +145,7 @@ function NavBarMenu() {
       //   label: "Detalle de salida",
       // },
       {
-        key: "backHistory",
+        key: "inventory-returns",
         icon: <FileSearchOutlined />,
         label: "Historial de regreso",
       },
