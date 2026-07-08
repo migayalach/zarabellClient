@@ -1,9 +1,175 @@
-import React from 'react'
+"use client";
+import { useState, useEffect } from "react";
+import { DeleteOutlined, PlusOutlined, FormOutlined } from "@ant-design/icons";
+import { Button, Form, Input, Modal } from "antd";
+import { useOutputHistory, useOutputHistoryActions } from "../hooks/index";
+import { usePagInputRecords } from "@/app/features/inputRecord/hooks/useInputRecordPagination";
+import { InputRecordList } from "../../inputRecord/components";
 
-function OutputHistoryModalAction() {
+type IOutputHistoryForm = {
+  text: string;
+  action: string;
+  idInputRecord?: number;
+  idOutput?: number;
+};
+
+function OutputHistoryModalAction({
+  text,
+  action,
+  idInputRecord,
+  idOutput,
+}: IOutputHistoryForm) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { pagRecordInput } = usePagInputRecords();
+  const { currentOutputHistory } = useOutputHistory();
+  const {
+    clearCurrentOutputHistory,
+    getByIDOutputHistory,
+    createNewOutputHistory,
+    updateOutputHistory,
+    deleteOutputHistory,
+  } = useOutputHistoryActions();
+
+  const [outputHisInfo, setOutputHis] = useState({
+    idOutput: 0,
+    idInputRecord: 0,
+    nameProduct: "",
+    quantity: 0,
+    totalPrice: 0,
+  });
+
+  const resetOutputHistory = () => {
+    setOutputHis({
+      idOutput: 0,
+      idInputRecord: 0,
+      nameProduct: "",
+      quantity: 0,
+      totalPrice: 0,
+    });
+  };
+
+  const showModal = () => {
+    setIsModalOpen(true);
+    pagRecordInput();
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    clearCurrentOutputHistory();
+  };
+
+  const onFinish = async () => {
+    if (action === "create") {
+      createNewOutputHistory(outputHisInfo);
+      setIsModalOpen(false);
+      resetOutputHistory();
+    }
+    if (action === "update") {
+      updateOutputHistory(outputHisInfo);
+    }
+    if (action === "delete" && idOutput && idInputRecord) {
+      deleteOutputHistory(idOutput, idInputRecord);
+      setIsModalOpen(false);
+    }
+  };
+
+  const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setOutputHis((prev) => ({
+      ...prev,
+      [name]:
+        name === "countIRecord"
+          ? Number.parseInt(value, 10) || 0
+          : name === "priceBuyIRecord"
+            ? Number.parseFloat(value) || 0
+            : value,
+    }));
+  };
+
+  // const handleCategory = (value: number) => {
+  //   setOutputHis((prev) => ({
+  //     ...prev,
+  //     idCategory: value,
+  //   }));
+  // };
+
+  useEffect(() => {
+    if (!isModalOpen) return;
+    if (action === "update" && idInputRecord && idOutput) {
+      getByIDOutputHistory(idOutput, idInputRecord);
+      pagRecordInput();
+    }
+  }, [isModalOpen]);
+
+  useEffect(() => {
+    if (!isModalOpen || !currentOutputHistory) return;
+    requestAnimationFrame(() => {
+      setOutputHis(currentOutputHistory);
+    });
+  }, [currentOutputHistory, isModalOpen]);
+
   return (
-    <div>OutputHistoryModalAction</div>
-  )
+    <>
+      <Button type="primary" onClick={showModal}>
+        {action === "delete" && <DeleteOutlined />}
+        {action === "create" && <PlusOutlined />}
+        {action === "update" && <FormOutlined />}
+      </Button>
+
+      <Modal
+        title={`${text} entrada`}
+        open={isModalOpen}
+        onCancel={handleCancel}
+        footer={[
+          <Button
+            key="submit"
+            type="primary"
+            htmlType="submit"
+            form="inputRecordForm"
+          >
+            {action === "delete" && "Eliminar"}
+            {action === "create" && "Crear"}
+            {action === "update" && "Editar"}
+          </Button>,
+          <Button key="cancel" onClick={handleCancel}>
+            Cancelar
+          </Button>,
+        ]}
+      >
+        <Form
+          id="inputRecordForm"
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 10 }}
+          layout="horizontal"
+          onFinish={onFinish}
+          autoComplete="off"
+        >
+          <>
+            {action !== "delete" && (
+              <>
+                <Form.Item label="Lote" name="lote">
+                  <InputRecordList />
+                </Form.Item>
+
+                <Form.Item label="Cantidad">
+                  <Input
+                    type="number"
+                    name="quantity"
+                    value={outputHisInfo.quantity}
+                    onChange={handleChangeInput}
+                  />
+                </Form.Item>
+              </>
+            )}
+
+            {action === "delete" && (
+              <h1>¿Esta seguro que desea eliminar a este registro?</h1>
+            )}
+          </>
+        </Form>
+      </Modal>
+    </>
+  );
 }
 
-export default OutputHistoryModalAction
+export default OutputHistoryModalAction;
