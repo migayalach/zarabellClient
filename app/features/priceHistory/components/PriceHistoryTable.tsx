@@ -24,16 +24,16 @@ function PriceHistoryTable({
   };
 
   const onChangeCreate = async () => {
-    const lastIndex = infoPH.length - 1;
-    if (
-      infoPH[lastIndex].unitPriceHistory === 0 ||
-      infoPH[lastIndex].quarterPriceHistory === 0 ||
-      infoPH[lastIndex].dozenPriceHistory === 0 ||
-      infoPH[lastIndex].mayorPriceHistory === 0
-    ) {
-      message.error("Para crear un nuevo registro asigna precios");
-      return;
-    }
+    // const lastIndex = infoPH.length - 1;
+    // if (
+    //   infoPH[lastIndex].unitPriceHistory === 0 ||
+    //   infoPH[lastIndex].quarterPriceHistory === 0 ||
+    //   infoPH[lastIndex].dozenPriceHistory === 0 ||
+    //   infoPH[lastIndex].mayorPriceHistory === 0
+    // ) {
+    //   message.error("Para crear un nuevo registro asigna precios");
+    //   return;
+    // }
     
     createNewPriceHistory({
       idInputRecord,
