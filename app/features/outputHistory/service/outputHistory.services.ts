@@ -60,6 +60,8 @@ export const getOneOutputHistoryByID = async (
 };
 
 export const createNewOutputHistory = async (data: IOutputHistoryCreate) => {
+  console.log(data);
+
   const response = await api.post("", {
     query: `
       mutation($idInputRecord: Int!, $idOutput: Int!, $quantity: Float!){
@@ -86,6 +88,7 @@ export const createNewOutputHistory = async (data: IOutputHistoryCreate) => {
       quantity: data.quantity,
     },
   });
+  console.log(response.data);
 
   return response.data.data.createOutputDetail;
 };
