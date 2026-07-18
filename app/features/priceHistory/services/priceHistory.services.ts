@@ -1,11 +1,11 @@
 import { api } from "@/app/shared/api/axios";
 import { IPriceHistoryCreate, IPriceHistoryUpdate } from "../types";
 
-export const getAllPriceHistories = async (idProduct: number, page?: number) => {
+export const getAllPriceHistories = async (idInputRecord: number, page?: number) => {
   const response = await api.post("", {
     query: `
-      query($idProduct: Int!, $page: Int){
-        getAllPriceHistory(idProduct: $idProduct, page: $page){
+      query($idInputRecord: Int!, $page: Int){
+        getAllPriceHistory(idInputRecord: $idInputRecord, page: $page){
           info {
             count
             pages
@@ -30,7 +30,7 @@ export const getAllPriceHistories = async (idProduct: number, page?: number) => 
       }
     `,
     variables: {
-      idProduct,
+      idInputRecord,
       page,
     },
   });
