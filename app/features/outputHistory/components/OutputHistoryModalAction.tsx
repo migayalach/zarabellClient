@@ -5,19 +5,20 @@ import { Button, Form, Input, Modal } from "antd";
 import { useOutputHistory, useOutputHistoryActions } from "../hooks/index";
 import { usePagInputRecords } from "@/app/features/inputRecord/hooks/useInputRecordPagination";
 import { InputRecordListDetail } from "../../inputRecord/components";
+import { useInputRecordByID } from "../../inputRecord/hooks/useInputRecord";
 
 type IOutputHistoryForm = {
   text: string;
   action: string;
+  idOutput: number;
   idInputRecord?: number;
-  idOutput?: number;
 };
 
 function OutputHistoryModalAction({
   text,
   action,
-  idInputRecord,
   idOutput,
+  idInputRecord,
 }: IOutputHistoryForm) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { pagRecordInput } = usePagInputRecords();
@@ -29,6 +30,7 @@ function OutputHistoryModalAction({
     updateOutputHistory,
     deleteOutputHistory,
   } = useOutputHistoryActions();
+  const { getRecordInputByID } = useInputRecordByID();
 
   const [outputHisInfo, setOutputHis] = useState({
     idOutput: 0,
@@ -60,7 +62,10 @@ function OutputHistoryModalAction({
 
   const onFinish = () => {
     if (action === "create") {
-      createNewOutputHistory(outputHisInfo);
+      createNewOutputHistory({
+        ...outputHisInfo,
+        idOutput,
+      });
       setIsModalOpen(false);
       resetOutputHistory();
     }
@@ -77,12 +82,7 @@ function OutputHistoryModalAction({
     const { name, value } = event.target;
     setOutputHis((prev) => ({
       ...prev,
-      [name]:
-        name === "countIRecord"
-          ? Number.parseInt(value, 10) || 0
-          : name === "priceBuyIRecord"
-            ? Number.parseFloat(value) || 0
-            : value,
+      [name]: name === "quantity" ? Number(value) : value,
     }));
   };
 
@@ -97,15 +97,14 @@ function OutputHistoryModalAction({
     if (!isModalOpen) return;
     if (action === "update" && idInputRecord && idOutput) {
       getByIDOutputHistory(idOutput, idInputRecord);
+      // getRecordInputByID();
       pagRecordInput();
     }
   }, [isModalOpen]);
 
   useEffect(() => {
     if (!isModalOpen || !currentOutputHistory) return;
-    requestAnimationFrame(() => {
-      setOutputHis(currentOutputHistory);
-    });
+    setOutputHis(currentOutputHistory);
   }, [currentOutputHistory, isModalOpen]);
 
   return (
@@ -117,7 +116,7 @@ function OutputHistoryModalAction({
       </Button>
 
       <Modal
-        title={`${text} entrada`}
+        title={`${text} salida`}
         open={isModalOpen}
         onCancel={handleCancel}
         footer={[

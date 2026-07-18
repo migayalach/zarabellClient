@@ -4,7 +4,6 @@ import { DeleteOutlined, PlusOutlined, FormOutlined } from "@ant-design/icons";
 import { Button, DatePicker, Form, Input, Modal, Switch } from "antd";
 import { useCreateInputRecords } from "../hooks/useCreateInputRecord";
 import { useUpdateInputRecords } from "../hooks/useUpdateInputRecord";
-import { useCategory } from "../../categories/hooks/useCategories";
 import { useInputRecordActions } from "../hooks/useInputRecordActions";
 import { useDeleteRecordByID } from "../hooks/useDeleteInputRecord";
 import { useInputRecordByID } from "../hooks/useInputRecord";
@@ -12,7 +11,6 @@ import type { DatePickerProps } from "antd";
 import { useProducts } from "../../products/hooks/useProducts";
 import { useProviders } from "../../providers/hooks/useProvides";
 import { ProviderSelect } from "../../providers/components";
-import { CategoryList } from "../../categories/components";
 import { ProductList } from "../../products/components";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -24,7 +22,6 @@ type IUserForm = {
   text: string;
   action: string;
   idInputRecord?: number;
-  idCategory?: number;
   idProduct?: number;
   idProvider?: number;
 };
@@ -33,7 +30,6 @@ function InputRecordButtonModal({
   text,
   action,
   idInputRecord,
-  idCategory,
   idProduct,
   idProvider,
 }: IUserForm) {
@@ -41,7 +37,6 @@ function InputRecordButtonModal({
   const { createRecordInput } = useCreateInputRecords();
   const { updateRecordInput } = useUpdateInputRecords();
   const { deleteRecordInputByID } = useDeleteRecordByID();
-  const { getAllCategories, getOneCategory } = useCategory();
   const { getAllProducts, getOneProduct } = useProducts();
   const { getAllProviders, getOneProvider } = useProviders();
   const { clearCurrentData } = useInputRecordActions();
@@ -49,7 +44,6 @@ function InputRecordButtonModal({
 
   const [irecordInfo, setIrecord] = useState({
     idInputRecord: 0,
-    idCategory: 0,
     idProduct: 0,
     idProvider: 0,
     nameProvider: "",
@@ -65,7 +59,6 @@ function InputRecordButtonModal({
   const resetInfoRecord = () => {
     setIrecord({
       idInputRecord: 0,
-      idCategory: 0,
       idProduct: 0,
       idProvider: 0,
       nameProvider: "",
@@ -81,7 +74,6 @@ function InputRecordButtonModal({
 
   const showModal = () => {
     setIsModalOpen(true);
-    getAllCategories();
     getAllProducts();
     getAllProviders();
   };
@@ -140,13 +132,6 @@ function InputRecordButtonModal({
     }));
   };
 
-  const handleCategory = (value: number) => {
-    setIrecord((prev) => ({
-      ...prev,
-      idCategory: value,
-    }));
-  };
-
   const onChangeDate =
     (field: keyof typeof irecordInfo): DatePickerProps["onChange"] =>
     (date) => {
@@ -158,16 +143,9 @@ function InputRecordButtonModal({
 
   useEffect(() => {
     if (!isModalOpen) return;
-    if (
-      action === "update" &&
-      idInputRecord &&
-      idProduct &&
-      idCategory &&
-      idProvider
-    ) {
+    if (action === "update" && idInputRecord && idProduct && idProvider) {
       getRecordInputByID(idInputRecord);
       getOneProduct(idProduct);
-      getOneCategory(idCategory);
       getOneProvider(idProvider);
     }
   }, [isModalOpen]);
@@ -218,10 +196,6 @@ function InputRecordButtonModal({
           <>
             {action !== "delete" && (
               <>
-                <Form.Item label="Categoria" name="category">
-                  <CategoryList handleCategory={handleCategory} />
-                </Form.Item>
-
                 <Form.Item label="Proveedor" name="provider">
                   <ProviderSelect handleProvider={handleProviderChange} />
                 </Form.Item>

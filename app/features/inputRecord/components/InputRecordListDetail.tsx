@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
 import { Button, List, Skeleton, ConfigProvider, Modal, Input } from "antd";
-import { IRecordInput } from "../types";
-import InputRecordButtonModal from "./InputRecordButtonModal";
-import InputRecordBtnAction from "./InputRecordBtnAction";
 import { usePagInputRecords } from "../hooks/useInputRecordPagination";
 import { useInputRecordByID } from "../hooks/useInputRecord";
 import { useInputRecordActions } from "../hooks/useInputRecordActions";
@@ -145,7 +142,7 @@ function InputRecordListDetail({
       <>
         <div className="flex flex-row">
           <Input
-            placeholder="Nombre categoria"
+            placeholder="Lote"
             readOnly
             disabled
             value={index.nameCategory}
@@ -156,7 +153,7 @@ function InputRecordListDetail({
         </div>
 
         <Modal
-          title="Lista de categorias"
+          title="Lista de lotes"
           open={isModalOpen}
           onCancel={closeModal}
           footer={null}

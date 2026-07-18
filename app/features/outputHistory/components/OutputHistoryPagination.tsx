@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { Pagination } from "antd";
 import { useOutputHistory, useOutputHistoryActions } from "../hooks";
+import { SIZE_PAGINATION } from "@/app/helpers/constans.helpers";
 
 function OutputHistoryPagination({
   idOutput,
@@ -11,11 +12,9 @@ function OutputHistoryPagination({
   pages: number;
 }) {
   const [current, setCurrent] = useState(1);
-  const [index, setIndex] = useState(0);
   const { getAllOutputHistory, resetActionCreateUpdate, clearErrorInfo } =
     useOutputHistoryActions();
-  const { info, results, currentOutputHistory, success, error } =
-    useOutputHistory();
+  const { info, results, error, action } = useOutputHistory();
 
   const onChange = (page: number) => {
     setCurrent(page);
@@ -23,27 +22,35 @@ function OutputHistoryPagination({
   };
 
   useEffect(() => {
-    setIndex(results.length + 1);
-  }, [results]);
+    if (!action) return;
 
-  useEffect(() => {
-    if (currentOutputHistory && success) {
-      resetActionCreateUpdate();
-      if (index < 21) {
-        setCurrent(info!.pages);
-        getAllOutputHistory(idOutput, info?.pages);
-      } else {
-        const tempCount = current + 1;
-        setCurrent(tempCount);
-        getAllOutputHistory(idOutput, tempCount);
+    switch (action) {
+      case "create": {
+        const page =
+          (info!.count + 1) % SIZE_PAGINATION === 1 ? pages + 1 : pages;
+        setCurrent(page);
+        getAllOutputHistory(page);
+        break;
       }
-    } else if (success) {
-      setTimeout(() => {
-        resetActionCreateUpdate();
-      }, 1000);
-      getAllOutputHistory(idOutput, current);
+
+      case "update": {
+        getAllOutputHistory(current);
+        break;
+      }
+
+      case "delete": {
+        if (results.length === 1 && current > 1) {
+          const previousPage = current - 1;
+          setCurrent(previousPage);
+          getAllOutputHistory(previousPage);
+        } else {
+          getAllOutputHistory(current);
+        }
+        break;
+      }
     }
-  }, [currentOutputHistory, success, index]);
+    resetActionCreateUpdate();
+  }, [action]);
 
   useEffect(() => {
     if (error) {
