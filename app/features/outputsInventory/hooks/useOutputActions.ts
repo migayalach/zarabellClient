@@ -11,6 +11,7 @@ import {
   resetAllDataOutput,
   resetOutputCreateUpdateData,
   updateOneOutputByID,
+  resetStateAction
 } from "../store/outputsInventory.slice";
 
 import { IOutputCreate, IOutputUpdate } from "../types";
@@ -60,6 +61,10 @@ export const useOutputActions = () => {
     dispatch(clearInfoOutputError());
   };
 
+  const resetActionState = () => {
+    dispatch(resetStateAction());
+  }
+
   return {
     getAllOutputs,
     getOneOutputByID,
@@ -70,5 +75,6 @@ export const useOutputActions = () => {
     resetOutput,
     resetOutputActCreateUpdate,
     clearErrorOutput,
+    resetActionState
   };
 };
