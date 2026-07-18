@@ -18,10 +18,10 @@ import { unwrapResult } from "@reduxjs/toolkit";
 export const usePriceHistoryActions = () => {
   const dispatch = useAppDispatch();
 
-  const getAllPriceHistory = async (idProduct: number, page?: number) => {
+  const getAllPriceHistory = async (idInputRecord: number, page?: number) => {
     const result = await dispatch(
       getAllPriceHistoryByID({
-        idProduct,
+        idInputRecord,
         page,
       }),
     );
