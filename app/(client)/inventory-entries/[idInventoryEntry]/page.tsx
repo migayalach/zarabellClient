@@ -28,8 +28,6 @@ function Page({ params }: IParams) {
     <div className="flex flex-col flex-1">
       <div className="flex items-center justify-between">
         <h1 className="text-[30px] font-bold">Historial de precios</h1>
-        {/* <InputRecordButtonModal text="Crear" action="create" /> */}
-        {/* <PriceHistoryModalAction /> */}
       </div>
 
       <div className="flex-1 mt-2">
