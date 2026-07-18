@@ -29,7 +29,11 @@ function Page({ params }: IParams) {
     <div className="flex flex-col flex-1">
       <div className="flex items-center justify-between">
         <h1 className="text-[30px] font-bold">Historial de salidas</h1>
-        <OutputHistoryModalAction text="Crear" action="create" />
+        <OutputHistoryModalAction
+          text="Crear"
+          action="create"
+          idOutput={+idOutput}
+        />
       </div>
 
       <div className="flex-1 mt-2">
