@@ -4,7 +4,7 @@ import { DeleteOutlined, PlusOutlined, FormOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal } from "antd";
 import { useOutputHistory, useOutputHistoryActions } from "../hooks/index";
 import { usePagInputRecords } from "@/app/features/inputRecord/hooks/useInputRecordPagination";
-import { InputRecordList } from "../../inputRecord/components";
+import { InputRecordListDetail } from "../../inputRecord/components";
 
 type IOutputHistoryForm = {
   text: string;
@@ -58,7 +58,7 @@ function OutputHistoryModalAction({
     clearCurrentOutputHistory();
   };
 
-  const onFinish = async () => {
+  const onFinish = () => {
     if (action === "create") {
       createNewOutputHistory(outputHisInfo);
       setIsModalOpen(false);
@@ -86,12 +86,12 @@ function OutputHistoryModalAction({
     }));
   };
 
-  // const handleCategory = (value: number) => {
-  //   setOutputHis((prev) => ({
-  //     ...prev,
-  //     idCategory: value,
-  //   }));
-  // };
+  const handleInputRecord = (value: number) => {
+    setOutputHis((prev) => ({
+      ...prev,
+      idInputRecord: value,
+    }));
+  };
 
   useEffect(() => {
     if (!isModalOpen) return;
@@ -148,7 +148,9 @@ function OutputHistoryModalAction({
             {action !== "delete" && (
               <>
                 <Form.Item label="Lote" name="lote">
-                  <InputRecordList />
+                  <InputRecordListDetail
+                    handleInputRecord={handleInputRecord}
+                  />
                 </Form.Item>
 
                 <Form.Item label="Cantidad">

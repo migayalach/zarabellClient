@@ -1,18 +1,31 @@
 import { useEffect, useState } from "react";
-import { usePagInputRecords } from "../../inputRecord/hooks/useInputRecordPagination";
 import { Button, List, Skeleton, ConfigProvider, Modal, Input } from "antd";
+import { IRecordInput } from "../types";
+import InputRecordButtonModal from "./InputRecordButtonModal";
+import InputRecordBtnAction from "./InputRecordBtnAction";
+import { usePagInputRecords } from "../hooks/useInputRecordPagination";
 import { useInputRecordByID } from "../hooks/useInputRecord";
 import { useInputRecordActions } from "../hooks/useInputRecordActions";
 
-interface DataType {
+type DataType = {
+  idInputRecord: number;
   idCategory: number;
+  idProduct: number;
+  idProvider: number;
+  nameProvider: string;
   nameCategory: string;
-}
+  nameProduct: string;
+  dateInputRecord: string;
+  expirationDateIRecord: string;
+  countIRecord: number;
+  priceBuyIRecord: number;
+  statusIRecord: boolean;
+};
 
-function InputRecordList({
-  handleCategory,
+function InputRecordListDetail({
+  handleInputRecord,
 }: {
-  handleCategory: (idCategory: number) => void;
+  handleInputRecord: (idInputRecord: number) => void;
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [initLoading, setInitLoading] = useState(true);
@@ -22,8 +35,18 @@ function InputRecordList({
   const { currentInputRecord } = useInputRecordByID();
   const { clearCurrentData } = useInputRecordActions();
   const [index, setIndex] = useState({
+    idInputRecord: 0,
     idCategory: 0,
+    idProduct: 0,
+    idProvider: 0,
+    nameProvider: "",
     nameCategory: "",
+    nameProduct: "",
+    dateInputRecord: "",
+    expirationDateIRecord: "",
+    countIRecord: 0,
+    priceBuyIRecord: 0,
+    statusIRecord: false,
   });
 
   const showModal = () => {
@@ -47,13 +70,23 @@ function InputRecordList({
     setPage(nextPage);
   };
 
-  const handleChooseClient = (idCategory: number) => {
-    const category = list.find((item) => item.idCategory === idCategory);
-    if (!category) return;
-    handleCategory(idCategory);
+  const handleChooseInputRecord = (idInputRecord: number) => {
+    const data = list.find((item) => item.idInputRecord === idInputRecord);
+    if (!data) return;
+    handleInputRecord(idInputRecord);
     setIndex({
-      idCategory: category.idCategory,
-      nameCategory: category.nameCategory,
+      idInputRecord: data.idInputRecord,
+      idCategory: data.idCategory,
+      idProduct: data.idProduct,
+      idProvider: data.idProvider,
+      nameProvider: data.nameProvider,
+      nameCategory: data.nameCategory,
+      nameProduct: data.nameProduct,
+      dateInputRecord: data.dateInputRecord,
+      expirationDateIRecord: data.expirationDateIRecord,
+      countIRecord: data.countIRecord,
+      priceBuyIRecord: data.priceBuyIRecord,
+      statusIRecord: data.statusIRecord,
     });
     if (currentInputRecord) {
       clearCurrentData();
@@ -73,8 +106,18 @@ function InputRecordList({
   useEffect(() => {
     if (currentInputRecord) {
       setIndex({
+        idInputRecord: currentInputRecord.idInputRecord,
         idCategory: currentInputRecord.idCategory,
+        idProduct: currentInputRecord.idProduct,
+        idProvider: currentInputRecord.idProvider,
+        nameProvider: currentInputRecord.nameProvider,
         nameCategory: currentInputRecord.nameCategory,
+        nameProduct: currentInputRecord.nameProduct,
+        dateInputRecord: currentInputRecord.dateInputRecord,
+        expirationDateIRecord: currentInputRecord.expirationDateIRecord,
+        countIRecord: currentInputRecord.countIRecord,
+        priceBuyIRecord: currentInputRecord.priceBuyIRecord,
+        statusIRecord: currentInputRecord.statusIRecord,
       });
     }
   }, [currentInputRecord]);
@@ -125,11 +168,11 @@ function InputRecordList({
             dataSource={list}
             renderItem={(item) => (
               <List.Item
-                key={item.idCategory}
+                key={item.idInputRecord}
                 actions={[
                   <a
                     key="select"
-                    onClick={() => handleChooseClient(item.idCategory)}
+                    onClick={() => handleChooseInputRecord(item.idInputRecord)}
                   >
                     Seleccionar
                   </a>,
@@ -137,6 +180,8 @@ function InputRecordList({
               >
                 <Skeleton loading={false} active>
                   <div>{item.nameCategory}</div>
+                  <div>{item.nameProduct}</div>
+                  <div>{item.countIRecord}</div>
                 </Skeleton>
               </List.Item>
             )}
@@ -147,4 +192,4 @@ function InputRecordList({
   );
 }
 
-export default InputRecordList;
+export default InputRecordListDetail;

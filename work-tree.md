@@ -88,6 +88,7 @@
                     ├── InputRecodTable.tsx
                     ├── InputRecordBtnAction.tsx
                     ├── InputRecordButtonModal.tsx
+                    ├── InputRecordList.tsx
                     ├── InputRecordPagination.tsx
                 └── 📁hooks
                     ├── useCreateInputRecord.ts
@@ -205,7 +206,7 @@
                 └── 📁store
                     ├── return.selector.ts
                     ├── return.slice.ts
-                ├── type.ts
+                ├── types.ts
             └── 📁roles
                 └── 📁components
                     ├── index.ts
@@ -225,6 +226,7 @@
                 └── 📁components
                     ├── index.ts
                     ├── OutputTypeButtonModal.tsx
+                    ├── OutputTypeList.tsx
                     ├── OutputTypePagination.tsx
                     ├── OutputTypeTable.tsx
                 └── 📁hooks
@@ -238,6 +240,7 @@
             └── 📁users
                 └── 📁components
                     ├── UserButtonModal.tsx
+                    ├── UserList.tsx
                     ├── UserPagination.tsx
                     ├── UserTable.tsx
                 └── 📁hooks

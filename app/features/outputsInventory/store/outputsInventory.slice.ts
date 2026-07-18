@@ -26,6 +26,7 @@ interface IOutputState {
   loading: boolean;
   error: string | null;
   success: boolean;
+  action: TResponseOutput | null;
 }
 
 const initialState: IOutputState = {
@@ -35,6 +36,7 @@ const initialState: IOutputState = {
   loading: false,
   error: null,
   success: false,
+  action: null,
 };
 
 export const getAllOutput = createAsyncThunk<
@@ -53,7 +55,7 @@ export const getOutputByID = createAsyncThunk<
   IResponseOutput,
   number,
   { rejectValue: IErrorOutput }
->("output/getOutputByID", async ( idProduct , { rejectWithValue }) => {
+>("output/getOutputByID", async (idProduct, { rejectWithValue }) => {
   try {
     return await getOneOutputByID(idProduct);
   } catch (error) {
@@ -113,10 +115,16 @@ const outputSlice = createSlice({
       state.currentOutput = null;
       state.loading = false;
       state.error = null;
+      state.success = false;
     },
     resetOutputCreateUpdateData: (state) => {
       state.success = false;
       state.currentOutput = null;
+    },
+    resetStateAction: (state) => {
+      state.action = null;
+      state.currentOutput = null;
+      state.success = false;
     },
   },
   extraReducers: (builder) => {
@@ -159,6 +167,7 @@ const outputSlice = createSlice({
         state.loading = false;
         state.success = action.payload.success;
         state.currentOutput = action.payload.value;
+        state.action = "create";
       })
       .addCase(createOutput.rejected, (state, action) => {
         state.loading = false;
@@ -173,6 +182,8 @@ const outputSlice = createSlice({
       .addCase(updateOneOutputByID.fulfilled, (state, action) => {
         state.loading = false;
         state.success = action.payload.success;
+        state.currentOutput = action.payload.value;
+        state.action = "update";
       })
       .addCase(updateOneOutputByID.rejected, (state, action) => {
         state.loading = false;
@@ -188,6 +199,7 @@ const outputSlice = createSlice({
         state.loading = false;
         state.success = action.payload.success;
         state.currentOutput = action.payload.value;
+        state.action = "delete";
       })
       .addCase(deleteOneOutputByID.rejected, (state, action) => {
         state.loading = false;
@@ -203,4 +215,5 @@ export const {
   clearCurrentOutputData,
   resetAllDataOutput,
   resetOutputCreateUpdateData,
+  resetStateAction,
 } = outputSlice.actions;

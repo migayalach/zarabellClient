@@ -7,3 +7,4 @@ export const selectOutputError = (state: RootState) => state.outputs.error;
 export const selectCurrentOutput = (state: RootState) =>
   state.outputs.currentOutput;
 export const selectSuccessOutput = (state: RootState) => state.outputs.success;
+export const selectActionOutput = (state: RootState) => state.outputs.action;

@@ -60,16 +60,16 @@ const columnsOutput = [
     }) => (
       <div className="flex gap-1">
         <OutputButtonModal
-          text="Editar"
-          action="update"
-          idUser={idUser}
-          idOutput={idOutput}
-          idTypeOutput={idTypeOutput}
-        />
-        <OutputButtonModal
           text="Eliminar"
           action="delete"
           idOutput={idOutput}
+        />
+        <OutputButtonModal
+          text="Editar"
+          action="update"
+          idOutput={idOutput}
+          idUser={idUser}
+          idTypeOutput={idTypeOutput}
         />
         <OutputBtnAction idOutput={idOutput} />
       </div>

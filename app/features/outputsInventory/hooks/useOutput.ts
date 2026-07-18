@@ -8,6 +8,7 @@ import {
   selectOutputLoading,
   selectOutputResults,
   selectSuccessOutput,
+  selectActionOutput
 } from "../store/outputsInventory.selector";
 
 export const useOutput = () => {
@@ -17,6 +18,7 @@ export const useOutput = () => {
   const loading = useAppSelector(selectOutputLoading);
   const error = useAppSelector(selectOutputError);
   const success = useAppSelector(selectSuccessOutput);
+  const actionOutput = useAppSelector(selectActionOutput);
 
   return {
     info,
@@ -25,5 +27,6 @@ export const useOutput = () => {
     loading,
     error,
     success,
+    actionOutput
   };
 };

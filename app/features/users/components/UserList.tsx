@@ -1,41 +1,41 @@
 import { useEffect, useState } from "react";
-import { usePagInputRecords } from "../../inputRecord/hooks/useInputRecordPagination";
 import { Button, List, Skeleton, ConfigProvider, Modal, Input } from "antd";
-import { useInputRecordByID } from "../hooks/useInputRecord";
-import { useInputRecordActions } from "../hooks/useInputRecordActions";
+import { useUsers } from "../hooks/useUsers";
 
 interface DataType {
-  idCategory: number;
-  nameCategory: string;
+  idUser: number;
+  nameUser: string;
 }
 
-function InputRecordList({
-  handleCategory,
-}: {
-  handleCategory: (idCategory: number) => void;
-}) {
+function UserList({ handleUser }: { handleUser: (idUser: number) => void }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [initLoading, setInitLoading] = useState(true);
   const [list, setList] = useState<DataType[]>([]);
   const [page, setPage] = useState(1);
-  const { pagRecordInput, results, info } = usePagInputRecords();
-  const { currentInputRecord } = useInputRecordByID();
-  const { clearCurrentData } = useInputRecordActions();
+  const {
+    clearDataCurrentUser,
+    currentUser,
+    getAllUsers,
+    info,
+    resetDataUser,
+    results,
+  } = useUsers();
+
   const [index, setIndex] = useState({
-    idCategory: 0,
-    nameCategory: "",
+    idUser: 0,
+    nameUser: "",
   });
 
   const showModal = () => {
     setIsModalOpen(true);
     setPage(1);
     setInitLoading(true);
-    pagRecordInput(1);
+    getAllUsers(1);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    pagRecordInput();
+    resetDataUser();
     setList([]);
     setPage(1);
     setInitLoading(false);
@@ -43,20 +43,20 @@ function InputRecordList({
 
   const fetchData = () => {
     const nextPage = page + 1;
-    pagRecordInput(nextPage);
+    getAllUsers(nextPage);
     setPage(nextPage);
   };
 
-  const handleChooseClient = (idCategory: number) => {
-    const category = list.find((item) => item.idCategory === idCategory);
+  const handleChooseClient = (idUser: number) => {
+    const category = list.find((item) => item.idUser === idUser);
     if (!category) return;
-    handleCategory(idCategory);
+    handleUser(idUser);
     setIndex({
-      idCategory: category.idCategory,
-      nameCategory: category.nameCategory,
+      idUser: category.idUser,
+      nameUser: category.nameUser,
     });
-    if (currentInputRecord) {
-      clearCurrentData();
+    if (currentUser) {
+      clearDataCurrentUser();
     }
     closeModal();
   };
@@ -71,13 +71,20 @@ function InputRecordList({
   }, [results, page]);
 
   useEffect(() => {
-    if (currentInputRecord) {
+    if (!currentUser) {
       setIndex({
-        idCategory: currentInputRecord.idCategory,
-        nameCategory: currentInputRecord.nameCategory,
+        idUser: 0,
+        nameUser: "",
       });
     }
-  }, [currentInputRecord]);
+
+    if (currentUser) {
+      setIndex({
+        idUser: currentUser.idUser,
+        nameUser: currentUser.nameUser,
+      });
+    }
+  }, [currentUser]);
 
   const loadMore =
     !initLoading && page < (info?.pages || 1) ? (
@@ -102,10 +109,10 @@ function InputRecordList({
       <>
         <div className="flex flex-row">
           <Input
-            placeholder="Nombre categoria"
+            placeholder="Nombre usuario"
             readOnly
             disabled
-            value={index.nameCategory}
+            value={index.nameUser}
           />
           <Button className="ml-4" type="primary" onClick={showModal}>
             ...
@@ -113,7 +120,7 @@ function InputRecordList({
         </div>
 
         <Modal
-          title="Lista de categorias"
+          title="Lista de usuarios"
           open={isModalOpen}
           onCancel={closeModal}
           footer={null}
@@ -125,18 +132,18 @@ function InputRecordList({
             dataSource={list}
             renderItem={(item) => (
               <List.Item
-                key={item.idCategory}
+                key={item.idUser}
                 actions={[
                   <a
                     key="select"
-                    onClick={() => handleChooseClient(item.idCategory)}
+                    onClick={() => handleChooseClient(item.idUser)}
                   >
                     Seleccionar
                   </a>,
                 ]}
               >
                 <Skeleton loading={false} active>
-                  <div>{item.nameCategory}</div>
+                  <div>{item.nameUser}</div>
                 </Skeleton>
               </List.Item>
             )}
@@ -147,4 +154,4 @@ function InputRecordList({
   );
 }
 
-export default InputRecordList;
+export default UserList;

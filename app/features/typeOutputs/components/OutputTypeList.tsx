@@ -1,41 +1,47 @@
 import { useEffect, useState } from "react";
-import { usePagInputRecords } from "../../inputRecord/hooks/useInputRecordPagination";
 import { Button, List, Skeleton, ConfigProvider, Modal, Input } from "antd";
-import { useInputRecordByID } from "../hooks/useInputRecord";
-import { useInputRecordActions } from "../hooks/useInputRecordActions";
+import { useTOutputs } from "../hooks/useTypeOutputs";
+// import { useUsers } from "../../users/hooks/useUsers";
 
 interface DataType {
-  idCategory: number;
-  nameCategory: string;
+  idTypeOutput: number;
+  nameTypeOutput: string;
 }
 
-function InputRecordList({
-  handleCategory,
+function OutputTypeList({
+  handleTypeOutput,
 }: {
-  handleCategory: (idCategory: number) => void;
+  handleTypeOutput: (idUser: number) => void;
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [initLoading, setInitLoading] = useState(true);
   const [list, setList] = useState<DataType[]>([]);
   const [page, setPage] = useState(1);
-  const { pagRecordInput, results, info } = usePagInputRecords();
-  const { currentInputRecord } = useInputRecordByID();
-  const { clearCurrentData } = useInputRecordActions();
+  const {
+    clearDataCurrentTOutput,
+    currentTOutput,
+    getAllTOutputs,
+    getOneTOutput,
+    info,
+    resetDataTOutput,
+    results,
+  } = useTOutputs();
+
   const [index, setIndex] = useState({
-    idCategory: 0,
-    nameCategory: "",
+    idTypeOutput: 0,
+    nameTypeOutput: "",
   });
 
   const showModal = () => {
     setIsModalOpen(true);
     setPage(1);
     setInitLoading(true);
-    pagRecordInput(1);
+    getAllTOutputs(1);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    pagRecordInput();
+    resetDataTOutput();
     setList([]);
     setPage(1);
     setInitLoading(false);
@@ -43,20 +49,20 @@ function InputRecordList({
 
   const fetchData = () => {
     const nextPage = page + 1;
-    pagRecordInput(nextPage);
+    getAllTOutputs(nextPage);
     setPage(nextPage);
   };
 
-  const handleChooseClient = (idCategory: number) => {
-    const category = list.find((item) => item.idCategory === idCategory);
-    if (!category) return;
-    handleCategory(idCategory);
+  const handleChooseTOutput = (idTypeOutput: number) => {
+    const data = list.find((item) => item.idTypeOutput === idTypeOutput);
+    if (!data) return;
+    handleTypeOutput(idTypeOutput);
     setIndex({
-      idCategory: category.idCategory,
-      nameCategory: category.nameCategory,
+      idTypeOutput: data.idTypeOutput,
+      nameTypeOutput: data.nameTypeOutput,
     });
-    if (currentInputRecord) {
-      clearCurrentData();
+    if (currentTOutput) {
+      clearDataCurrentTOutput();
     }
     closeModal();
   };
@@ -71,13 +77,20 @@ function InputRecordList({
   }, [results, page]);
 
   useEffect(() => {
-    if (currentInputRecord) {
+    if (!currentTOutput) {
       setIndex({
-        idCategory: currentInputRecord.idCategory,
-        nameCategory: currentInputRecord.nameCategory,
+        idTypeOutput: 0,
+        nameTypeOutput: "",
       });
     }
-  }, [currentInputRecord]);
+
+    if (currentTOutput) {
+      setIndex({
+        idTypeOutput: currentTOutput.idTypeOutput,
+        nameTypeOutput: currentTOutput.nameTypeOutput,
+      });
+    }
+  }, [currentTOutput]);
 
   const loadMore =
     !initLoading && page < (info?.pages || 1) ? (
@@ -102,10 +115,10 @@ function InputRecordList({
       <>
         <div className="flex flex-row">
           <Input
-            placeholder="Nombre categoria"
+            placeholder="Tipo de salidas"
             readOnly
             disabled
-            value={index.nameCategory}
+            value={index.nameTypeOutput}
           />
           <Button className="ml-4" type="primary" onClick={showModal}>
             ...
@@ -113,7 +126,7 @@ function InputRecordList({
         </div>
 
         <Modal
-          title="Lista de categorias"
+          title="Lista de salidas"
           open={isModalOpen}
           onCancel={closeModal}
           footer={null}
@@ -125,18 +138,18 @@ function InputRecordList({
             dataSource={list}
             renderItem={(item) => (
               <List.Item
-                key={item.idCategory}
+                key={item.idTypeOutput}
                 actions={[
                   <a
                     key="select"
-                    onClick={() => handleChooseClient(item.idCategory)}
+                    onClick={() => handleChooseTOutput(item.idTypeOutput)}
                   >
                     Seleccionar
                   </a>,
                 ]}
               >
                 <Skeleton loading={false} active>
-                  <div>{item.nameCategory}</div>
+                  <div>{item.nameTypeOutput}</div>
                 </Skeleton>
               </List.Item>
             )}
@@ -147,4 +160,4 @@ function InputRecordList({
   );
 }
 
-export default InputRecordList;
+export default OutputTypeList;
