@@ -89,6 +89,7 @@
                     ├── InputRecordBtnAction.tsx
                     ├── InputRecordButtonModal.tsx
                     ├── InputRecordList.tsx
+                    ├── InputRecordListDetail.tsx
                     ├── InputRecordPagination.tsx
                 └── 📁hooks
                     ├── useCreateInputRecord.ts
