@@ -34,13 +34,13 @@ const initialState: IPriceHistoryState = {
 
 export const getAllPriceHistoryByID = createAsyncThunk<
   IResponsePriceHistories,
-  { idProduct: number; page: number | undefined },
+  { idInputRecord: number; page: number | undefined },
   { rejectValue: IErrorPriceHistory }
 >(
   "price-history/getAllPriceHistories",
-  async ({ idProduct, page }, { rejectWithValue }) => {
+  async ({ idInputRecord, page }, { rejectWithValue }) => {
     try {
-      return await getAllPriceHistories(idProduct, page);
+      return await getAllPriceHistories(idInputRecord, page);
     } catch (error) {
       return rejectWithValue(error as IErrorPriceHistory);
     }
