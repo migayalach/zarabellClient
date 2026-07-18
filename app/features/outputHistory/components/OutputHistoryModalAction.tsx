@@ -9,15 +9,15 @@ import { InputRecordListDetail } from "../../inputRecord/components";
 type IOutputHistoryForm = {
   text: string;
   action: string;
+  idOutput: number;
   idInputRecord?: number;
-  idOutput?: number;
 };
 
 function OutputHistoryModalAction({
   text,
   action,
-  idInputRecord,
   idOutput,
+  idInputRecord,
 }: IOutputHistoryForm) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { pagRecordInput } = usePagInputRecords();
@@ -60,7 +60,10 @@ function OutputHistoryModalAction({
 
   const onFinish = () => {
     if (action === "create") {
-      createNewOutputHistory(outputHisInfo);
+      createNewOutputHistory({
+        ...outputHisInfo,
+        idOutput,
+      });
       setIsModalOpen(false);
       resetOutputHistory();
     }
@@ -77,12 +80,7 @@ function OutputHistoryModalAction({
     const { name, value } = event.target;
     setOutputHis((prev) => ({
       ...prev,
-      [name]:
-        name === "countIRecord"
-          ? Number.parseInt(value, 10) || 0
-          : name === "priceBuyIRecord"
-            ? Number.parseFloat(value) || 0
-            : value,
+      [name]: name === "quantity" ? Number(value) : value,
     }));
   };
 
@@ -103,9 +101,7 @@ function OutputHistoryModalAction({
 
   useEffect(() => {
     if (!isModalOpen || !currentOutputHistory) return;
-    requestAnimationFrame(() => {
-      setOutputHis(currentOutputHistory);
-    });
+    setOutputHis(currentOutputHistory);
   }, [currentOutputHistory, isModalOpen]);
 
   return (
