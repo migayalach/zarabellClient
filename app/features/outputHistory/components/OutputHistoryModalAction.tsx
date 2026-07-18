@@ -5,6 +5,7 @@ import { Button, Form, Input, Modal } from "antd";
 import { useOutputHistory, useOutputHistoryActions } from "../hooks/index";
 import { usePagInputRecords } from "@/app/features/inputRecord/hooks/useInputRecordPagination";
 import { InputRecordListDetail } from "../../inputRecord/components";
+import { useInputRecordByID } from "../../inputRecord/hooks/useInputRecord";
 
 type IOutputHistoryForm = {
   text: string;
@@ -29,6 +30,7 @@ function OutputHistoryModalAction({
     updateOutputHistory,
     deleteOutputHistory,
   } = useOutputHistoryActions();
+  const { getRecordInputByID } = useInputRecordByID();
 
   const [outputHisInfo, setOutputHis] = useState({
     idOutput: 0,
@@ -95,6 +97,7 @@ function OutputHistoryModalAction({
     if (!isModalOpen) return;
     if (action === "update" && idInputRecord && idOutput) {
       getByIDOutputHistory(idOutput, idInputRecord);
+      // getRecordInputByID();
       pagRecordInput();
     }
   }, [isModalOpen]);
@@ -113,7 +116,7 @@ function OutputHistoryModalAction({
       </Button>
 
       <Modal
-        title={`${text} entrada`}
+        title={`${text} salida`}
         open={isModalOpen}
         onCancel={handleCancel}
         footer={[
