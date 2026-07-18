@@ -52,12 +52,13 @@ const columnsOutputHistory = [
         <OutputHistoryModalAction
           text="Editar"
           action="update"
-          idOutput={idOutput}
           idInputRecord={idInputRecord}
+          idOutput={idOutput}
         />
         <OutputHistoryModalAction
           text="Eliminar"
           action="delete"
+          idOutput={idOutput}
           idInputRecord={idInputRecord}
         />
       </div>
