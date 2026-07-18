@@ -145,7 +145,7 @@ function InputRecordListDetail({
       <>
         <div className="flex flex-row">
           <Input
-            placeholder="Nombre categoria"
+            placeholder="Lote"
             readOnly
             disabled
             value={index.nameCategory}
