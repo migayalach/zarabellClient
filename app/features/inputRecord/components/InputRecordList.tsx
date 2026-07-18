@@ -19,7 +19,7 @@ function InputRecordList({
   const [list, setList] = useState<DataType[]>([]);
   const [page, setPage] = useState(1);
   const { pagRecordInput, results, info } = usePagInputRecords();
-  const { currentInputRecord, getRecordInputByID } = useInputRecordByID();
+  const { currentInputRecord } = useInputRecordByID();
   const { clearCurrentData } = useInputRecordActions();
   const [index, setIndex] = useState({
     idCategory: 0,
