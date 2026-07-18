@@ -86,12 +86,10 @@ const columnsUsers = [
     width: 140,
     render: ({
       idInputRecord,
-      idCategory,
       idProduct,
       idProvider,
     }: {
       idInputRecord: number;
-      idCategory: number;
       idProduct: number;
       idProvider: number;
     }) => (
@@ -100,7 +98,6 @@ const columnsUsers = [
           text="Editar"
           action="update"
           idInputRecord={idInputRecord}
-          idCategory={idCategory}
           idProduct={idProduct}
           idProvider={idProvider}
         />
