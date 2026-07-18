@@ -109,7 +109,6 @@ const columnsUsers = [
           action="delete"
           idInputRecord={idInputRecord}
         />
-        {/* TODO PRODUCT  */}
         <InputRecordBtnAction idInventoryEntry={idInputRecord} />
       </div>
     ),
