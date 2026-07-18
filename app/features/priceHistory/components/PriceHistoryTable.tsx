@@ -34,7 +34,7 @@ function PriceHistoryTable({
       message.error("Para crear un nuevo registro asigna precios");
       return;
     }
-
+    
     createNewPriceHistory({
       idInputRecord,
       dateStartHistory: new Date().toISOString(),
