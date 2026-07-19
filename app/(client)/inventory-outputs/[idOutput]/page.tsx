@@ -9,6 +9,7 @@ import {
   OutputHistoryTable,
   OutputHistoryModalAction,
 } from "@/app/features/outputHistory/components";
+import { TicketOutputs } from "@/app/features/tickets/components";
 
 interface IParams {
   params: Promise<{
@@ -28,12 +29,18 @@ function Page({ params }: IParams) {
   return (
     <div className="flex flex-col flex-1">
       <div className="flex items-center justify-between">
-        <h1 className="text-[30px] font-bold">Historial de salidas</h1>
-        <OutputHistoryModalAction
-          text="Crear"
-          action="create"
-          idOutput={+idOutput}
-        />
+        <div>
+          <h1 className="text-[30px] font-bold">Historial de salidas</h1>
+        </div>
+
+        <div className="flex flex-row">
+          <TicketOutputs />
+          <OutputHistoryModalAction
+            text="Crear"
+            action="create"
+            idOutput={+idOutput}
+          />
+        </div>
       </div>
 
       <div className="flex-1 mt-2">
