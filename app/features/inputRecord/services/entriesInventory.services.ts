@@ -41,6 +41,7 @@ export const getOneInputRecordByID = async (idInputRecord: number) => {
     query: `
       query($idInputRecord: Int!){
         findOneIRecord(idInputRecord: $idInputRecord){
+          success
           message
           value {
             idInputRecord
@@ -79,6 +80,7 @@ export const createNewInputRecord = async (data: IRecordICreate) => {
           countIRecord: $countIRecord
           priceBuyIRecord: $priceBuyIRecord
         }){
+          success
           message
           value {
             idInputRecord
@@ -124,6 +126,7 @@ export const updateOneInputRecord = async (data: IRecordIUpdate) => {
           priceBuyIRecord: $priceBuyIRecord
           statusIRecord: $statusIRecord
         }){
+          success
           message
           value {
               idInputRecord
@@ -162,6 +165,7 @@ export const deleteOneInputRecord = async (idInputRecord: number) => {
     query: `
       mutation($idInputRecord: Int!){
         deleteIRecord(idInputRecord: $idInputRecord){
+          success
           message
           value {
             idInputRecord

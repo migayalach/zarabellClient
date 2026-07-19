@@ -10,3 +10,7 @@ export const selectInputRecordsError = (state: RootState) =>
   state.inputRecords.error;
 export const selectCurrentInputRecord = (state: RootState) =>
   state.inputRecords.currentInputRecord;
+export const selectSuccessInputRecord = (state: RootState) =>
+  state.inputRecords.success;
+export const selectActionInputRecord = (state: RootState) =>
+  state.inputRecords.action;

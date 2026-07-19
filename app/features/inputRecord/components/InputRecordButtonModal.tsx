@@ -2,11 +2,7 @@
 import { useState, useEffect } from "react";
 import { DeleteOutlined, PlusOutlined, FormOutlined } from "@ant-design/icons";
 import { Button, DatePicker, Form, Input, Modal, Switch } from "antd";
-import { useCreateInputRecords } from "../hooks/useCreateInputRecord";
-import { useUpdateInputRecords } from "../hooks/useUpdateInputRecord";
-import { useInputRecordActions } from "../hooks/useInputRecordActions";
-import { useDeleteRecordByID } from "../hooks/useDeleteInputRecord";
-import { useInputRecordByID } from "../hooks/useInputRecord";
+import { useInputRecord, useInputRecordActions } from "../hooks";
 import type { DatePickerProps } from "antd";
 import { useProducts } from "../../products/hooks/useProducts";
 import { useProviders } from "../../providers/hooks/useProvides";
@@ -18,7 +14,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 dayjs.extend(customParseFormat);
 const dateFormat = "YYYY-MM-DD";
 
-type IUserForm = {
+type IRecordInputForm = {
   text: string;
   action: string;
   idInputRecord?: number;
@@ -32,20 +28,24 @@ function InputRecordButtonModal({
   idInputRecord,
   idProduct,
   idProvider,
-}: IUserForm) {
+}: IRecordInputForm) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { createRecordInput } = useCreateInputRecords();
-  const { updateRecordInput } = useUpdateInputRecords();
-  const { deleteRecordInputByID } = useDeleteRecordByID();
-  const { getAllProducts, getOneProduct } = useProducts();
-  const { getAllProviders, getOneProvider } = useProviders();
-  const { clearCurrentData } = useInputRecordActions();
-  const { getRecordInputByID, currentInputRecord } = useInputRecordByID();
+  const { currentInputRecord } = useInputRecord();
+  const {
+    createNewInputRecord,
+    updateInputRecord,
+    deleteInputRecord,
+    getOneInputRecordByID,
+    clearCurrentInputRecord,
+  } = useInputRecordActions();
+  const { getAllProducts, getOneProduct, resetDataProduct } = useProducts();
+  const { getAllProviders, getOneProvider, resetDataProvider } = useProviders();
 
   const [irecordInfo, setIrecord] = useState({
     idInputRecord: 0,
     idProduct: 0,
     idProvider: 0,
+    idCategory: 0,
     nameProvider: "",
     nameCategory: "",
     nameProduct: "",
@@ -61,6 +61,7 @@ function InputRecordButtonModal({
       idInputRecord: 0,
       idProduct: 0,
       idProvider: 0,
+      idCategory: 0,
       nameProvider: "",
       nameCategory: "",
       nameProduct: "",
@@ -80,22 +81,10 @@ function InputRecordButtonModal({
 
   const handleCancel = () => {
     setIsModalOpen(false);
-    clearCurrentData();
-  };
-
-  const onFinish = async () => {
-    if (action === "create") {
-      createRecordInput(irecordInfo);
-      setIsModalOpen(false);
-      resetInfoRecord();
-    }
-    if (action === "update") {
-      updateRecordInput(irecordInfo);
-    }
-    if (action === "delete" && idInputRecord) {
-      deleteRecordInputByID(idInputRecord);
-      setIsModalOpen(false);
-    }
+    clearCurrentInputRecord();
+    resetDataProduct();
+    resetDataProvider();
+    resetInfoRecord();
   };
 
   const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -141,10 +130,25 @@ function InputRecordButtonModal({
       }));
     };
 
+  const onFinish = () => {
+    if (action === "create") {
+      createNewInputRecord(irecordInfo);
+      setIsModalOpen(false);
+      resetInfoRecord();
+    }
+    if (action === "update" && idInputRecord && idProduct && idProvider) {
+      updateInputRecord(irecordInfo);
+    }
+    if (action === "delete" && idInputRecord) {
+      deleteInputRecord(idInputRecord);
+      setIsModalOpen(false);
+    }
+  };
+
   useEffect(() => {
     if (!isModalOpen) return;
     if (action === "update" && idInputRecord && idProduct && idProvider) {
-      getRecordInputByID(idInputRecord);
+      getOneInputRecordByID(idInputRecord);
       getOneProduct(idProduct);
       getOneProvider(idProvider);
     }
@@ -152,16 +156,14 @@ function InputRecordButtonModal({
 
   useEffect(() => {
     if (!isModalOpen || !currentInputRecord) return;
-    requestAnimationFrame(() => {
-      setIrecord(currentInputRecord);
-    });
+    setIrecord(currentInputRecord);
   }, [currentInputRecord, isModalOpen]);
 
   return (
     <>
       <Button type="primary" onClick={showModal}>
-        {action === "delete" && <DeleteOutlined />}
         {action === "create" && <PlusOutlined />}
+        {action === "delete" && <DeleteOutlined />}
         {action === "update" && <FormOutlined />}
       </Button>
 
@@ -169,15 +171,16 @@ function InputRecordButtonModal({
         title={`${text} entrada`}
         open={isModalOpen}
         onCancel={handleCancel}
+        destroyOnHidden
         footer={[
           <Button
             key="submit"
             type="primary"
             htmlType="submit"
-            form="inputRecordForm"
+            form="inputInputRecordForm"
           >
-            {action === "delete" && "Eliminar"}
             {action === "create" && "Crear"}
+            {action === "delete" && "Eliminar"}
             {action === "update" && "Editar"}
           </Button>,
           <Button key="cancel" onClick={handleCancel}>
@@ -186,83 +189,81 @@ function InputRecordButtonModal({
         ]}
       >
         <Form
-          id="inputRecordForm"
+          id="inputInputRecordForm"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 10 }}
           layout="horizontal"
           onFinish={onFinish}
           autoComplete="off"
         >
-          <>
-            {action !== "delete" && (
-              <>
-                <Form.Item label="Proveedor" name="provider">
-                  <ProviderSelect handleProvider={handleProviderChange} />
-                </Form.Item>
+          {action !== "delete" && (
+            <>
+              <Form.Item label="Proveedor">
+                <ProviderSelect handleProvider={handleProviderChange} />
+              </Form.Item>
 
-                <Form.Item label="Producto" name="product">
-                  <ProductList handleProduct={handleProductChange} />
-                </Form.Item>
+              <Form.Item label="Producto">
+                <ProductList handleProduct={handleProductChange} />
+              </Form.Item>
 
-                <Form.Item label="Fecha de entrada">
-                  <DatePicker
-                    value={
-                      irecordInfo.dateInputRecord
-                        ? dayjs(irecordInfo.dateInputRecord)
-                        : null
-                    }
-                    onChange={onChangeDate("dateInputRecord")}
-                    minDate={dayjs("2025-01-01", dateFormat)}
-                    maxDate={dayjs("2030-12-31", dateFormat)}
-                  />
-                </Form.Item>
-
-                <Form.Item label="Fecha de vencimiento">
-                  <DatePicker
-                    value={
-                      irecordInfo.expirationDateIRecord
-                        ? dayjs(irecordInfo.expirationDateIRecord)
-                        : null
-                    }
-                    onChange={onChangeDate("expirationDateIRecord")}
-                    minDate={dayjs("2025-01-01", dateFormat)}
-                    maxDate={dayjs("2030-12-31", dateFormat)}
-                  />
-                </Form.Item>
-
-                <Form.Item label="Cantidad">
-                  <Input
-                    type="number"
-                    name="countIRecord"
-                    value={irecordInfo.countIRecord}
-                    onChange={handleChangeInput}
-                  />
-                </Form.Item>
-
-                <Form.Item label="Precio de compra">
-                  <Input
-                    type="number"
-                    step="0.01"
-                    name="priceBuyIRecord"
-                    value={irecordInfo.priceBuyIRecord}
-                    onChange={handleChangeInput}
-                  />
-                </Form.Item>
-              </>
-            )}
-            {action === "update" && (
-              <Form.Item label="Estado">
-                <Switch
-                  checked={irecordInfo.statusIRecord}
-                  onChange={handleStateChange}
+              <Form.Item label="Fecha de entrada">
+                <DatePicker
+                  value={
+                    irecordInfo.dateInputRecord
+                      ? dayjs(irecordInfo.dateInputRecord)
+                      : null
+                  }
+                  onChange={onChangeDate("dateInputRecord")}
+                  minDate={dayjs("2025-01-01", dateFormat)}
+                  maxDate={dayjs("2030-12-31", dateFormat)}
                 />
               </Form.Item>
-            )}
 
-            {action === "delete" && (
-              <h1>¿Esta seguro que desea eliminar a este registro?</h1>
-            )}
-          </>
+              <Form.Item label="Fecha de vencimiento">
+                <DatePicker
+                  value={
+                    irecordInfo.expirationDateIRecord
+                      ? dayjs(irecordInfo.expirationDateIRecord)
+                      : null
+                  }
+                  onChange={onChangeDate("expirationDateIRecord")}
+                  minDate={dayjs("2025-01-01", dateFormat)}
+                  maxDate={dayjs("2030-12-31", dateFormat)}
+                />
+              </Form.Item>
+
+              <Form.Item label="Cantidad">
+                <Input
+                  type="number"
+                  name="countIRecord"
+                  value={irecordInfo.countIRecord}
+                  onChange={handleChangeInput}
+                />
+              </Form.Item>
+
+              <Form.Item label="Precio de compra">
+                <Input
+                  type="number"
+                  step="0.01"
+                  name="priceBuyIRecord"
+                  value={irecordInfo.priceBuyIRecord}
+                  onChange={handleChangeInput}
+                />
+              </Form.Item>
+            </>
+          )}
+          {action === "update" && (
+            <Form.Item label="Estado">
+              <Switch
+                checked={irecordInfo.statusIRecord}
+                onChange={handleStateChange}
+              />
+            </Form.Item>
+          )}
+
+          {action === "delete" && (
+            <h1>¿Esta seguro que desea eliminar a este registro?</h1>
+          )}
         </Form>
       </Modal>
     </>

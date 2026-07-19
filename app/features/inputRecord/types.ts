@@ -50,6 +50,7 @@ export interface IResponseRecordInputs {
 }
 
 export interface IResponseRecordnput {
+  success: boolean;
   message: string;
   value: IRecordInput;
 }

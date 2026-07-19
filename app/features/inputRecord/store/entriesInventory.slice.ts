@@ -16,12 +16,16 @@ import {
   IResponseRecordnput,
 } from "../types";
 
+type TInputRecord = "create" | "delete" | "update";
+
 interface IRecordInputState {
   info: IPaginationRecordInput | null;
   results: IRecordInput[];
   currentInputRecord: IRecordInput | null;
   loading: boolean;
   error: string | null;
+  success: boolean;
+  action: TInputRecord | null;
 }
 
 const initialState: IRecordInputState = {
@@ -30,6 +34,8 @@ const initialState: IRecordInputState = {
   currentInputRecord: null,
   loading: false,
   error: null,
+  success: false,
+  action: null,
 };
 
 export const getAllListInputRecord = createAsyncThunk<
@@ -114,6 +120,16 @@ const inputRecordSlice = createSlice({
       state.currentInputRecord = null;
       state.loading = false;
       state.error = null;
+      state.success = false;
+    },
+    resetInputRecordCreateUpdateData: (state) => {
+      state.success = false;
+      state.currentInputRecord = null;
+    },
+    resetStateActionInputRecord: (state) => {
+      state.action = null;
+      state.currentInputRecord = null;
+      state.success = false;
     },
   },
   extraReducers: (builder) => {
@@ -154,7 +170,9 @@ const inputRecordSlice = createSlice({
       })
       .addCase(createInputRecord.fulfilled, (state, action) => {
         state.loading = false;
-        state.results.unshift(action.payload.value);
+        state.success = action.payload.success;
+        state.currentInputRecord = action.payload.value;
+        state.action = "create";
       })
       .addCase(createInputRecord.rejected, (state, action) => {
         state.loading = false;
@@ -168,10 +186,9 @@ const inputRecordSlice = createSlice({
       })
       .addCase(updateOneInputRecordByID.fulfilled, (state, action) => {
         state.loading = false;
-        const updated = action.payload.value;
-        state.results = state.results.map((item) =>
-          item.idInputRecord === updated.idInputRecord ? updated : item,
-        );
+        state.success = action.payload.success;
+        state.currentInputRecord = action.payload.value;
+        state.action = "update";
       })
       .addCase(updateOneInputRecordByID.rejected, (state, action) => {
         state.loading = false;
@@ -185,10 +202,9 @@ const inputRecordSlice = createSlice({
       })
       .addCase(deleteOneInputRecordByID.fulfilled, (state, action) => {
         state.loading = false;
-        const idInputRecord = action.payload.value.idInputRecord;
-        state.results = state.results.filter(
-          (item) => item.idInputRecord !== idInputRecord,
-        );
+        state.success = action.payload.success;
+        state.currentInputRecord = action.payload.value;
+        state.action = "delete";
       })
       .addCase(deleteOneInputRecordByID.rejected, (state, action) => {
         state.loading = false;
@@ -203,4 +219,6 @@ export const {
   clearInfoInputRecordError,
   clearCurrentInputRecordData,
   resetAllDataInputRecord,
+  resetInputRecordCreateUpdateData,
+  resetStateActionInputRecord,
 } = inputRecordSlice.actions;
