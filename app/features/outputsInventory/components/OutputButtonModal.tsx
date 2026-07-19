@@ -16,17 +16,17 @@ const dateFormat = "YYYY-MM-DD";
 type IOutputForm = {
   text: string;
   action: string;
+  idTypeOutput?: number;
   idOutput?: number;
   idUser?: number;
-  idTypeOutput?: number;
 };
 
 function OutputButtonModal({
   text,
   action,
+  idTypeOutput,
   idOutput,
   idUser,
-  idTypeOutput,
 }: IOutputForm) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { getAllUsers, resetDataUser, getOneUser } = useUsers();
@@ -146,7 +146,7 @@ function OutputButtonModal({
       </Button>
 
       <Modal
-        title={`${text} entrada`}
+        title={`${text} salida`}
         open={isModalOpen}
         onCancel={handleCancel}
         destroyOnHidden

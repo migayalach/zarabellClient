@@ -3,9 +3,8 @@ import { useState, useEffect } from "react";
 import { DeleteOutlined, PlusOutlined, FormOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal } from "antd";
 import { useOutputHistory, useOutputHistoryActions } from "../hooks/index";
-import { usePagInputRecords } from "@/app/features/inputRecord/hooks/useInputRecordPagination";
 import { InputRecordListDetail } from "../../inputRecord/components";
-import { useInputRecordByID } from "../../inputRecord/hooks/useInputRecord";
+import { useInputRecordActions } from "../../inputRecord/hooks";
 
 type IOutputHistoryForm = {
   text: string;
@@ -21,7 +20,6 @@ function OutputHistoryModalAction({
   idInputRecord,
 }: IOutputHistoryForm) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { pagRecordInput } = usePagInputRecords();
   const { currentOutputHistory } = useOutputHistory();
   const {
     clearCurrentOutputHistory,
@@ -30,7 +28,7 @@ function OutputHistoryModalAction({
     updateOutputHistory,
     deleteOutputHistory,
   } = useOutputHistoryActions();
-  const { getRecordInputByID } = useInputRecordByID();
+  const { getAllInputRecords } = useInputRecordActions();
 
   const [outputHisInfo, setOutputHis] = useState({
     idOutput: 0,
@@ -52,7 +50,7 @@ function OutputHistoryModalAction({
 
   const showModal = () => {
     setIsModalOpen(true);
-    pagRecordInput();
+    getAllInputRecords();
   };
 
   const handleCancel = () => {
@@ -98,7 +96,7 @@ function OutputHistoryModalAction({
     if (action === "update" && idInputRecord && idOutput) {
       getByIDOutputHistory(idOutput, idInputRecord);
       // getRecordInputByID();
-      pagRecordInput();
+      getAllInputRecords();
     }
   }, [isModalOpen]);
 
