@@ -28,7 +28,8 @@ function OutputHistoryModalAction({
     updateOutputHistory,
     deleteOutputHistory,
   } = useOutputHistoryActions();
-  const { getAllInputRecords } = useInputRecordActions();
+  const { getAllInputRecords, resetInputRecord, getOneInputRecordByID } =
+    useInputRecordActions();
 
   const [outputHisInfo, setOutputHis] = useState({
     idOutput: 0,
@@ -56,24 +57,8 @@ function OutputHistoryModalAction({
   const handleCancel = () => {
     setIsModalOpen(false);
     clearCurrentOutputHistory();
-  };
-
-  const onFinish = () => {
-    if (action === "create") {
-      createNewOutputHistory({
-        ...outputHisInfo,
-        idOutput,
-      });
-      setIsModalOpen(false);
-      resetOutputHistory();
-    }
-    if (action === "update") {
-      updateOutputHistory(outputHisInfo);
-    }
-    if (action === "delete" && idOutput && idInputRecord) {
-      deleteOutputHistory(idOutput, idInputRecord);
-      setIsModalOpen(false);
-    }
+    resetInputRecord();
+    resetOutputHistory();
   };
 
   const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,11 +76,29 @@ function OutputHistoryModalAction({
     }));
   };
 
+  const onFinish = () => {
+    if (action === "create") {
+      createNewOutputHistory({
+        ...outputHisInfo,
+        idOutput,
+      });
+      resetOutputHistory();
+      setIsModalOpen(false);
+    }
+    if (action === "update") {
+      updateOutputHistory(outputHisInfo);
+    }
+    if (action === "delete" && idOutput && idInputRecord) {
+      deleteOutputHistory(idOutput, idInputRecord);
+      setIsModalOpen(false);
+    }
+  };
+
   useEffect(() => {
     if (!isModalOpen) return;
     if (action === "update" && idInputRecord && idOutput) {
       getByIDOutputHistory(idOutput, idInputRecord);
-      // getRecordInputByID();
+      getOneInputRecordByID(idInputRecord);
       getAllInputRecords();
     }
   }, [isModalOpen]);
@@ -117,6 +120,7 @@ function OutputHistoryModalAction({
         title={`${text} salida`}
         open={isModalOpen}
         onCancel={handleCancel}
+        destroyOnHidden
         footer={[
           <Button
             key="submit"
@@ -144,7 +148,7 @@ function OutputHistoryModalAction({
           <>
             {action !== "delete" && (
               <>
-                <Form.Item label="Lote" name="lote">
+                <Form.Item label="Lote">
                   <InputRecordListDetail
                     handleInputRecord={handleInputRecord}
                   />
