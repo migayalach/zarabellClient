@@ -1,28 +1,32 @@
 "use client";
-import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
-import { unwrapResult } from "@reduxjs/toolkit";
-import {
-  selectInputRecordsError,
-  selectInputRecordsLoading,
-  selectCurrentInputRecord,
-} from "../store/entriesInventory.selector";
-import { getInputRecordByID } from "../store/entriesInventory.slice";
 
-export const useInputRecordByID = () => {
-  const dispatch = useAppDispatch();
+import { useAppSelector } from "@/app/store/hooks";
+import {
+  selectCurrentInputRecord,
+  selectInputRecordsError,
+  selectInputRecordsInfo,
+  selectInputRecordsLoading,
+  selectInputRecordsResults,
+  selectSuccessInputRecord,
+  selectActionInputRecord,
+} from "../store/entriesInventory.selector";
+
+export const useInputRecord = () => {
+  const info = useAppSelector(selectInputRecordsInfo);
+  const results = useAppSelector(selectInputRecordsResults);
   const currentInputRecord = useAppSelector(selectCurrentInputRecord);
   const loading = useAppSelector(selectInputRecordsLoading);
   const error = useAppSelector(selectInputRecordsError);
-
-  const getRecordInputByID = async (idInputRecord: number) => {
-    const result = await dispatch(getInputRecordByID(idInputRecord));
-    return unwrapResult(result);
-  };
+  const success = useAppSelector(selectSuccessInputRecord);
+  const actionInputRecord = useAppSelector(selectActionInputRecord);
 
   return {
+    info,
+    results,
     currentInputRecord,
     loading,
     error,
-    getRecordInputByID,
+    success,
+    actionInputRecord,
   };
 };

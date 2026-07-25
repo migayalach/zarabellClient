@@ -4,14 +4,19 @@ import {
   InputRecodTable,
   InputRecordPagination,
 } from "@/app/features/inputRecord/components";
-import { usePagInputRecords } from "@/app/features/inputRecord/hooks/useInputRecordPagination";
+import {
+  useInputRecord,
+  useInputRecordActions,
+} from "@/app/features/inputRecord/hooks";
+
 import { useEffect } from "react";
 
 function Page() {
-  const { info, results, pagRecordInput } = usePagInputRecords();
+  const { info, results } = useInputRecord();
+  const { getAllInputRecords } = useInputRecordActions();
 
   useEffect(() => {
-    pagRecordInput();
+    getAllInputRecords();
   }, []);
 
   return (

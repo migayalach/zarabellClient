@@ -3,9 +3,8 @@ import { useState, useEffect } from "react";
 import { DeleteOutlined, PlusOutlined, FormOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal } from "antd";
 import { useOutputHistory, useOutputHistoryActions } from "../hooks/index";
-import { usePagInputRecords } from "@/app/features/inputRecord/hooks/useInputRecordPagination";
 import { InputRecordListDetail } from "../../inputRecord/components";
-import { useInputRecordByID } from "../../inputRecord/hooks/useInputRecord";
+import { useInputRecordActions } from "../../inputRecord/hooks";
 
 type IOutputHistoryForm = {
   text: string;
@@ -21,7 +20,6 @@ function OutputHistoryModalAction({
   idInputRecord,
 }: IOutputHistoryForm) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { pagRecordInput } = usePagInputRecords();
   const { currentOutputHistory } = useOutputHistory();
   const {
     clearCurrentOutputHistory,
@@ -30,7 +28,8 @@ function OutputHistoryModalAction({
     updateOutputHistory,
     deleteOutputHistory,
   } = useOutputHistoryActions();
-  const { getRecordInputByID } = useInputRecordByID();
+  const { getAllInputRecords, resetInputRecord, getOneInputRecordByID } =
+    useInputRecordActions();
 
   const [outputHisInfo, setOutputHis] = useState({
     idOutput: 0,
@@ -52,30 +51,14 @@ function OutputHistoryModalAction({
 
   const showModal = () => {
     setIsModalOpen(true);
-    pagRecordInput();
+    getAllInputRecords();
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
     clearCurrentOutputHistory();
-  };
-
-  const onFinish = () => {
-    if (action === "create") {
-      createNewOutputHistory({
-        ...outputHisInfo,
-        idOutput,
-      });
-      setIsModalOpen(false);
-      resetOutputHistory();
-    }
-    if (action === "update") {
-      updateOutputHistory(outputHisInfo);
-    }
-    if (action === "delete" && idOutput && idInputRecord) {
-      deleteOutputHistory(idOutput, idInputRecord);
-      setIsModalOpen(false);
-    }
+    resetInputRecord();
+    resetOutputHistory();
   };
 
   const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,12 +76,30 @@ function OutputHistoryModalAction({
     }));
   };
 
+  const onFinish = () => {
+    if (action === "create") {
+      createNewOutputHistory({
+        ...outputHisInfo,
+        idOutput,
+      });
+      resetOutputHistory();
+      setIsModalOpen(false);
+    }
+    if (action === "update") {
+      updateOutputHistory(outputHisInfo);
+    }
+    if (action === "delete" && idOutput && idInputRecord) {
+      deleteOutputHistory(idOutput, idInputRecord);
+      setIsModalOpen(false);
+    }
+  };
+
   useEffect(() => {
     if (!isModalOpen) return;
     if (action === "update" && idInputRecord && idOutput) {
       getByIDOutputHistory(idOutput, idInputRecord);
-      // getRecordInputByID();
-      pagRecordInput();
+      getOneInputRecordByID(idInputRecord);
+      getAllInputRecords();
     }
   }, [isModalOpen]);
 
@@ -119,6 +120,7 @@ function OutputHistoryModalAction({
         title={`${text} salida`}
         open={isModalOpen}
         onCancel={handleCancel}
+        destroyOnHidden
         footer={[
           <Button
             key="submit"
@@ -146,7 +148,7 @@ function OutputHistoryModalAction({
           <>
             {action !== "delete" && (
               <>
-                <Form.Item label="Lote" name="lote">
+                <Form.Item label="Lote">
                   <InputRecordListDetail
                     handleInputRecord={handleInputRecord}
                   />

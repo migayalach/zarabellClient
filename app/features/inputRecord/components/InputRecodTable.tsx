@@ -95,16 +95,16 @@ const columnsUsers = [
     }) => (
       <div className="flex gap-1">
         <InputRecordButtonModal
+          text="Eliminar"
+          action="delete"
+          idInputRecord={idInputRecord}
+        />
+        <InputRecordButtonModal
           text="Editar"
           action="update"
           idInputRecord={idInputRecord}
           idProduct={idProduct}
           idProvider={idProvider}
-        />
-        <InputRecordButtonModal
-          text="Eliminar"
-          action="delete"
-          idInputRecord={idInputRecord}
         />
         <InputRecordBtnAction idInventoryEntry={idInputRecord} />
       </div>

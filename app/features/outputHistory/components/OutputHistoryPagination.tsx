@@ -29,12 +29,12 @@ function OutputHistoryPagination({
         const page =
           (info!.count + 1) % SIZE_PAGINATION === 1 ? pages + 1 : pages;
         setCurrent(page);
-        getAllOutputHistory(page);
+        getAllOutputHistory(idOutput, page);
         break;
       }
 
       case "update": {
-        getAllOutputHistory(current);
+        getAllOutputHistory(idOutput, current);
         break;
       }
 
@@ -42,9 +42,9 @@ function OutputHistoryPagination({
         if (results.length === 1 && current > 1) {
           const previousPage = current - 1;
           setCurrent(previousPage);
-          getAllOutputHistory(previousPage);
+          getAllOutputHistory(idOutput, previousPage);
         } else {
-          getAllOutputHistory(current);
+          getAllOutputHistory(idOutput, current);
         }
         break;
       }

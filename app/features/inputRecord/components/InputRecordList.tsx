@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import { usePagInputRecords } from "../../inputRecord/hooks/useInputRecordPagination";
 import { Button, List, Skeleton, ConfigProvider, Modal, Input } from "antd";
-import { useInputRecordByID } from "../hooks/useInputRecord";
-import { useInputRecordActions } from "../hooks/useInputRecordActions";
+import { useInputRecord, useInputRecordActions } from "../hooks";
 
 interface DataType {
   idCategory: number;
@@ -18,9 +16,9 @@ function InputRecordList({
   const [initLoading, setInitLoading] = useState(true);
   const [list, setList] = useState<DataType[]>([]);
   const [page, setPage] = useState(1);
-  const { pagRecordInput, results, info } = usePagInputRecords();
-  const { currentInputRecord } = useInputRecordByID();
-  const { clearCurrentData } = useInputRecordActions();
+  const { currentInputRecord, results, info } = useInputRecord();
+  const { clearCurrentInputRecord, getAllInputRecords } =
+    useInputRecordActions();
   const [index, setIndex] = useState({
     idCategory: 0,
     nameCategory: "",
@@ -30,12 +28,12 @@ function InputRecordList({
     setIsModalOpen(true);
     setPage(1);
     setInitLoading(true);
-    pagRecordInput(1);
+    getAllInputRecords(1);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    pagRecordInput();
+    getAllInputRecords();
     setList([]);
     setPage(1);
     setInitLoading(false);
@@ -43,7 +41,7 @@ function InputRecordList({
 
   const fetchData = () => {
     const nextPage = page + 1;
-    pagRecordInput(nextPage);
+    getAllInputRecords(nextPage);
     setPage(nextPage);
   };
 
@@ -56,7 +54,7 @@ function InputRecordList({
       nameCategory: category.nameCategory,
     });
     if (currentInputRecord) {
-      clearCurrentData();
+      clearCurrentInputRecord();
     }
     closeModal();
   };

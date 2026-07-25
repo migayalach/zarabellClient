@@ -92,12 +92,9 @@
                     ├── InputRecordListDetail.tsx
                     ├── InputRecordPagination.tsx
                 └── 📁hooks
-                    ├── useCreateInputRecord.ts
-                    ├── useDeleteInputRecord.ts
+                    ├── index.ts
                     ├── useInputRecord.ts
                     ├── useInputRecordActions.ts
-                    ├── useInputRecordPagination.ts
-                    ├── useUpdateInputRecord.ts
                 └── 📁services
                     ├── entriesInventory.services.ts
                 └── 📁store
@@ -223,6 +220,14 @@
                     ├── role.selector.ts
                     ├── role.slice.ts
                 ├── types.ts
+            └── 📁tickets
+                └── 📁components
+                    ├── index.ts
+                    ├── PDFButtonOutputs.tsx
+                    ├── TicketOutputs.tsx
+                └── 📁hooks
+                └── 📁services
+                └── 📁store
             └── 📁typeOutputs
                 └── 📁components
                     ├── index.ts
@@ -254,6 +259,7 @@
                 ├── types.ts
         └── 📁helpers
             ├── constans.helpers.ts
+        └── 📁images
         └── 📁shared
             └── 📁api
                 ├── api.interface.ts
