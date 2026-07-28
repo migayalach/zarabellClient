@@ -1,6 +1,38 @@
 import { api } from "@/app/shared/api/axios";
 import { IOutputHistoryCreate, IOutputHistoryUpdate } from "../types";
 
+export const getListOutputDetail = async (idOutput: number) => {
+  const response = await api.post("", {
+    query: `
+      query($idOutput: Int!){
+        getListDetailOutput(idOutput: $idOutput){
+          success
+          message
+          value {
+            userInfo {
+              nameUser
+              lastNameUser
+              nameTypeOutput
+              codeOutput
+              dateOutput
+            }
+            listProducts {
+              nameProduct
+              nameProvider
+              quantity
+              totalPrice
+            }
+          }
+        }
+      }
+    `,
+    variables: {
+      idOutput,
+    },
+  });
+  return response.data.data.getListDetailOutput;
+};
+
 export const getAllOutputHistories = async (
   idOutput: number,
   page?: number,
