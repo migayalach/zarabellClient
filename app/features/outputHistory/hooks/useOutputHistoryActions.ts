@@ -12,6 +12,8 @@ import {
   resetAllDataOutputHistory,
   resetCreateUpdateOHData,
   updateOneOutputHistoryByID,
+  getListProductsInfo,
+  resetListProductsOutputs,
 } from "../store/outputHistory.slice";
 
 import { IOutputHistoryCreate, IOutputHistoryUpdate } from "../types";
@@ -27,6 +29,11 @@ export const useOutputHistoryActions = () => {
         page,
       }),
     );
+    return unwrapResult(result);
+  };
+
+  const getListProductsOutput = async (idOutput: number) => {
+    const result = await dispatch(getListProductsInfo(idOutput));
     return unwrapResult(result);
   };
 
@@ -82,6 +89,10 @@ export const useOutputHistoryActions = () => {
     dispatch(clearInfoOutputHistoryError());
   };
 
+  const resetListOutputProducts = () => {
+    dispatch(resetListProductsOutputs());
+  };
+
   return {
     getAllOutputHistory,
     getByIDOutputHistory,
@@ -92,5 +103,7 @@ export const useOutputHistoryActions = () => {
     resetOutputHistory,
     resetActionCreateUpdate,
     clearErrorInfo,
+    resetListOutputProducts,
+    getListProductsOutput,
   };
 };
