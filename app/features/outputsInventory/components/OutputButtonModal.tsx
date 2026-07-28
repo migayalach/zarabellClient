@@ -47,7 +47,6 @@ function OutputButtonModal({
     nameTypeOutput: "",
     nameUser: "",
     dateOutput: "",
-    codeOutput: "",
   });
 
   const resetOutputHistory = () => {
@@ -58,14 +57,12 @@ function OutputButtonModal({
       nameTypeOutput: "",
       nameUser: "",
       dateOutput: "",
-      codeOutput: "",
     });
   };
 
   const showModal = () => {
     setIsModalOpen(true);
     getAllUsers();
-    getAllTOutputs();
   };
 
   const handleCancel = () => {
@@ -74,14 +71,6 @@ function OutputButtonModal({
     resetDataTOutput();
     clearCurrentOutput();
     resetOutputHistory();
-  };
-
-  const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setOutputData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
   };
 
   const handleUserChange = (value: number) => {
@@ -195,15 +184,6 @@ function OutputButtonModal({
                     onChange={onChangeDate("dateOutput")}
                     minDate={dayjs("2025-01-01", dateFormat)}
                     maxDate={dayjs("2030-12-31", dateFormat)}
-                  />
-                </Form.Item>
-
-                <Form.Item label="Codigo">
-                  <Input
-                    placeholder="ZB - 123"
-                    name="codeOutput"
-                    value={outputData.codeOutput}
-                    onChange={handleChangeInput}
                   />
                 </Form.Item>
               </>

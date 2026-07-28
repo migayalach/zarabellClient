@@ -7,6 +7,7 @@
             └── 📁categories
                 ├── page.tsx
             └── 📁home
+                ├── dashboard.css
                 ├── page.tsx
             └── 📁inventory-entries
                 └── 📁[idInventoryEntry]
@@ -41,6 +42,7 @@
                 └── 📁components
                     ├── AuthChangePassword.tsx
                     ├── AuthFormInformation.tsx
+                    ├── AuthResetPassword.tsx
                     ├── AuthSignOut.tsx
                     ├── index.ts
                     ├── SignInForm.tsx
@@ -48,6 +50,7 @@
                     ├── useAuth.ts
                     ├── useProfile.ts
                     ├── useRequireAuth.ts
+                    ├── useResetPassword.ts
                     ├── useRestoreSession.ts
                     ├── useSignIn.ts
                 └── 📁services
@@ -70,6 +73,27 @@
                 └── 📁store
                     ├── category.selector.ts
                     ├── category.slice.ts
+                ├── types.ts
+            └── 📁dashboard
+                └── 📁components
+                    ├── BestSellers.tsx
+                    ├── index.ts
+                    ├── LessSellers.tsx
+                    ├── NearExpiration.tsx
+                    ├── SalesReportToday.tsx
+                    ├── SalesReportYesterday.tsx
+                    ├── TotalReport.tsx
+                └── 📁hooks
+                    ├── useDashoard.ts
+                └── 📁services
+                    ├── dashboard.services.ts
+                └── 📁store
+                    ├── dashboard.selector.ts
+                    ├── dashboard.slice.ts
+                └── 📁styles
+                    ├── best-sellers.css
+                    ├── less-sellers.css
+                    ├── near-expiration.css
                 ├── types.ts
             └── 📁detailReturns
                 └── 📁components
@@ -107,6 +131,7 @@
                     ├── OutputHistoryModalAction.tsx
                     ├── OutputHistoryPagination.tsx
                     ├── OutputHistoryTable.tsx
+                    ├── TicketButton8M.tsx
                 └── 📁hooks
                     ├── index.ts
                     ├── useOutputHistory.ts
@@ -220,14 +245,6 @@
                     ├── role.selector.ts
                     ├── role.slice.ts
                 ├── types.ts
-            └── 📁tickets
-                └── 📁components
-                    ├── index.ts
-                    ├── PDFButtonOutputs.tsx
-                    ├── TicketOutputs.tsx
-                └── 📁hooks
-                └── 📁services
-                └── 📁store
             └── 📁typeOutputs
                 └── 📁components
                     ├── index.ts
@@ -259,12 +276,15 @@
                 ├── types.ts
         └── 📁helpers
             ├── constans.helpers.ts
+            ├── currentHour.ts
+            ├── numberToText.ts
         └── 📁images
         └── 📁shared
             └── 📁api
                 ├── api.interface.ts
                 ├── axios.ts
             └── 📁components
+                ├── CustomTooltip.tsx
                 ├── SCNavBar.tsx
                 ├── SNotifications.tsx
             └── 📁helpers

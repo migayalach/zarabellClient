@@ -6,10 +6,14 @@ import UserPagination from "@/app/features/users/components/UserPagination";
 import UserTable from "@/app/features/users/components/UserTable";
 
 function Page() {
-  const { info, results, getAllUsers } = useUsers();
+  const { info, results, getAllUsers, resetDataUser } = useUsers();
 
   useEffect(() => {
     getAllUsers();
+
+    return () => {
+      resetDataUser();
+    };
   }, []);
 
   return (

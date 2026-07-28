@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, List, Skeleton, ConfigProvider, Modal, Input } from "antd";
 import { useTOutputs } from "../hooks/useTypeOutputs";
-// import { useUsers } from "../../users/hooks/useUsers";
 
 interface DataType {
   idTypeOutput: number;
@@ -17,15 +16,7 @@ function OutputTypeList({
   const [initLoading, setInitLoading] = useState(true);
   const [list, setList] = useState<DataType[]>([]);
   const [page, setPage] = useState(1);
-  const {
-    clearDataCurrentTOutput,
-    currentTOutput,
-    getAllTOutputs,
-    getOneTOutput,
-    info,
-    resetDataTOutput,
-    results,
-  } = useTOutputs();
+  const { currentTOutput, getAllTOutputs, info, results } = useTOutputs();
 
   const [index, setIndex] = useState({
     idTypeOutput: 0,
@@ -41,10 +32,6 @@ function OutputTypeList({
 
   const closeModal = () => {
     setIsModalOpen(false);
-    resetDataTOutput();
-    setList([]);
-    setPage(1);
-    setInitLoading(false);
   };
 
   const fetchData = () => {
@@ -56,15 +43,15 @@ function OutputTypeList({
   const handleChooseTOutput = (idTypeOutput: number) => {
     const data = list.find((item) => item.idTypeOutput === idTypeOutput);
     if (!data) return;
-    handleTypeOutput(idTypeOutput);
+
     setIndex({
       idTypeOutput: data.idTypeOutput,
       nameTypeOutput: data.nameTypeOutput,
     });
-    if (currentTOutput) {
-      clearDataCurrentTOutput();
-    }
-    closeModal();
+
+    handleTypeOutput(idTypeOutput);
+
+    setIsModalOpen(false);
   };
 
   useEffect(() => {

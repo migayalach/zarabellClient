@@ -12,7 +12,6 @@ export interface IOutputCreate {
   idUser: number;
   idTypeOutput: number;
   dateOutput: string;
-  codeOutput: string;
 }
 
 export interface IOutputUpdate {
@@ -20,7 +19,6 @@ export interface IOutputUpdate {
   idUser: number;
   idTypeOutput: number;
   dateOutput: string;
-  codeOutput: string;
 }
 
 export interface IPaginationOutput {
