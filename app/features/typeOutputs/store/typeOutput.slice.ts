@@ -61,6 +61,8 @@ export const createTOutput = createAsyncThunk<
   ITypeOutputCreate,
   { rejectValue: IErrorTypeOutput }
 >("typeOutputs/createTOutput", async (infoTypeOutput, { rejectWithValue }) => {
+  console.log(infoTypeOutput);
+  
   try {
     return await createNewTypeOutput(infoTypeOutput);
   } catch (error) {
