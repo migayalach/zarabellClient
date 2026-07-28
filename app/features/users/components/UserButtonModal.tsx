@@ -9,6 +9,7 @@ import { Button, Form, Input, Modal, Switch } from "antd";
 import { useUsers } from "../hooks/useUsers";
 import RoleSelect from "../../roles/components/RoleSelect";
 import { useRoles } from "../../roles/hooks/useRoles";
+import CustomTooltip from "@/app/shared/components/CustomTooltip";
 
 type IUserForm = {
   text: string;
@@ -123,11 +124,21 @@ function UserButtonModal({ text, action, idUser }: IUserForm) {
 
   return (
     <>
-      <Button type="primary" onClick={showModal}>
-        {action === "delete" && <DeleteOutlined />}
-        {action === "create" && <UserAddOutlined />}
-        {action === "update" && <FormOutlined />}
-      </Button>
+      <CustomTooltip
+        text={
+          action === "delete"
+            ? "Eliminar usuario"
+            : action === "create"
+              ? "Crear usuario"
+              : "Editar usuario"
+        }
+      >
+        <Button type="primary" onClick={showModal}>
+          {action === "delete" && <DeleteOutlined />}
+          {action === "create" && <UserAddOutlined />}
+          {action === "update" && <FormOutlined />}
+        </Button>
+      </CustomTooltip>
 
       <Modal
         title={`${text} usuario`}
