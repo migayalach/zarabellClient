@@ -1,0 +1,35 @@
+"use client";
+import { useEffect } from "react";
+import { useProducts } from "@/app/features/products/hooks/useProducts";
+import {
+  ProductButtonModal,
+  ProductTable,
+  ProductPagination,
+} from "@/app/features/products/components";
+
+function Page() {
+  const { info, results, getAllProducts } = useProducts();
+
+  useEffect(() => {
+    getAllProducts();
+  }, []);
+
+  return (
+    <div className="flex flex-col flex-1">
+      <div className="flex items-center justify-between">
+        <h1 className="text-[30px] font-bold">Lista de productos</h1>
+        <ProductButtonModal text="Crear" action="create" />
+      </div>
+
+      <div className="flex-1 mt-2">
+        <ProductTable info={results} />
+      </div>
+
+      <div className="flex justify-center mt-6">
+        <ProductPagination pages={info?.pages ?? 1} />
+      </div>
+    </div>
+  );
+}
+
+export default Page;
