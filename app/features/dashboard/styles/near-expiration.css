@@ -1,0 +1,169 @@
+.near-expiration {
+  width: 100%;
+  max-width: 900px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.near-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.near-header h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #222;
+}
+
+.near-header span {
+  color: #666;
+  font-size: 14px;
+}
+
+.near-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.near-item {
+  display: grid;
+  grid-template-columns: 230px 1fr 90px;
+  align-items: center;
+  gap: 18px;
+}
+
+.near-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.product {
+  font-weight: 600;
+  color: #222;
+}
+
+.provider {
+  margin-top: 3px;
+  font-size: 13px;
+  color: #777;
+}
+
+.near-bar-wrapper {
+  width: 100%;
+}
+
+.near-bar-bg {
+  height: 18px;
+  background: #ececec;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.near-bar {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.near-days {
+  text-align: right;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.near-legend {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: #555;
+}
+
+.legend {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  margin-right: 6px;
+}
+
+.red {
+  background: #ef4444;
+}
+
+.orange {
+  background: #f97316;
+}
+
+.yellow {
+  background: #eab308;
+}
+
+.green {
+  background: #22c55e;
+}
+
+@media (max-width: 768px) {
+  .near-expiration {
+    padding: 14px;
+    border-radius: 10px;
+  }
+
+  .near-header {
+    margin-bottom: 15px;
+  }
+
+  .near-header h3 {
+    font-size: 16px;
+  }
+
+  .near-header span {
+    font-size: 12px;
+  }
+
+  .near-list {
+    gap: 12px;
+  }
+
+  .near-item {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .near-info .product {
+    font-size: 13px;
+  }
+
+  .near-info .provider {
+    font-size: 11px;
+  }
+
+  .near-bar-bg {
+    height: 14px;
+  }
+
+  .near-days {
+    text-align: left;
+    font-size: 13px;
+  }
+
+  .near-legend {
+    gap: 15px;
+    margin-top: 18px;
+    font-size: 11px;
+  }
+
+  .legend {
+    width: 12px;
+    height: 12px;
+  }
+}
