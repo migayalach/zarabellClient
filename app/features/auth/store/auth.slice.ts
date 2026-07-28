@@ -14,6 +14,7 @@ import {
   signInRequest,
   changePassword,
   updateInfoUser,
+  resetPasswordUser,
 } from "../services/auth.services";
 
 export interface SignState {
@@ -29,6 +30,18 @@ const initialState: SignState = {
   initialized: false,
   error: null,
 };
+
+export const resetUserPassword = createAsyncThunk<
+  { success: boolean },
+  number,
+  { rejectValue: LoginError }
+>("auth/reset-password", async (idUser, { rejectWithValue }) => {
+  try {
+    return await resetPasswordUser(idUser);
+  } catch (error) {
+    return rejectWithValue(error as LoginError);
+  }
+});
 
 export const signInSession = createAsyncThunk<
   SignInResponse,
