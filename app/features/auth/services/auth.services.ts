@@ -120,4 +120,19 @@ export const updateInfoUser = async (data: IUpdateProfile) => {
   return response.data.data.updateCurrentProfile;
 };
 
-export const resetPassword = () => {};
+export const resetPasswordUser = async (idUser: number) => {
+  const response = await api.post("", {
+    query: `
+     mutation($idUser: Int!){
+      resetPassword(idUser: $idUser){
+        success
+      }
+    }
+    `,
+    variables: {
+      idUser,
+    },
+  });
+
+  return response.data.data.resetPassword;
+};
