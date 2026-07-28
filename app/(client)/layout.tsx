@@ -31,7 +31,7 @@ export default function DashboardLayout({
         {children}
       </Content>
       <Footer style={{ textAlign: "center" }}>
-        CentroBell © {new Date().getFullYear()}
+        ZaraBell © {new Date().getFullYear()}
       </Footer>
     </Layout>
   );
