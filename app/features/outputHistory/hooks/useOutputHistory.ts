@@ -10,6 +10,7 @@ import {
   selectOutputHistoryLoading,
   selectOutputHistoryResults,
   selectSuccessOH,
+  selectListProductsOutputs,
 } from "../store/outputHistory.selector";
 
 export const useOutputHistory = () => {
@@ -20,6 +21,7 @@ export const useOutputHistory = () => {
   const error = useAppSelector(selectOutputHistoryError);
   const success = useAppSelector(selectSuccessOH);
   const action = useAppSelector(selectActionOH);
+  const listProducts = useAppSelector(selectListProductsOutputs);
 
   return {
     info,
@@ -29,5 +31,6 @@ export const useOutputHistory = () => {
     error,
     success,
     action,
+    listProducts,
   };
 };
