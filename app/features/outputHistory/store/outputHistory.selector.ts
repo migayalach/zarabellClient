@@ -13,3 +13,5 @@ export const selectCurrentoutputHistory = (state: RootState) =>
 export const selectSuccessOH = (state: RootState) =>
   state.outputHistory.success;
 export const selectActionOH = (state: RootState) => state.outputHistory.action;
+export const selectListProductsOutputs = (state: RootState) =>
+  state.outputHistory.listProducts;
