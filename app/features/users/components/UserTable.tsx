@@ -2,6 +2,7 @@
 import { Table, Tag } from "antd";
 import { IUserInfo } from "../types";
 import UserButtonModal from "./UserButtonModal";
+import { AuthResetPassword } from "../../auth/components";
 
 type UserTableRow = {
   key: number;
@@ -63,6 +64,7 @@ const columnsUsers = [
     width: 140,
     render: ({ idUser }: { idUser: number }) => (
       <div className="flex gap-1">
+        <AuthResetPassword idUser={idUser} />
         <UserButtonModal text="Editar" action="update" idUser={idUser} />
         <UserButtonModal text="Eliminar" action="delete" idUser={idUser} />
       </div>
