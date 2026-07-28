@@ -25,10 +25,15 @@ export default function Page() {
     totalOutputsCurrentMonth,
     totalLotsToExpiration,
     fetchDashboardInfo,
+    resetDashboardInfo,
   } = useDashboard();
 
   useEffect(() => {
     fetchDashboardInfo();
+
+    return () => {
+      resetDashboardInfo();
+    };
   }, []);
 
   return (
