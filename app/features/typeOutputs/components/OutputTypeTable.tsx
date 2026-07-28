@@ -8,6 +8,7 @@ type OutputTypeTableRow = {
   idTypeOutput: number;
   nameTypeOutput: string;
   descriptionTypeOutput: string;
+  prefix: string;
 };
 
 const columnsOutputTypes = [
@@ -27,6 +28,12 @@ const columnsOutputTypes = [
     title: "Descripcion",
     dataIndex: "descriptionTypeOutput",
     key: "descriptionTypeOutput",
+    width: 180,
+  },
+  {
+    title: "Prefijo",
+    dataIndex: "prefix",
+    key: "prefix",
     width: 180,
   },
   {
@@ -53,7 +60,12 @@ const columnsOutputTypes = [
 const OutputTypeMapInfo = (data: ITypeOutput[]): OutputTypeTableRow[] => {
   return data?.map(
     (
-      { idTypeOutput, nameTypeOutput, descriptionTypeOutput }: ITypeOutput,
+      {
+        idTypeOutput,
+        nameTypeOutput,
+        descriptionTypeOutput,
+        prefix,
+      }: ITypeOutput,
       index: number,
     ) => ({
       key: idTypeOutput,
@@ -61,6 +73,7 @@ const OutputTypeMapInfo = (data: ITypeOutput[]): OutputTypeTableRow[] => {
       numberItem: index + 1,
       nameTypeOutput,
       descriptionTypeOutput,
+      prefix,
     }),
   );
 };
