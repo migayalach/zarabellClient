@@ -8,8 +8,8 @@ import {
   OutputHistoryPagination,
   OutputHistoryTable,
   OutputHistoryModalAction,
+  TicketButton8M,
 } from "@/app/features/outputHistory/components";
-import { TicketOutputs } from "@/app/features/tickets/components";
 
 interface IParams {
   params: Promise<{
@@ -34,7 +34,7 @@ function Page({ params }: IParams) {
         </div>
 
         <div className="flex flex-row">
-          <TicketOutputs />
+          {results.length > 0 && <TicketButton8M idOutput={+idOutput} />}
           <OutputHistoryModalAction
             text="Crear"
             action="create"

@@ -29,6 +29,7 @@ function OutputTypeButtonModal({
     idTypeOutput: 0,
     nameTypeOutput: "",
     descriptionTypeOutput: "",
+    prefix: "",
   });
 
   const resetTOutputInfo = () => {
@@ -36,6 +37,7 @@ function OutputTypeButtonModal({
       idTypeOutput: 0,
       nameTypeOutput: "",
       descriptionTypeOutput: "",
+      prefix: "",
     });
   };
 
@@ -83,9 +85,7 @@ function OutputTypeButtonModal({
 
   useEffect(() => {
     if (!isModalOpen || !currentTOutput) return;
-    requestAnimationFrame(() => {
-      setTOutputInfo(currentTOutput);
-    });
+    setTOutputInfo(currentTOutput);
   }, [currentTOutput, isModalOpen]);
 
   return (
@@ -117,7 +117,7 @@ function OutputTypeButtonModal({
         ]}
       >
         <Form
-          id="typeOutForm"
+          id="typeOutputForm"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 10 }}
           layout="horizontal"
@@ -138,6 +138,14 @@ function OutputTypeButtonModal({
                 <Input
                   name="descriptionTypeOutput"
                   value={tOutputInfo.descriptionTypeOutput}
+                  onChange={handleChangeInput}
+                />
+              </Form.Item>
+
+              <Form.Item label="Prefijo">
+                <Input
+                  name="prefix"
+                  value={tOutputInfo.prefix}
                   onChange={handleChangeInput}
                 />
               </Form.Item>

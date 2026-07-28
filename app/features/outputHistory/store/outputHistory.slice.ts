@@ -5,13 +5,16 @@ import {
   getAllOutputHistories,
   getOneOutputHistoryByID,
   updateOneOutputHistory,
+  getListOutputDetail,
 } from "../service/outputHistory.services";
 import {
   IErrorOutputHistory,
+  IListProductsData,
   IOutputHistory,
   IOutputHistoryCreate,
   IOutputHistoryUpdate,
   IPaginationOutputHistory,
+  IResponseListProducts,
   IResponseOutputHistories,
   IResponseOutputHistory,
   TActionOuputHistory,
@@ -25,6 +28,7 @@ interface IOutputHistoryState {
   error: string | null;
   success: boolean;
   action: TActionOuputHistory | null;
+  listProducts: IListProductsData | null;
 }
 
 const initialState: IOutputHistoryState = {
@@ -35,6 +39,7 @@ const initialState: IOutputHistoryState = {
   error: null,
   success: false,
   action: null,
+  listProducts: null,
 };
 
 export const getAllListOutputHistory = createAsyncThunk<
@@ -106,6 +111,21 @@ export const deleteOneOutputHistoryByID = createAsyncThunk<
   },
 );
 
+export const getListProductsInfo = createAsyncThunk<
+  IResponseListProducts,
+  number,
+  { rejectValue: IErrorOutputHistory }
+>(
+  "outputHistory/listProductsDetails",
+  async (idOutput, { rejectWithValue }) => {
+    try {
+      return await getListOutputDetail(idOutput);
+    } catch (error) {
+      return rejectWithValue(error as IErrorOutputHistory);
+    }
+  },
+);
+
 const outputHistorySlice = createSlice({
   name: "output-history",
   initialState,
@@ -128,6 +148,10 @@ const outputHistorySlice = createSlice({
       state.currentOutputHistory = null;
       state.action = null;
     },
+    resetListProductsOutputs: (state) => {
+      state.success = false;
+      state.listProducts = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -142,6 +166,21 @@ const outputHistorySlice = createSlice({
         state.results = action.payload.results;
       })
       .addCase(getAllListOutputHistory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message ?? "Error";
+      })
+
+      // TODO GET ALL LIST OUTPUTS PRODUCTS
+      .addCase(getListProductsInfo.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getListProductsInfo.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = action.payload.success;
+        state.listProducts = action.payload.value;
+      })
+      .addCase(getListProductsInfo.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message ?? "Error";
       })
@@ -217,4 +256,5 @@ export const {
   clearCurrentOutputHistoryData,
   resetAllDataOutputHistory,
   resetCreateUpdateOHData,
+  resetListProductsOutputs,
 } = outputHistorySlice.actions;

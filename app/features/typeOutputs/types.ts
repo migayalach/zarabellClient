@@ -2,6 +2,7 @@ export interface ITypeOutput {
   idTypeOutput: number;
   nameTypeOutput: string;
   descriptionTypeOutput: string;
+  prefix: string;
 }
 
 export type ITypeOutputCreate = Omit<ITypeOutput, "idTypeOutput">;

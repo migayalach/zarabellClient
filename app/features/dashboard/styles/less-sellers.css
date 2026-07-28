@@ -1,0 +1,132 @@
+.less-sellers {
+  width: 100%;
+  max-width: 900px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.less-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.less-header h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #222;
+}
+
+.less-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.less-seller-row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  align-items: center;
+  gap: 20px;
+}
+
+.less-seller-label {
+  text-align: right;
+}
+
+.less-product {
+  font-size: 14px;
+  font-weight: 600;
+  color: #222;
+}
+
+.less-provider {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #777;
+}
+
+.less-bar-container {
+  width: 100%;
+  height: 34px;
+  background: #edf1f5;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.less-bar {
+  height: 100%;
+  min-width: 40px;
+  border-radius: 999px;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  padding-right: 12px;
+
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+
+  transition:
+    width 0.35s ease,
+    transform 0.25s ease,
+    filter 0.25s ease;
+}
+
+.less-seller-row:hover .less-bar {
+  transform: scaleY(1.05);
+  filter: brightness(1.08);
+}
+
+/* =================== RESPONSIVE =================== */
+
+@media (max-width: 768px) {
+  .less-sellers {
+    padding: 14px;
+    border-radius: 10px;
+  }
+
+  .less-header {
+    margin-bottom: 15px;
+  }
+
+  .less-header h3 {
+    font-size: 16px;
+  }
+
+  .less-list {
+    gap: 12px;
+  }
+
+  .less-seller-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .less-seller-label {
+    text-align: left;
+  }
+
+  .less-product {
+    font-size: 13px;
+  }
+
+  .less-provider {
+    font-size: 11px;
+  }
+
+  .less-bar-container {
+    height: 24px;
+  }
+
+  .less-bar {
+    font-size: 11px;
+    padding-right: 8px;
+  }
+}
