@@ -60,12 +60,11 @@ export const getOneOutputByID = async (idOutput: number) => {
 export const createNewOutput = async (infoOutput: IOutputCreate) => {
   const response = await api.post("", {
     query: `
-      mutation($idUser: Int!, $idTypeOutput: Int!, $dateOutput: String!, $codeOutput: String!) {
+      mutation($idUser: Int!, $idTypeOutput: Int!, $dateOutput: String!) {
         createOutput(dataOutput: {
           idUser: $idUser
           idTypeOutput: $idTypeOutput
           dateOutput: $dateOutput
-          codeOutput: $codeOutput
         }){
           message
           success
@@ -85,7 +84,6 @@ export const createNewOutput = async (infoOutput: IOutputCreate) => {
       idUser: infoOutput.idUser,
       idTypeOutput: infoOutput.idTypeOutput,
       dateOutput: infoOutput.dateOutput,
-      codeOutput: infoOutput.codeOutput,
     },
   });
   return response.data.data.createOutput;
@@ -94,13 +92,12 @@ export const createNewOutput = async (infoOutput: IOutputCreate) => {
 export const updateOneOutput = async (infoOutput: IOutputUpdate) => {
   const response = await api.post("", {
     query: `
-      mutation($idOutput: Int!, $idTypeOutput: Int!, $idUser: Int!, $dateOutput: String!, $codeOutput: String!) {
+      mutation($idOutput: Int!, $idTypeOutput: Int!, $idUser: Int!, $dateOutput: String!) {
         updateOutput(dataOutput: {
           idOutput: $idOutput
           idTypeOutput: $idTypeOutput
           idUser: $idUser
           dateOutput: $dateOutput
-          codeOutput: $codeOutput
         }){
         message
         success
@@ -121,7 +118,6 @@ export const updateOneOutput = async (infoOutput: IOutputUpdate) => {
       idTypeOutput: infoOutput.idTypeOutput,
       idUser: infoOutput.idUser,
       dateOutput: infoOutput.dateOutput,
-      codeOutput: infoOutput.codeOutput,
     },
   });
   return response.data.data.updateOutput;
