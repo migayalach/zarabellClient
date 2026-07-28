@@ -1,0 +1,137 @@
+.dashboard {
+  padding: 32px;
+  background: #f5f7fb;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.dashboard-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: #222;
+}
+
+.dashboard-header p {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+}
+
+
+/* RESUMEN */
+
+.dashboard-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+
+/* VENTAS */
+
+.dashboard-sales {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+
+/* GRAFICOS */
+
+.dashboard-charts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+
+/* TARJETAS */
+
+.dashboard-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  box-sizing: border-box;
+
+  box-shadow:
+    0 4px 12px rgba(0,0,0,.04),
+    0 10px 30px rgba(0,0,0,.05);
+
+  transition:
+    transform .25s ease,
+    box-shadow .25s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-4px);
+
+  box-shadow:
+    0 10px 24px rgba(0,0,0,.08),
+    0 20px 45px rgba(0,0,0,.10);
+}
+
+
+/* TABLET */
+
+@media (max-width: 1200px) {
+
+  .dashboard-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-sales {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-charts {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+
+/* MOVIL */
+
+@media (max-width: 768px) {
+
+  .dashboard {
+    padding: 18px;
+    gap: 20px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .dashboard-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-sales {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-charts {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-card {
+    padding: 18px;
+  }
+}
