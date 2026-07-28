@@ -6,6 +6,32 @@ export interface IOutputHistory {
   totalPrice: number;
 }
 
+export interface IUserOutputData {
+  nameUser: string;
+  lastNameUser: string;
+  nameTypeOutput: string;
+  codeOutput: string;
+  dateOutput: string;
+}
+
+export interface IDetailProductData {
+  nameProvider: string;
+  nameProduct: string;
+  quantity: number;
+  totalPrice: number;
+}
+
+export interface IListProductsData {
+  userInfo: IUserOutputData;
+  listProducts: IDetailProductData[];
+}
+
+export interface IResponseListProducts {
+  success: boolean;
+  message: string;
+  value: IListProductsData;
+}
+
 export interface IOutputHistoryCreate {
   idOutput: number;
   idInputRecord: number;
