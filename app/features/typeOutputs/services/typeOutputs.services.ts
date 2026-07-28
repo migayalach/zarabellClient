@@ -16,6 +16,7 @@ export const getAllTypeOutputs = async (page?: number) => {
             idTypeOutput
             nameTypeOutput
             descriptionTypeOutput
+            prefix
           }
         }
       }
@@ -37,6 +38,7 @@ export const getOneTypeOutputByID = async (idTypeOutput: number) => {
             idTypeOutput
             nameTypeOutput
             descriptionTypeOutput
+            prefix
           }
         }
       }
@@ -53,15 +55,18 @@ export const createNewTypeOutput = async (
 ) => {
   const response = await api.post("", {
     query: `
-      mutation($nameTypeOutput: String!){
+      mutation($nameTypeOutput: String!, $descriptionTypeOutput: String!, $prefix: String!){
         createTypeOutput(dataTypeOutput: {
           nameTypeOutput: $nameTypeOutput
+          descriptionTypeOutput: $descriptionTypeOutput
+          prefix: $prefix
         }){
           message
           value {
             idTypeOutput
             nameTypeOutput
             descriptionTypeOutput
+            prefix
           }
         }
       }
@@ -69,6 +74,7 @@ export const createNewTypeOutput = async (
     variables: {
       nameTypeOutput: infoTypeOutput.nameTypeOutput,
       descriptionTypeOutput: infoTypeOutput.descriptionTypeOutput,
+      prefix: infoTypeOutput.prefix,
     },
   });
 
@@ -78,27 +84,32 @@ export const createNewTypeOutput = async (
 export const updateOneTypeOutput = async (
   infoTypeOutput: ITypeOutputUpdate,
 ) => {
+  console.log(infoTypeOutput);
+  
   const response = await api.post("", {
     query: `
-      mutation($idTypeTOutput: Int!, $nameTypeOutput: String!, $descriptionTypeOutput: String){
+      mutation($idTypeTOutput: Int!, $nameTypeOutput: String!, $descriptionTypeOutput: String!, $prefix: String!){
         updateTypeOutput(dataTypeOutput:{
           idTypeTOutput: $idTypeTOutput
           nameTypeOutput: $nameTypeOutput
           descriptionTypeOutput: $descriptionTypeOutput
+          prefix: $prefix
         }){
           message
           value {
             idTypeOutput
             nameTypeOutput
             descriptionTypeOutput
+            prefix
           }
         }
       }
     `,
     variables: {
-      idTypeOutput: infoTypeOutput.idTypeOutput,
+      idTypeTOutput: infoTypeOutput.idTypeOutput,
       nameTypeOutput: infoTypeOutput.nameTypeOutput,
       descriptionTypeOutput: infoTypeOutput.descriptionTypeOutput,
+      prefix: infoTypeOutput.prefix
     },
   });
 
@@ -115,6 +126,7 @@ export const deleteOneTypeOutput = async (idTypeOutput: number) => {
             idTypeOutput
             nameTypeOutput
             descriptionTypeOutput
+            prefix
           }
         }
       }
