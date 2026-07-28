@@ -3,7 +3,7 @@ import { ProductFilled, CalendarFilled, RiseOutlined } from "@ant-design/icons";
 
 function TotalReport({ text, info }: { text: string; info: number }) {
   return (
-    <div className="w-full md:max-w-[350px] min-h-32 bg-white rounded-2xl shadow-md p-6 flex items-center gap-5 border border-gray-100 hover:shadow-lg transition-all duration-300">
+    <div className="w-full md:max-w-87.5 min-h-32 bg-white rounded-2xl shadow-md p-6 flex items-center gap-5 border border-gray-100 hover:shadow-lg transition-all duration-300">
       <div
         className={`w-16 h-16 rounded-2xl flex items-center justify-center text-3xl
           ${text === "productos" && "bg-sky-100 text-sky-600"}

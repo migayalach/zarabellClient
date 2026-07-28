@@ -4,7 +4,7 @@ import { ISalesYesterdayData } from "../types";
 
 function SalesReportYesterday({ info }: { info: ISalesYesterdayData }) {
   return (
-    <div className="w-full md:max-w-[350px] min-h-32 bg-white rounded-2xl shadow-md p-6 border border-gray-100 hover:shadow-lg transition-all duration-300">
+    <div className="w-full md:max-w-87.5 min-h-32 bg-white rounded-2xl shadow-md p-6 border border-gray-100 hover:shadow-lg transition-all duration-300">
       <div className="flex items-center gap-4 mb-5">
         <div className="w-14 h-14 rounded-2xl bg-red-100 flex items-center justify-center text-2xl text-red-600">
           <ArrowDownOutlined />
