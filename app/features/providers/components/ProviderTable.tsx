@@ -2,6 +2,7 @@
 import { Table, Tag } from "antd";
 import { IProvider } from "../types";
 import ProviderButtonModal from "./ProviderButtonModal";
+import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
 
 type ProviderTableRow = {
   key: number;
@@ -93,9 +94,18 @@ const providerMapInfo = (data: IProvider[]): ProviderTableRow[] => {
 };
 
 function ProviderTable({ info }: { info: IProvider[] }) {
+  const canCreate = useHasPermission([1]);
+  const canUpdate = useHasPermission([1]);
+  const canDelete = useHasPermission([1, 2]);
+
+  const columns =
+    canCreate || canUpdate || canDelete
+      ? columnsProviders
+      : columnsProviders.filter((item) => item.key !== "actions");
+
   return (
     <Table<ProviderTableRow>
-      columns={columnsProviders}
+      columns={columns}
       dataSource={providerMapInfo(info)}
       scroll={{ x: 1000 }}
       pagination={false}

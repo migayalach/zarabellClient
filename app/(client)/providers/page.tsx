@@ -6,13 +6,25 @@ import {
   ProviderTable,
 } from "@/app/features/providers/components";
 import { useProviders } from "@/app/features/providers/hooks/useProvides";
+import { useRequirePermission } from "@/app/features/auth/hooks/usePermise";
+import Loading from "@/app/shared/components/Loading";
 
 function Page() {
-  const { info, results, getAllProviders } = useProviders();
+  const blocked = useRequirePermission([1, 2]);
+  const { info, results, getAllProviders, resetDataProvider, loading } =
+    useProviders();
 
   useEffect(() => {
-    getAllProviders();
-  }, []);
+    if (!blocked) {
+      getAllProviders();
+    }
+    return () => {
+      resetDataProvider();
+    };
+  }, [blocked]);
+
+  if (blocked) return null;
+  if (loading) return <Loading />;
 
   return (
     <div className="flex flex-col flex-1">

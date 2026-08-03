@@ -6,13 +6,26 @@ import {
   ProductTable,
   ProductPagination,
 } from "@/app/features/products/components";
+import { useRequirePermission } from "@/app/features/auth/hooks/usePermise";
+import Loading from "@/app/shared/components/Loading";
 
 function Page() {
-  const { info, results, getAllProducts } = useProducts();
+  const blocked = useRequirePermission([1, 2]);
+  const { info, results, getAllProducts, resetDataProduct, loading } =
+    useProducts();
 
   useEffect(() => {
-    getAllProducts();
-  }, []);
+    if (!blocked) {
+      getAllProducts();
+    }
+
+    return () => {
+      resetDataProduct();
+    };
+  }, [blocked]);
+
+  if (blocked) return null;
+  if (loading) return <Loading />;
 
   return (
     <div className="flex flex-col flex-1">

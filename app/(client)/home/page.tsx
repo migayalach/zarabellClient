@@ -13,6 +13,7 @@ import {
 import { useDashboard } from "@/app/features/dashboard/hooks/useDashoard";
 import { useEffect } from "react";
 import { FormOutlined } from "@ant-design/icons";
+import Loading from "@/app/shared/components/Loading";
 
 export default function Page() {
   const {
@@ -26,6 +27,7 @@ export default function Page() {
     totalLotsToExpiration,
     fetchDashboardInfo,
     resetDashboardInfo,
+    loading
   } = useDashboard();
 
   useEffect(() => {
@@ -35,6 +37,8 @@ export default function Page() {
       resetDashboardInfo();
     };
   }, []);
+
+  if (loading) return <Loading />;
 
   return (
     <main className="dashboard">

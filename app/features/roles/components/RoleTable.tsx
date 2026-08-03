@@ -2,6 +2,7 @@
 import { Table } from "antd";
 import { IRole } from "../types";
 import RoleButtonModal from "./RoleButtonModal";
+import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
 
 type RoleTableRow = {
   key: number;
@@ -9,7 +10,7 @@ type RoleTableRow = {
   nameRole: string;
 };
 
-const columnsUsers = [
+const columnsRoles = [
   {
     title: "N°",
     dataIndex: "numberItem",
@@ -45,9 +46,18 @@ const rolesMapInfo = (data: IRole[]): RoleTableRow[] => {
 };
 
 function RoleTable({ info }: { info: IRole[] }) {
+  const canCreate = useHasPermission([1]);
+  const canUpdate = useHasPermission([1]);
+  const canDelete = useHasPermission([1]);
+
+  const columns =
+    canCreate || canUpdate || canDelete
+      ? columnsRoles
+      : columnsRoles.filter((item) => item.key !== "actions");
+
   return (
     <Table<RoleTableRow>
-      columns={columnsUsers}
+      columns={columns}
       dataSource={rolesMapInfo(info)}
       scroll={{ x: 1000 }}
       pagination={false}

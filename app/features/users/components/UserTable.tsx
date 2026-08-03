@@ -3,6 +3,7 @@ import { Table, Tag } from "antd";
 import { IUserInfo } from "../types";
 import UserButtonModal from "./UserButtonModal";
 import { AuthResetPassword } from "../../auth/components";
+import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
 
 type UserTableRow = {
   key: number;
@@ -101,9 +102,17 @@ const usersMapInfo = (data: IUserInfo[]): UserTableRow[] => {
 };
 
 function UserTable({ info }: { info: IUserInfo[] }) {
+  const canCreate = useHasPermission([1, 2]);
+  const canUpdate = useHasPermission([1, 2]);
+  const canDelete = useHasPermission([1, 2]);
+
+const columns = canCreate || canUpdate || canDelete
+    ? columnsUsers
+    : columnsUsers.filter((item) => item.key !== "actions");
+
   return (
     <Table<UserTableRow>
-      columns={columnsUsers}
+      columns={columns}
       dataSource={usersMapInfo(info)}
       scroll={{ x: 1000 }}
       pagination={false}

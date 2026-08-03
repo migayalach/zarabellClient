@@ -2,6 +2,7 @@
 import { Table } from "antd";
 import { ITypeOutput } from "../types";
 import OutputTypeButtonModal from "./OutputTypeButtonModal";
+import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
 
 type OutputTypeTableRow = {
   key: number;
@@ -79,9 +80,18 @@ const OutputTypeMapInfo = (data: ITypeOutput[]): OutputTypeTableRow[] => {
 };
 
 function OutputTypeTable({ info }: { info: ITypeOutput[] }) {
+  const canCreate = useHasPermission([1, 2]);
+  const canUpdate = useHasPermission([1, 2]);
+  const canDelete = useHasPermission([1, 2]);
+
+  const columns =
+    canCreate || canUpdate || canDelete
+      ? columnsOutputTypes
+      : columnsOutputTypes.filter((item) => item.key !== "actions");
+
   return (
     <Table<OutputTypeTableRow>
-      columns={columnsOutputTypes}
+      columns={columns}
       dataSource={OutputTypeMapInfo(info)}
       scroll={{ x: 1000 }}
       pagination={false}

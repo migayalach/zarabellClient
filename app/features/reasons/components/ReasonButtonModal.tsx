@@ -1,12 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
-import {
-  DeleteOutlined,
-  PlusOutlined,
-  FormOutlined,
-} from "@ant-design/icons";
+import { DeleteOutlined, PlusOutlined, FormOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal } from "antd";
 import { useReasons } from "../hooks/useReason";
+import CustomTooltip from "@/app/shared/components/CustomTooltip";
+import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
 
 type IReasonForm = {
   text: string;
@@ -15,6 +13,10 @@ type IReasonForm = {
 };
 
 function ReasonButtonModal({ text, action, idReason }: IReasonForm) {
+  const canCreate = useHasPermission([1, 2]);
+  const canUpdate = useHasPermission([1, 2]);
+  const canDelete = useHasPermission([1, 2]);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     createNewReason,
@@ -88,13 +90,31 @@ function ReasonButtonModal({ text, action, idReason }: IReasonForm) {
     });
   }, [currentReason, isModalOpen]);
 
+  if (
+    (action === "create" && !canCreate) ||
+    (action === "update" && !canUpdate) ||
+    (action === "delete" && !canDelete)
+  ) {
+    return null;
+  }
+
   return (
     <>
-      <Button type="primary" onClick={showModal}>
-        {action === "delete" && <DeleteOutlined />}
-        {action === "create" && <PlusOutlined />}
-        {action === "update" && <FormOutlined />}
-      </Button>
+      <CustomTooltip
+        text={
+          action === "delete"
+            ? "Eliminar razón"
+            : action === "create"
+              ? "Crear razón"
+              : "Editar razón"
+        }
+      >
+        <Button type="primary" onClick={showModal}>
+          {action === "delete" && <DeleteOutlined />}
+          {action === "create" && <PlusOutlined />}
+          {action === "update" && <FormOutlined />}
+        </Button>
+      </CustomTooltip>
 
       <Modal
         title={`${text} razon`}

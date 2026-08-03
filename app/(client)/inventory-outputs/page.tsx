@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import {
   OutputButtonModal,
   OutputPagination,
@@ -8,15 +9,21 @@ import {
   useOutput,
   useOutputActions,
 } from "@/app/features/outputsInventory/hooks";
-import { useEffect } from "react";
+import Loading from "@/app/shared/components/Loading";
 
 function Page() {
-  const { getAllOutputs } = useOutputActions();
-  const { info, results } = useOutput();
+  const { getAllOutputs, resetOutput } = useOutputActions();
+  const { info, results, loading } = useOutput();
 
   useEffect(() => {
     getAllOutputs();
+
+    return () => {
+      resetOutput();
+    };
   }, []);
+
+  if (loading) return <Loading />;
 
   return (
     <div className="flex flex-col flex-1">

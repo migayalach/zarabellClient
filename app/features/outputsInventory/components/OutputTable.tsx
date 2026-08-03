@@ -3,6 +3,7 @@ import { Table } from "antd";
 import { IOutput } from "../types";
 import OutputButtonModal from "./OutputButtonModal";
 import OutputBtnAction from "./OutputBtnAction";
+import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
 
 type OutputTableRow = {
   idOutput: number;
@@ -105,9 +106,18 @@ const outputMapInfo = (data: IOutput[]): OutputTableRow[] => {
 };
 
 function OutputTable({ info }: { info: IOutput[] }) {
+  const canCreate = useHasPermission([1]);
+  const canUpdate = useHasPermission([1]);
+  const canDelete = useHasPermission([1]);
+
+  const columns =
+    canCreate || canUpdate || canDelete
+      ? columnsOutput
+      : columnsOutput.filter((item) => item.key !== "actions");
+
   return (
     <Table<OutputTableRow>
-      columns={columnsOutput}
+      columns={columns}
       dataSource={outputMapInfo(info)}
       scroll={{ x: 1000 }}
       pagination={false}

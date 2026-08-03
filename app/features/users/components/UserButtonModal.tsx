@@ -10,6 +10,7 @@ import { useUsers } from "../hooks/useUsers";
 import RoleSelect from "../../roles/components/RoleSelect";
 import { useRoles } from "../../roles/hooks/useRoles";
 import CustomTooltip from "@/app/shared/components/CustomTooltip";
+import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
 
 type IUserForm = {
   text: string;
@@ -18,6 +19,10 @@ type IUserForm = {
 };
 
 function UserButtonModal({ text, action, idUser }: IUserForm) {
+  const canCreate = useHasPermission([1, 2]);
+  const canUpdate = useHasPermission([1, 2]);
+  const canDelete = useHasPermission([1, 2]);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     createNewUser,
@@ -121,6 +126,14 @@ function UserButtonModal({ text, action, idUser }: IUserForm) {
       setUserInfo(currentUser);
     });
   }, [currentUser, isModalOpen]);
+
+  if (
+    (action === "create" && !canCreate) ||
+    (action === "update" && !canUpdate) ||
+    (action === "delete" && !canDelete)
+  ) {
+    return null;
+  }
 
   return (
     <>

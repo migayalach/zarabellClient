@@ -5,6 +5,8 @@ import { Button, Form, Input, Modal, Switch } from "antd";
 import { useProducts } from "../hooks/useProducts";
 import { CategoryList } from "../../categories/components";
 import { useCategory } from "../../categories/hooks/useCategories";
+import CustomTooltip from "@/app/shared/components/CustomTooltip";
+import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
 
 type IProductForm = {
   text: string;
@@ -19,6 +21,10 @@ function ProductButtonModal({
   idProduct,
   idCategory,
 }: IProductForm) {
+  const canCreate = useHasPermission([1, 2]);
+  const canUpdate = useHasPermission([1, 2]);
+  const canDelete = useHasPermission([1, 2]);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     createNewProduct,
@@ -115,13 +121,31 @@ function ProductButtonModal({
     });
   }, [currentProduct, isModalOpen]);
 
+  if (
+    (action === "create" && !canCreate) ||
+    (action === "update" && !canUpdate) ||
+    (action === "delete" && !canDelete)
+  ) {
+    return null;
+  }
+
   return (
     <>
-      <Button type="primary" onClick={showModal}>
-        {action === "delete" && <DeleteOutlined />}
-        {action === "create" && <PlusOutlined />}
-        {action === "update" && <FormOutlined />}
-      </Button>
+      <CustomTooltip
+        text={
+          action === "delete"
+            ? "Eliminar producto"
+            : action === "create"
+              ? "Crear producto"
+              : "Editar producto"
+        }
+      >
+        <Button type="primary" onClick={showModal}>
+          {action === "delete" && <DeleteOutlined />}
+          {action === "create" && <PlusOutlined />}
+          {action === "update" && <FormOutlined />}
+        </Button>
+      </CustomTooltip>
 
       <Modal
         title={`${text} producto`}

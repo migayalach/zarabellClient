@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { DeleteOutlined, PlusOutlined, FormOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal } from "antd";
 import { useTOutputs } from "../hooks/useTypeOutputs";
+import CustomTooltip from "@/app/shared/components/CustomTooltip";
+import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
 
 type IOutputTypeForm = {
   text: string;
@@ -15,6 +17,10 @@ function OutputTypeButtonModal({
   action,
   idTypeOutput,
 }: IOutputTypeForm) {
+  const canCreate = useHasPermission([1, 2]);
+  const canUpdate = useHasPermission([1, 2]);
+  const canDelete = useHasPermission([1, 2]);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     createNewTOutput,
@@ -88,13 +94,31 @@ function OutputTypeButtonModal({
     setTOutputInfo(currentTOutput);
   }, [currentTOutput, isModalOpen]);
 
+  if (
+    (action === "create" && !canCreate) ||
+    (action === "update" && !canUpdate) ||
+    (action === "delete" && !canDelete)
+  ) {
+    return null;
+  }
+
   return (
     <>
-      <Button type="primary" onClick={showModal}>
-        {action === "delete" && <DeleteOutlined />}
-        {action === "create" && <PlusOutlined />}
-        {action === "update" && <FormOutlined />}
-      </Button>
+      <CustomTooltip
+        text={
+          action === "delete"
+            ? "Eliminar tipo de salida"
+            : action === "create"
+              ? "Crear tipo de salida"
+              : "Editar tipo de salida"
+        }
+      >
+        <Button type="primary" onClick={showModal}>
+          {action === "delete" && <DeleteOutlined />}
+          {action === "create" && <PlusOutlined />}
+          {action === "update" && <FormOutlined />}
+        </Button>
+      </CustomTooltip>
 
       <Modal
         title={`${text} tipo`}
