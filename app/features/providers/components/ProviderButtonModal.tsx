@@ -7,6 +7,8 @@ import {
 } from "@ant-design/icons";
 import { Button, Form, Input, Modal, Switch } from "antd";
 import { useProviders } from "../hooks/useProvides";
+import CustomTooltip from "@/app/shared/components/CustomTooltip";
+import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
 
 type IProviderForm = {
   text: string;
@@ -15,6 +17,10 @@ type IProviderForm = {
 };
 
 function ProviderButtonModal({ text, action, idProvider }: IProviderForm) {
+  const canCreate = useHasPermission([1, 2]);
+  const canUpdate = useHasPermission([1, 2]);
+  const canDelete = useHasPermission([1]);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     createNewProvider,
@@ -99,13 +105,31 @@ function ProviderButtonModal({ text, action, idProvider }: IProviderForm) {
     });
   }, [currentProvider, isModalOpen]);
 
+  if (
+    (action === "create" && !canCreate) ||
+    (action === "update" && !canUpdate) ||
+    (action === "delete" && !canDelete)
+  ) {
+    return null;
+  }
+
   return (
     <>
-      <Button type="primary" onClick={showModal}>
-        {action === "delete" && <DeleteOutlined />}
-        {action === "create" && <UserAddOutlined />}
-        {action === "update" && <FormOutlined />}
-      </Button>
+      <CustomTooltip
+        text={
+          action === "delete"
+            ? "Eliminar proveedor"
+            : action === "create"
+              ? "Crear proveedor"
+              : "Editar proveedor"
+        }
+      >
+        <Button type="primary" onClick={showModal}>
+          {action === "delete" && <DeleteOutlined />}
+          {action === "create" && <UserAddOutlined />}
+          {action === "update" && <FormOutlined />}
+        </Button>
+      </CustomTooltip>
 
       <Modal
         title={`${text} proveedor`}

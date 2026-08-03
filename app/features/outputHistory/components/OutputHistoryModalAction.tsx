@@ -5,6 +5,8 @@ import { Button, Form, Input, Modal } from "antd";
 import { useOutputHistory, useOutputHistoryActions } from "../hooks/index";
 import { InputRecordListDetail } from "../../inputRecord/components";
 import { useInputRecordActions } from "../../inputRecord/hooks";
+import CustomTooltip from "@/app/shared/components/CustomTooltip";
+import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
 
 type IOutputHistoryForm = {
   text: string;
@@ -19,6 +21,9 @@ function OutputHistoryModalAction({
   idOutput,
   idInputRecord,
 }: IOutputHistoryForm) {
+  const canCreate = useHasPermission([1, 2]);
+  const canUpdate = useHasPermission([1, 2]);
+  const canDelete = useHasPermission([1]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { currentOutputHistory } = useOutputHistory();
   const {
@@ -108,13 +113,31 @@ function OutputHistoryModalAction({
     setOutputHis(currentOutputHistory);
   }, [currentOutputHistory, isModalOpen]);
 
+  if (
+    (action === "create" && !canCreate) ||
+    (action === "update" && !canUpdate) ||
+    (action === "delete" && !canDelete)
+  ) {
+    return null;
+  }
+
   return (
     <>
-      <Button type="primary" onClick={showModal}>
-        {action === "delete" && <DeleteOutlined />}
-        {action === "create" && <PlusOutlined />}
-        {action === "update" && <FormOutlined />}
-      </Button>
+      <CustomTooltip
+        text={
+          action === "delete"
+            ? "Eliminar item"
+            : action === "create"
+              ? "Crear item"
+              : "Editar item"
+        }
+      >
+        <Button type="primary" onClick={showModal}>
+          {action === "delete" && <DeleteOutlined />}
+          {action === "create" && <PlusOutlined />}
+          {action === "update" && <FormOutlined />}
+        </Button>
+      </CustomTooltip>
 
       <Modal
         title={`${text} salida`}
