@@ -48,6 +48,8 @@
                     ├── SignInForm.tsx
                 └── 📁hooks
                     ├── useAuth.ts
+                    ├── useHasPermission.ts
+                    ├── usePermise.ts
                     ├── useProfile.ts
                     ├── useRequireAuth.ts
                     ├── useResetPassword.ts
@@ -285,14 +287,20 @@
                 ├── axios.ts
             └── 📁components
                 ├── CustomTooltip.tsx
+                ├── Loading.tsx
+                ├── NotFound.tsx
                 ├── SCNavBar.tsx
+                ├── ServerError.tsx
                 ├── SNotifications.tsx
+                ├── Unauthorized.tsx
             └── 📁helpers
                 ├── index.ts
         └── 📁store
             ├── hooks.ts
             ├── provider.tsx
             ├── store.ts
+        └── 📁unauthorized
+            ├── page.tsx
         ├── globals.css
         ├── layout.tsx
         ├── page.tsx

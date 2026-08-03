@@ -2,6 +2,7 @@
 import { Table } from "antd";
 import { IReason } from "../types";
 import ReasonButtonModal from "./ReasonButtonModal";
+import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
 
 type ReasonTableRow = {
   key: number;
@@ -59,9 +60,18 @@ const reasonMapInfo = (data: IReason[]): ReasonTableRow[] => {
 };
 
 function ReasonTable({ info }: { info: IReason[] }) {
+  const canCreate = useHasPermission([1, 2]);
+  const canUpdate = useHasPermission([1, 2]);
+  const canDelete = useHasPermission([1, 2]);
+
+  const columns =
+    canCreate || canUpdate || canDelete
+      ? columnsReasons
+      : columnsReasons.filter((item) => item.key !== "actions");
+
   return (
     <Table<ReasonTableRow>
-      columns={columnsReasons}
+      columns={columns}
       dataSource={reasonMapInfo(info)}
       scroll={{ x: 1000 }}
       pagination={false}

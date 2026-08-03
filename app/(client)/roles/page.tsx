@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect } from "react";
 import { useRoles } from "@/app/features/roles/hooks/useRoles";
 import {
@@ -6,13 +7,25 @@ import {
   RolePagination,
   RoleTable,
 } from "@/app/features/roles/components";
+import { useRequirePermission } from "@/app/features/auth/hooks/usePermise";
+import Loading from "@/app/shared/components/Loading";
 
 function Page() {
-  const { info, results, getAllRoles } = useRoles();
+  const blocked = useRequirePermission([1, 2]);
+  const { info, results, getAllRoles, resetDataRole, loading } = useRoles();
 
   useEffect(() => {
-    getAllRoles();
-  }, []);
+    if (!blocked) {
+      getAllRoles();
+    }
+
+    return () => {
+      resetDataRole();
+    };
+  }, [blocked]);
+
+  if (blocked) return null;
+  if (loading) return <Loading />;
 
   return (
     <div className="flex flex-col flex-1">

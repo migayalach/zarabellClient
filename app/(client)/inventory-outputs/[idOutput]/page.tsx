@@ -10,6 +10,7 @@ import {
   OutputHistoryModalAction,
   TicketButton8M,
 } from "@/app/features/outputHistory/components";
+import Loading from "@/app/shared/components/Loading";
 
 interface IParams {
   params: Promise<{
@@ -19,12 +20,18 @@ interface IParams {
 
 function Page({ params }: IParams) {
   const { idOutput } = React.use(params);
-  const { info, results } = useOutputHistory();
-  const { getAllOutputHistory } = useOutputHistoryActions();
+  const { info, results, loading } = useOutputHistory();
+  const { getAllOutputHistory, resetOutputHistory } = useOutputHistoryActions();
 
   useEffect(() => {
     getAllOutputHistory(+idOutput);
+
+    return () => {
+      resetOutputHistory();
+    };
   }, []);
+
+  if (loading) return <Loading />;
 
   return (
     <div className="flex flex-col flex-1">

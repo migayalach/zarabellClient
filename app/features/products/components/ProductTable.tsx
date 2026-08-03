@@ -2,6 +2,7 @@
 import { Table, Tag } from "antd";
 import { IProduct } from "../types";
 import ProductButtonModal from "./ProductButtonModal";
+import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
 
 type ProductTableRow = {
   key: number;
@@ -94,9 +95,18 @@ const productsMapInfo = (data: IProduct[]): ProductTableRow[] => {
 };
 
 function ProductTable({ info }: { info: IProduct[] }) {
+  const canCreate = useHasPermission([1, 2]);
+  const canUpdate = useHasPermission([1, 2]);
+  const canDelete = useHasPermission([1, 2]);
+
+  const columns =
+    canCreate || canUpdate || canDelete
+      ? columnsProducts
+      : columnsProducts.filter((item) => item.key !== "actions");
+
   return (
     <Table<ProductTableRow>
-      columns={columnsProducts}
+      columns={columns}
       dataSource={productsMapInfo(info)}
       scroll={{ x: 1000 }}
       pagination={false}

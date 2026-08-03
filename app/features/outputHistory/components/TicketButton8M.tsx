@@ -8,8 +8,11 @@ import { IListProductsData } from "../types";
 import { numberToSpanishWords } from "@/app/helpers/numberToText";
 import { printDate } from "@/app/helpers/currentHour";
 import { useAuth } from "@/app/features/auth/hooks/useAuth";
+import CustomTooltip from "@/app/shared/components/CustomTooltip";
+import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
 
 function TicketButton8M({ idOutput }: { idOutput: number }) {
+  const canSee = useHasPermission([1, 2, 3]);
   const { getListProductsOutput, resetListOutputProducts } =
     useOutputHistoryActions();
   const { listProducts } = useOutputHistory();
@@ -44,6 +47,7 @@ function TicketButton8M({ idOutput }: { idOutput: number }) {
     pdf.text("ZARABELL", 40, 9, { align: "center" });
 
     pdf.setFontSize(16);
+
     pdf.text("- - - - - - - - - - - - - - - - - - - - -", 40, 13, {
       align: "center",
     });
@@ -173,11 +177,17 @@ function TicketButton8M({ idOutput }: { idOutput: number }) {
     }
   }, [listProducts, user]);
 
+  if (!canSee) {
+    return null;
+  }
+
   return (
     <div className="mr-2">
-      <Button color="cyan" variant="solid" onClick={handleListOutputProduct}>
-        <FilePdfOutlined />
-      </Button>
+      <CustomTooltip text="Descargar pdf">
+        <Button color="cyan" variant="solid" onClick={handleListOutputProduct}>
+          <FilePdfOutlined />
+        </Button>
+      </CustomTooltip>
     </div>
   );
 }

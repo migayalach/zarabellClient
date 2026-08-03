@@ -6,13 +6,21 @@ import {
   CategoryPagination,
   CategoryTable,
 } from "@/app/features/categories/components";
+import Loading from "@/app/shared/components/Loading";
 
 function Page() {
-  const { info, results, getAllCategories } = useCategory();
+  const { info, results, getAllCategories, resetDataCategory, loading } =
+    useCategory();
 
   useEffect(() => {
     getAllCategories();
+
+    return () => {
+      resetDataCategory();
+    };
   }, []);
+
+  if (loading) return <Loading />;
 
   return (
     <div className="flex flex-col flex-1">

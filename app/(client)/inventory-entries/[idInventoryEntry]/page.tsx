@@ -8,6 +8,8 @@ import {
   PriceHistoryPagination,
   PriceHistoryTable,
 } from "@/app/features/priceHistory/components";
+import { useRequirePermission } from "@/app/features/auth/hooks/usePermise";
+import Loading from "@/app/shared/components/Loading";
 
 interface IParams {
   params: Promise<{
@@ -16,13 +18,22 @@ interface IParams {
 }
 
 function Page({ params }: IParams) {
+  const blocked = useRequirePermission([1, 2]);
   const { idInventoryEntry } = React.use(params);
-  const { info, results } = usePriceHistory();
-  const { getAllPriceHistory } = usePriceHistoryActions();
+  const { info, results, loading } = usePriceHistory();
+  const { getAllPriceHistory, resetPriceHistory } = usePriceHistoryActions();
 
   useEffect(() => {
-    getAllPriceHistory(+idInventoryEntry);
-  }, []);
+    if (!blocked) {
+      getAllPriceHistory(+idInventoryEntry);
+    }
+    return () => {
+      resetPriceHistory();
+    };
+  }, [blocked]);
+
+  if (blocked) return null;
+  if (loading) return <Loading />;
 
   return (
     <div className="flex flex-col flex-1">

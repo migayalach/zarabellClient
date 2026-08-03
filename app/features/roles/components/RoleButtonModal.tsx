@@ -1,8 +1,11 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import { DeleteOutlined, PlusOutlined, FormOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal } from "antd";
 import { useRoles } from "../../roles/hooks/useRoles";
+import CustomTooltip from "@/app/shared/components/CustomTooltip";
+import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
 
 type IUserForm = {
   text: string;
@@ -11,7 +14,12 @@ type IUserForm = {
 };
 
 function RoleButtonModal({ text, action, idRole }: IUserForm) {
+  const canCreate = useHasPermission([1]);
+  const canUpdate = useHasPermission([1]);
+  const canDelete = useHasPermission([1]);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const {
     createNewRole,
     getOneRole,
@@ -36,6 +44,7 @@ function RoleButtonModal({ text, action, idRole }: IUserForm) {
 
   const showModal = () => {
     setIsModalOpen(true);
+
     if (action !== "delete") {
       getAllRoles();
     }
@@ -52,18 +61,23 @@ function RoleButtonModal({ text, action, idRole }: IUserForm) {
       setIsModalOpen(false);
       resetRoleInfo();
     }
+
     if (action === "update") {
       updateOneRole(roleInfo);
     }
+
     if (action === "delete" && idRole) {
       deleteOneRole(idRole);
       setIsModalOpen(false);
     }
   };
 
-  const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeInput = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const key = event.target.name;
     const value = event.target.value;
+
     setRoleInfo((prev) => ({
       ...prev,
       [key]: value,
@@ -72,6 +86,7 @@ function RoleButtonModal({ text, action, idRole }: IUserForm) {
 
   useEffect(() => {
     if (!isModalOpen) return;
+
     if (action === "update" && idRole) {
       getOneRole(idRole);
     }
@@ -79,25 +94,49 @@ function RoleButtonModal({ text, action, idRole }: IUserForm) {
 
   useEffect(() => {
     if (!isModalOpen || !currentRole) return;
+
     requestAnimationFrame(() => {
       setRoleInfo(currentRole);
     });
   }, [currentRole, isModalOpen]);
 
+  if (
+    (action === "create" && !canCreate) ||
+    (action === "update" && !canUpdate) ||
+    (action === "delete" && !canDelete)
+  ) {
+    return null;
+  }
+
   return (
     <>
-      <Button type="primary" onClick={showModal}>
-        {action === "delete" && <DeleteOutlined />}
-        {action === "create" && <PlusOutlined />}
-        {action === "update" && <FormOutlined />}
-      </Button>
+      <CustomTooltip
+        text={
+          action === "delete"
+            ? "Eliminar rol"
+            : action === "create"
+              ? "Crear rol"
+              : "Editar rol"
+        }
+      >
+        <Button type="primary" onClick={showModal}>
+          {action === "delete" && <DeleteOutlined />}
+          {action === "create" && <PlusOutlined />}
+          {action === "update" && <FormOutlined />}
+        </Button>
+      </CustomTooltip>
 
       <Modal
         title={`${text} rol`}
         open={isModalOpen}
         onCancel={handleCancel}
         footer={[
-          <Button key="submit" type="primary" htmlType="submit" form="roleForm">
+          <Button
+            key="submit"
+            type="primary"
+            htmlType="submit"
+            form="roleForm"
+          >
             {action === "delete" && "Eliminar"}
             {action === "create" && "Crear"}
             {action === "update" && "Editar"}
@@ -116,15 +155,13 @@ function RoleButtonModal({ text, action, idRole }: IUserForm) {
           autoComplete="off"
         >
           {action !== "delete" && (
-            <>
-              <Form.Item label="Nombres">
-                <Input
-                  name="nameRole"
-                  value={roleInfo.nameRole}
-                  onChange={handleChangeInput}
-                />
-              </Form.Item>
-            </>
+            <Form.Item label="Nombres">
+              <Input
+                name="nameRole"
+                value={roleInfo.nameRole}
+                onChange={handleChangeInput}
+              />
+            </Form.Item>
           )}
 
           {action === "delete" && (

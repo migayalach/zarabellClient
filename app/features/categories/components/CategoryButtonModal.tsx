@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { DeleteOutlined, PlusOutlined, FormOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal, Switch } from "antd";
 import { useCategory } from "../hooks/useCategories";
+import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
+import CustomTooltip from "@/app/shared/components/CustomTooltip";
 
 type IUserForm = {
   text: string;
@@ -11,6 +13,9 @@ type IUserForm = {
 };
 
 function CategoryButtonModal({ text, action, idCategory }: IUserForm) {
+  const canCreate = useHasPermission([1]);
+  const canUpdate = useHasPermission([1]);
+  const canDelete = useHasPermission([1]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     createNewCategory,
@@ -93,13 +98,31 @@ function CategoryButtonModal({ text, action, idCategory }: IUserForm) {
     });
   }, [currentCategory, isModalOpen]);
 
+  if (
+    (action === "create" && !canCreate) ||
+    (action === "update" && !canUpdate) ||
+    (action === "delete" && !canDelete)
+  ) {
+    return null;
+  }
+
   return (
     <>
-      <Button type="primary" onClick={showModal}>
-        {action === "delete" && <DeleteOutlined />}
-        {action === "create" && <PlusOutlined />}
-        {action === "update" && <FormOutlined />}
-      </Button>
+      <CustomTooltip
+        text={
+          action === "delete"
+            ? "Eliminar categoria"
+            : action === "create"
+              ? "Crear categoria"
+              : "Editar categoria"
+        }
+      >
+        <Button type="primary" onClick={showModal}>
+          {action === "delete" && <DeleteOutlined />}
+          {action === "create" && <PlusOutlined />}
+          {action === "update" && <FormOutlined />}
+        </Button>
+      </CustomTooltip>
 
       <Modal
         title={`${text} categoria`}
