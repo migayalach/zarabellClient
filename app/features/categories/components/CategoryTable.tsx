@@ -2,6 +2,7 @@
 import { Table, Tag } from "antd";
 import { ICategory } from "../types";
 import CategoryButtonModal from "./CategoryButtonModal";
+import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
 
 type CategoryTableRow = {
   key: number;
@@ -10,7 +11,7 @@ type CategoryTableRow = {
   stateCategory: boolean;
 };
 
-const columnsUsers = [
+const columnsCategories = [
   {
     title: "N°",
     dataIndex: "numberItem",
@@ -71,9 +72,18 @@ const usersMapInfo = (data: ICategory[]): CategoryTableRow[] => {
 };
 
 function CategoryTable({ info }: { info: ICategory[] }) {
+  const canCreate = useHasPermission([1]);
+  const canUpdate = useHasPermission([1]);
+  const canDelete = useHasPermission([1]);
+
+  const columns =
+    canCreate || canUpdate || canDelete
+      ? columnsCategories
+      : columnsCategories.filter((item) => item.key !== "actions");
+
   return (
     <Table<CategoryTableRow>
-      columns={columnsUsers}
+      columns={columns}
       dataSource={usersMapInfo(info)}
       scroll={{ x: 1000 }}
       pagination={false}

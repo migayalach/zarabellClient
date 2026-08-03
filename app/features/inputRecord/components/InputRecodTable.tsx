@@ -3,6 +3,7 @@ import { Table, Tag } from "antd";
 import { IRecordInput } from "../types";
 import InputRecordButtonModal from "./InputRecordButtonModal";
 import InputRecordBtnAction from "./InputRecordBtnAction";
+import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
 
 type RoleTableRow = {
   key: number;
@@ -20,7 +21,7 @@ type RoleTableRow = {
   statusIRecord: boolean;
 };
 
-const columnsUsers = [
+const columnsInputRecord = [
   {
     title: "N°",
     dataIndex: "numberItem",
@@ -150,9 +151,18 @@ const rolesMapInfo = (data: IRecordInput[]): RoleTableRow[] => {
 };
 
 function InputRecodTable({ info }: { info: IRecordInput[] }) {
+  const canCreate = useHasPermission([1]);
+  const canUpdate = useHasPermission([1]);
+  const canDelete = useHasPermission([1]);
+
+  const columns =
+    canCreate || canUpdate || canDelete
+      ? columnsInputRecord
+      : columnsInputRecord.filter((item) => item.key !== "actions");
+
   return (
     <Table<RoleTableRow>
-      columns={columnsUsers}
+      columns={columns}
       dataSource={rolesMapInfo(info)}
       scroll={{ x: 1000 }}
       pagination={false}
