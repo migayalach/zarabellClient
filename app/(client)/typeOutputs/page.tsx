@@ -6,13 +6,21 @@ import {
   OutputTypePagination,
   OutputTypeTable,
 } from "@/app/features/typeOutputs/components";
+import Loading from "@/app/shared/components/Loading";
 
 function Page() {
-  const { info, results, getAllTOutputs } = useTOutputs();
+  const { info, results, getAllTOutputs, resetDataTOutput, loading } =
+    useTOutputs();
 
   useEffect(() => {
     getAllTOutputs();
+
+    return () => {
+      resetDataTOutput();
+    };
   }, []);
+
+  if (loading) return <Loading />;
 
   return (
     <div className="flex flex-col flex-1">

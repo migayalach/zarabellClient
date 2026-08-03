@@ -4,17 +4,25 @@ import { useUsers } from "@/app/features/users/hooks/useUsers";
 import UserButtonModal from "@/app/features/users/components/UserButtonModal";
 import UserPagination from "@/app/features/users/components/UserPagination";
 import UserTable from "@/app/features/users/components/UserTable";
+import { useRequirePermission } from "@/app/features/auth/hooks/usePermise";
+import Loading from "@/app/shared/components/Loading";
 
 function Page() {
-  const { info, results, getAllUsers, resetDataUser } = useUsers();
+  const blocked = useRequirePermission([1, 2]);
+  const { info, results, getAllUsers, resetDataUser, loading } = useUsers();
 
   useEffect(() => {
-    getAllUsers();
+    if (!blocked) {
+      getAllUsers();
+    }
 
     return () => {
       resetDataUser();
     };
-  }, []);
+  }, [blocked]);
+
+  if (blocked) return null;
+  if (loading) return <Loading />;
 
   return (
     <div className="flex flex-col flex-1">
