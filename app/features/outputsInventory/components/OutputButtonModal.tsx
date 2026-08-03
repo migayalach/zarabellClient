@@ -9,6 +9,8 @@ import UserList from "../../users/components/UserList";
 import { OutputTypeList } from "../../typeOutputs/components";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import CustomTooltip from "@/app/shared/components/CustomTooltip";
+import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
 
 dayjs.extend(customParseFormat);
 const dateFormat = "YYYY-MM-DD";
@@ -28,6 +30,9 @@ function OutputButtonModal({
   idOutput,
   idUser,
 }: IOutputForm) {
+  const canCreate = useHasPermission([1]);
+  const canUpdate = useHasPermission([1]);
+  const canDelete = useHasPermission([1]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { getAllUsers, resetDataUser, getOneUser } = useUsers();
   const { getAllTOutputs, resetDataTOutput, getOneTOutput } = useTOutputs();
@@ -126,13 +131,31 @@ function OutputButtonModal({
     setOutputData(currentOutput);
   }, [currentOutput, isModalOpen]);
 
+  if (
+    (action === "create" && !canCreate) ||
+    (action === "update" && !canUpdate) ||
+    (action === "delete" && !canDelete)
+  ) {
+    return null;
+  }
+
   return (
     <>
-      <Button type="primary" onClick={showModal}>
-        {action === "create" && <PlusOutlined />}
-        {action === "delete" && <DeleteOutlined />}
-        {action === "update" && <FormOutlined />}
-      </Button>
+      <CustomTooltip
+        text={
+          action === "delete"
+            ? "Eliminar salida"
+            : action === "create"
+              ? "Crear salida"
+              : "Editar salida"
+        }
+      >
+        <Button type="primary" onClick={showModal}>
+          {action === "create" && <PlusOutlined />}
+          {action === "delete" && <DeleteOutlined />}
+          {action === "update" && <FormOutlined />}
+        </Button>
+      </CustomTooltip>
 
       <Modal
         title={`${text} salida`}
