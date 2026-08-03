@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import {
   InputRecordButtonModal,
   InputRecodTable,
@@ -8,16 +9,25 @@ import {
   useInputRecord,
   useInputRecordActions,
 } from "@/app/features/inputRecord/hooks";
-
-import { useEffect } from "react";
+import { useRequirePermission } from "@/app/features/auth/hooks/usePermise";
+import Loading from "@/app/shared/components/Loading";
 
 function Page() {
-  const { info, results } = useInputRecord();
-  const { getAllInputRecords } = useInputRecordActions();
+  const blocked = useRequirePermission([1, 2]);
+  const { info, results, loading } = useInputRecord();
+  const { getAllInputRecords, resetInputRecord } = useInputRecordActions();
 
   useEffect(() => {
-    getAllInputRecords();
-  }, []);
+    if (!blocked) {
+      getAllInputRecords();
+    }
+    return () => {
+      resetInputRecord();
+    };
+  }, [blocked]);
+
+  if (blocked) return null;
+  if (loading) return <Loading />;
 
   return (
     <div className="flex flex-col flex-1">
