@@ -10,6 +10,8 @@ import { ProviderSelect } from "../../providers/components";
 import { ProductList } from "../../products/components";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import CustomTooltip from "@/app/shared/components/CustomTooltip";
+import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
 
 dayjs.extend(customParseFormat);
 const dateFormat = "YYYY-MM-DD";
@@ -29,6 +31,10 @@ function InputRecordButtonModal({
   idProduct,
   idProvider,
 }: IRecordInputForm) {
+  const canCreate = useHasPermission([1]);
+  const canUpdate = useHasPermission([1]);
+  const canDelete = useHasPermission([1]);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { currentInputRecord } = useInputRecord();
   const {
@@ -159,13 +165,31 @@ function InputRecordButtonModal({
     setIrecord(currentInputRecord);
   }, [currentInputRecord, isModalOpen]);
 
+  if (
+    (action === "create" && !canCreate) ||
+    (action === "update" && !canUpdate) ||
+    (action === "delete" && !canDelete)
+  ) {
+    return null;
+  }
+
   return (
     <>
-      <Button type="primary" onClick={showModal}>
-        {action === "create" && <PlusOutlined />}
-        {action === "delete" && <DeleteOutlined />}
-        {action === "update" && <FormOutlined />}
-      </Button>
+      <CustomTooltip
+        text={
+          action === "delete"
+            ? "Eliminar entrada"
+            : action === "create"
+              ? "Crear entrada"
+              : "Editar entrada"
+        }
+      >
+        <Button type="primary" onClick={showModal}>
+          {action === "create" && <PlusOutlined />}
+          {action === "delete" && <DeleteOutlined />}
+          {action === "update" && <FormOutlined />}
+        </Button>
+      </CustomTooltip>
 
       <Modal
         title={`${text} entrada`}
