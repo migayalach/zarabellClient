@@ -11,6 +11,7 @@ import inputRecords from "@/app/features/inputRecord/store/entriesInventory.slic
 import priceHistory from "@/app/features/priceHistory/store/priceHistory.slice";
 import outputs from "@/app/features/outputsInventory/store/outputsInventory.slice";
 import outputHistory from "@/app/features/outputHistory/store/outputHistory.slice";
+import branchs from "@/app/features/branchs/store/branch.slice";
 import dashboard from "@/app/features/dashboard/store/dashboard.slice";
 
 export const store = configureStore({
@@ -27,6 +28,7 @@ export const store = configureStore({
     priceHistory,
     outputs,
     outputHistory,
+    branchs,
     dashboard,
   },
   // devTools: process.env.AROUND_DEVELOP === "develop",
