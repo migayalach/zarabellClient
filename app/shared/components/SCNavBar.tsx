@@ -19,6 +19,7 @@ import {
   HistoryOutlined,
   FormOutlined,
   FileSearchOutlined,
+  SnippetsFilled,
 } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import {
@@ -36,11 +37,14 @@ function NavBarMenu() {
   const router = useRouter();
 
   const mobileItems = [
+    { key: "inventory-entries", label: "Ingresos", icon: <FormOutlined /> },
+    { key: "inventory-outputs", label: "Salidas", icon: <ProfileOutlined /> },
     { key: "sales", label: "Ventas", icon: <ShoppingCartOutlined /> },
     { key: "clients", label: "Clientes", icon: <AuditOutlined /> },
     { key: "roles", label: "Roles", icon: <OrderedListOutlined /> },
     { key: "users", label: "Usuarios", icon: <UserSwitchOutlined /> },
     { key: "providers", label: "Proveedores", icon: <ContactsOutlined /> },
+    { key: "branchs", label: "Sucursales", icon: <SnippetsFilled /> },
     { key: "categories", label: "Categorias", icon: <BookOutlined /> },
     { key: "products", label: "Productos", icon: <ProductOutlined /> },
     { key: "reasons", label: "Razones", icon: <ProfileOutlined /> },
@@ -93,6 +97,11 @@ function NavBarMenu() {
         label: "Proveedores",
       },
       {
+        key: "branchs",
+        icon: <SnippetsFilled />,
+        label: "Sucursales",
+      },
+      {
         key: "categories",
         icon: <BookOutlined />,
         label: "Categorias",
@@ -134,11 +143,6 @@ function NavBarMenu() {
         icon: <ProfileOutlined />,
         label: "Nueva Salida",
       },
-      // {
-      //   key: "priceHistory",
-      //   icon: <ReadOutlined />,
-      //   label: "Historial de precios",
-      // },
       // {
       //   key: "detailOutput",
       //   icon: <SolutionOutlined />,
