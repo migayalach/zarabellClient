@@ -52,7 +52,7 @@ function AuthFormInformation() {
     <>
       <button onClick={showModal} className="flex items-center gap-2">
         <UserOutlined />
-        <span>Ver información</span>
+        <span>Perfil</span>
       </button>
 
       <Modal
