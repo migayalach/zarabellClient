@@ -2,8 +2,10 @@ export interface IOutput {
   idOutput: number;
   idUser: number;
   idTypeOutput: number;
+  idBranch: number;
   nameTypeOutput: string;
   nameUser: string;
+  nameBranch: string;
   dateOutput: string;
   codeOutput: string;
 }
@@ -11,6 +13,7 @@ export interface IOutput {
 export interface IOutputCreate {
   idUser: number;
   idTypeOutput: number;
+  idBranch: number;
   dateOutput: string;
 }
 
@@ -18,6 +21,7 @@ export interface IOutputUpdate {
   idOutput: number;
   idUser: number;
   idTypeOutput: number;
+  idBranch: number;
   dateOutput: string;
 }
 

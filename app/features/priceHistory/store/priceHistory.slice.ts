@@ -3,6 +3,8 @@ import {
   createNewPriceHistory,
   getAllPriceHistories,
   updateOnePriceHistory,
+  getAllMagazine,
+  getAllMagazineData,
 } from "../services/priceHistory.services";
 import {
   IErrorPriceHistory,
@@ -12,11 +14,16 @@ import {
   IPriceHistoryUpdate,
   IResponsePriceHistories,
   IResponsePriceHistory,
+  IResponseMagazine,
+  IMagazine,
 } from "../types";
 
 interface IPriceHistoryState {
   info: IPaginationPriceHistory | null;
+  infoMagazinePDF: IPaginationPriceHistory | null;
   results: IPriceHistory[];
+  resultsMagazine: IMagazine[];
+  resultAllMagazinePDF: IMagazine[];
   currentPriceHistory: IPriceHistory | null;
   loading: boolean;
   error: string | null;
@@ -25,7 +32,10 @@ interface IPriceHistoryState {
 
 const initialState: IPriceHistoryState = {
   info: null,
+  infoMagazinePDF: null,
+  resultAllMagazinePDF: [],
   results: [],
+  resultsMagazine: [],
   currentPriceHistory: null,
   loading: false,
   error: null,
@@ -71,6 +81,30 @@ export const updateOnePriceHistoryByID = createAsyncThunk<
   }
 });
 
+export const getMagazineProducts = createAsyncThunk<
+  IResponseMagazine,
+  { page: number | undefined },
+  { rejectValue: IErrorPriceHistory }
+>("price-history/magazine", async ({ page }, { rejectWithValue }) => {
+  try {
+    return await getAllMagazine(page);
+  } catch (error) {
+    return rejectWithValue(error as IErrorPriceHistory);
+  }
+});
+
+export const getMagazineAllProducts = createAsyncThunk<
+  IResponseMagazine,
+  void,
+  { rejectValue: IErrorPriceHistory }
+>("price-history/magazine-pdf", async (_, { rejectWithValue }) => {
+  try {
+    return await getAllMagazineData();
+  } catch (error) {
+    return rejectWithValue(error as IErrorPriceHistory);
+  }
+});
+
 const priceHistorySlice = createSlice({
   name: "price-history",
   initialState,
@@ -92,6 +126,18 @@ const priceHistorySlice = createSlice({
       state.success = false;
       state.currentPriceHistory = null;
     },
+    resetMagazineData: (state) => {
+      state.info = null;
+      state.resultsMagazine = [];
+      state.loading = false;
+      state.error = null;
+    },
+    resetMagazinePDF: (state) => {
+      state.infoMagazinePDF = null;
+      state.resultAllMagazinePDF = [];
+      state.loading = false;
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -106,6 +152,36 @@ const priceHistorySlice = createSlice({
         state.results = action.payload.results;
       })
       .addCase(getAllPriceHistoryByID.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message ?? "Error";
+      })
+
+      // TODO GET ALL MAGAZINE
+      .addCase(getMagazineProducts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getMagazineProducts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.info = action.payload.info;
+        state.resultsMagazine = action.payload.results;
+      })
+      .addCase(getMagazineProducts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message ?? "Error";
+      })
+
+      // TODO GET ALL MAGAZINE PDF
+      .addCase(getMagazineAllProducts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getMagazineAllProducts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.infoMagazinePDF = action.payload.info;
+        state.resultAllMagazinePDF = action.payload.results;
+      })
+      .addCase(getMagazineAllProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message ?? "Error";
       })
@@ -154,4 +230,6 @@ export const {
   clearCurrentPriceHistoryData,
   resetAllDataPriceHistory,
   resetCreateUpdateData,
+  resetMagazineData,
+  resetMagazinePDF
 } = priceHistorySlice.actions;

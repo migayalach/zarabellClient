@@ -10,6 +10,7 @@ export interface IUserOutputData {
   nameUser: string;
   lastNameUser: string;
   nameTypeOutput: string;
+  nameBranch: string;
   codeOutput: string;
   dateOutput: string;
 }

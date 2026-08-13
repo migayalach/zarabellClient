@@ -13,6 +13,16 @@ export interface IPriceHistory {
   detailHistory: string;
 }
 
+export interface IMagazine {
+  nameProvider: string;
+  nameProduct: string;
+  countIRecord: number;
+  unitPriceHistory: number;
+  quarterPriceHistory: number;
+  dozenPriceHistory: number;
+  mayorPriceHistory: number;
+}
+
 export interface IPriceHistoryCreate {
   idInputRecord: number;
   dateStartHistory: string;
@@ -50,6 +60,11 @@ export interface IResponsePriceHistories {
   message: string;
   info: IPaginationPriceHistory;
   results: IPriceHistory[];
+}
+
+export interface IResponseMagazine {
+  info: IPaginationPriceHistory;
+  results: IMagazine[];
 }
 
 export interface IResponsePriceHistory {

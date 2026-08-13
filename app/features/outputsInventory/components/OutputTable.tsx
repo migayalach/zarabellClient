@@ -9,8 +9,10 @@ type OutputTableRow = {
   idOutput: number;
   idUser: number;
   idTypeOutput: number;
+  idBranch: number;
   nameTypeOutput: string;
   nameUser: string;
+  nameBranch: string;
   dateOutput: string;
   codeOutput: string;
 };
@@ -35,6 +37,12 @@ const columnsOutput = [
     width: 180,
   },
   {
+    title: "Sucursal",
+    dataIndex: "nameBranch",
+    key: "nameBranch",
+    width: 180,
+  },
+  {
     title: "Fecha salida",
     dataIndex: "dateOutput",
     key: "dateOutput",
@@ -54,10 +62,12 @@ const columnsOutput = [
       idOutput,
       idUser,
       idTypeOutput,
+      idBranch,
     }: {
       idOutput: number;
       idUser: number;
       idTypeOutput: number;
+      idBranch: number;
     }) => (
       <div className="flex gap-1">
         <OutputButtonModal
@@ -71,6 +81,7 @@ const columnsOutput = [
           idOutput={idOutput}
           idUser={idUser}
           idTypeOutput={idTypeOutput}
+          idBranch={idBranch}
         />
         <OutputBtnAction idOutput={idOutput} />
       </div>
@@ -85,8 +96,10 @@ const outputMapInfo = (data: IOutput[]): OutputTableRow[] => {
         idOutput,
         idUser,
         idTypeOutput,
+        idBranch,
         nameTypeOutput,
         nameUser,
+        nameBranch,
         dateOutput,
         codeOutput,
       }: IOutput,
@@ -96,9 +109,11 @@ const outputMapInfo = (data: IOutput[]): OutputTableRow[] => {
       numberItem: index + 1,
       idOutput,
       idUser,
+      idBranch,
       idTypeOutput,
       nameTypeOutput,
       nameUser,
+      nameBranch,
       dateOutput,
       codeOutput,
     }),

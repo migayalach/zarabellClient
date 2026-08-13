@@ -17,6 +17,7 @@ import {
   updateOneProductByID,
 } from "../store/product.slice";
 import { IProductCreate, IProductUpdate } from "../types";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 export const useProducts = () => {
   const dispatch = useAppDispatch();
@@ -26,24 +27,29 @@ export const useProducts = () => {
   const loading = useAppSelector(selectProductsLoading);
   const error = useAppSelector(selectProductsError);
 
-  const getAllProducts = (page?: number) => {
-    dispatch(getAllListProducts(page));
+  const getAllProducts = async (page?: number) => {
+    const result = await dispatch(getAllListProducts(page));
+    return unwrapResult(result);
   };
 
-  const getOneProduct = (idProduct: number) => {
-    dispatch(getProductByID(idProduct));
+  const getOneProduct = async (idProduct: number) => {
+    const result = await dispatch(getProductByID(idProduct));
+    return unwrapResult(result);
   };
 
-  const createNewProduct = (dataProduct: IProductCreate) => {
-    dispatch(createProduct(dataProduct));
+  const createNewProduct = async (dataProduct: IProductCreate) => {
+    const result = await dispatch(createProduct(dataProduct));
+    return unwrapResult(result);
   };
 
-  const deleteOneProduct = (idProduct: number) => {
-    dispatch(deleteOneProductByID(idProduct));
+  const deleteOneProduct = async (idProduct: number) => {
+    const result = await dispatch(deleteOneProductByID(idProduct));
+    return unwrapResult(result);
   };
 
-  const updateOneProduct = (dataProduct: IProductUpdate) => {
-    dispatch(updateOneProductByID(dataProduct));
+  const updateOneProduct = async (dataProduct: IProductUpdate) => {
+    const result = await dispatch(updateOneProductByID(dataProduct));
+    return unwrapResult(result);
   };
 
   const clearDataCurrentProduct = () => {

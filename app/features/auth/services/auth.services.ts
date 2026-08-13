@@ -1,7 +1,9 @@
 import { api } from "@/app/shared/api/axios";
 import {
   IPassword,
+  IRefreshTokenResponse,
   IResponseCurrentUser,
+  ISignOut,
   IUpdateProfile,
   SignInResponse,
   UserStore,
@@ -135,4 +137,44 @@ export const resetPasswordUser = async (idUser: number) => {
   });
 
   return response.data.data.resetPassword;
+};
+
+export const refreshToken = async (): Promise<IRefreshTokenResponse> => {
+  const response = await api.post("", {
+    query: `
+      mutation {
+        refreshToken {
+          access_token
+          message
+          success
+          value {
+            idUser
+            idRole
+            nameRole
+            nameUser
+            lastNameUser
+            emailUser
+            phoneUser
+          }
+        }
+      }
+    `,
+  });
+
+  return response.data.data.refreshToken;
+};
+
+export const signOut = async (): Promise<ISignOut> => {
+  const response = await api.post("", {
+    query: `
+      mutation {
+        signOut {
+          success
+          message
+        }
+      }
+    `,
+  });
+
+  return response.data.data.signOut;
 };

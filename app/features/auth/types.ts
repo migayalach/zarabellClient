@@ -57,3 +57,15 @@ export interface IPassword {
   currentPassword: string;
   newPassword: string;
 }
+
+export interface IRefreshTokenResponse {
+  access_token: string;
+  message: string;
+  success: boolean;
+  value: IUserInfo;
+}
+
+export interface ISignOut {
+  success: boolean;
+  message: string;
+}

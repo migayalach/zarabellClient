@@ -1,28 +1,25 @@
 "use client";
-import { useEffect } from "react";
 import { useUsers } from "@/app/features/users/hooks/useUsers";
 import UserButtonModal from "@/app/features/users/components/UserButtonModal";
 import UserPagination from "@/app/features/users/components/UserPagination";
 import UserTable from "@/app/features/users/components/UserTable";
 import { useRequirePermission } from "@/app/features/auth/hooks/usePermise";
 import Loading from "@/app/shared/components/Loading";
+import { useInitialLoading } from "@/app/features/auth/hooks/useInitialLoading";
 
 function Page() {
   const blocked = useRequirePermission([1, 2]);
-  const { info, results, getAllUsers, resetDataUser, loading } = useUsers();
+  const { info, results, getAllUsers, resetDataUser } = useUsers();
 
-  useEffect(() => {
-    if (!blocked) {
-      getAllUsers();
-    }
-
-    return () => {
-      resetDataUser();
-    };
-  }, [blocked]);
+  const initialLoading = useInitialLoading(
+    getAllUsers,
+    resetDataUser,
+    !blocked,
+  );
 
   if (blocked) return null;
-  if (loading) return <Loading />;
+
+  if (initialLoading) return <Loading />;
 
   return (
     <div className="flex flex-col flex-1">

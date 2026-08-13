@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import {
   usePriceHistory,
   usePriceHistoryActions,
@@ -10,6 +10,7 @@ import {
 } from "@/app/features/priceHistory/components";
 import { useRequirePermission } from "@/app/features/auth/hooks/usePermise";
 import Loading from "@/app/shared/components/Loading";
+import { useInitialLoading } from "@/app/features/auth/hooks/useInitialLoading";
 
 interface IParams {
   params: Promise<{
@@ -20,20 +21,17 @@ interface IParams {
 function Page({ params }: IParams) {
   const blocked = useRequirePermission([1, 2]);
   const { idInventoryEntry } = React.use(params);
-  const { info, results, loading } = usePriceHistory();
+  const { info, results } = usePriceHistory();
   const { getAllPriceHistory, resetPriceHistory } = usePriceHistoryActions();
 
-  useEffect(() => {
-    if (!blocked) {
-      getAllPriceHistory(+idInventoryEntry);
-    }
-    return () => {
-      resetPriceHistory();
-    };
-  }, [blocked]);
+  const initialLoading = useInitialLoading(
+    () => getAllPriceHistory(+idInventoryEntry),
+    resetPriceHistory,
+    !blocked,
+  );
 
   if (blocked) return null;
-  if (loading) return <Loading />;
+  if (initialLoading) return <Loading />;
 
   return (
     <div className="flex flex-col flex-1">

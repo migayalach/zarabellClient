@@ -17,7 +17,7 @@ import {
   resetAllDataReason,
   updateOneReasonByID,
 } from "../store/reason.slice";
-
+import { unwrapResult } from "@reduxjs/toolkit";
 import { IReasonCreate, IReasonUpdate } from "../types";
 
 export const useReasons = () => {
@@ -28,24 +28,29 @@ export const useReasons = () => {
   const loading = useAppSelector(selectReasonsLoading);
   const error = useAppSelector(selectReasonsError);
 
-  const getAllReasons = (page?: number) => {
-    dispatch(getAllListReason(page));
+  const getAllReasons = async (page?: number) => {
+    const result = await dispatch(getAllListReason(page));
+    return unwrapResult(result);
   };
 
-  const getOneReason = (idReason: number) => {
-    dispatch(getReasonByID(idReason));
+  const getOneReason = async (idReason: number) => {
+    const result = await dispatch(getReasonByID(idReason));
+    return unwrapResult(result);
   };
 
-  const createNewReason = (infoReason: IReasonCreate) => {
-    dispatch(createReason(infoReason));
+  const createNewReason = async (infoReason: IReasonCreate) => {
+    const result = await dispatch(createReason(infoReason));
+    return unwrapResult(result);
   };
 
-  const deleteOneReason = (idReason: number) => {
-    dispatch(deleteOneReasonByID(idReason));
+  const deleteOneReason = async (idReason: number) => {
+    const result = await dispatch(deleteOneReasonByID(idReason));
+    return unwrapResult(result);
   };
 
-  const updateOneReason = (infoReason: IReasonUpdate) => {
-    dispatch(updateOneReasonByID(infoReason));
+  const updateOneReason = async (infoReason: IReasonUpdate) => {
+    const result = await dispatch(updateOneReasonByID(infoReason));
+    return unwrapResult(result);
   };
 
   const clearDataCurrentReason = () => {

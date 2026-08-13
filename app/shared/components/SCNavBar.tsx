@@ -19,6 +19,8 @@ import {
   HistoryOutlined,
   FormOutlined,
   FileSearchOutlined,
+  SnippetsFilled,
+  FileMarkdownOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import {
@@ -26,6 +28,7 @@ import {
   AuthFormInformation,
 } from "@/app/features/auth/components";
 import { useAuth } from "@/app/features/auth/hooks/useAuth";
+import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
 import AuthSignOut from "@/app/features/auth/components/AuthSignOut";
 
 const { Header } = Layout;
@@ -35,16 +38,90 @@ function NavBarMenu() {
   const { user } = useAuth();
   const router = useRouter();
 
+  const canManageUsers = useHasPermission([1]);
+  const canManageProducts = useHasPermission([1, 2]);
+  const canManageTools = useHasPermission([1, 2]);
+  const canManageHistory = useHasPermission([1, 2]);
+
   const mobileItems = [
-    { key: "sales", label: "Ventas", icon: <ShoppingCartOutlined /> },
-    { key: "clients", label: "Clientes", icon: <AuditOutlined /> },
-    { key: "roles", label: "Roles", icon: <OrderedListOutlined /> },
-    { key: "users", label: "Usuarios", icon: <UserSwitchOutlined /> },
-    { key: "providers", label: "Proveedores", icon: <ContactsOutlined /> },
-    { key: "categories", label: "Categorias", icon: <BookOutlined /> },
-    { key: "products", label: "Productos", icon: <ProductOutlined /> },
-    { key: "reasons", label: "Razones", icon: <ProfileOutlined /> },
-    { key: "typeOutputs", label: "Tipo salidas", icon: <SolutionOutlined /> },
+    {
+      key: "inventory-entries",
+      label: "Ingresos",
+      icon: <ShoppingCartOutlined />,
+      allowed: canManageHistory,
+    },
+    {
+      key: "inventory-outputs",
+      label: "Salidas",
+      icon: <AuditOutlined />,
+      allowed: canManageHistory,
+    },
+    {
+      key: "sales",
+      label: "Ventas",
+      icon: <OrderedListOutlined />,
+      allowed: canManageHistory,
+    },
+    {
+      key: "clients",
+      label: "Clientes",
+      icon: <ContactsOutlined />,
+      allowed: canManageHistory,
+    },
+    {
+      key: "roles",
+      label: "Roles",
+      icon: <UserOutlined />,
+      allowed: canManageUsers,
+    },
+    {
+      key: "users",
+      label: "Usuarios",
+      icon: <UserOutlined />,
+      allowed: canManageUsers,
+    },
+    {
+      key: "providers",
+      label: "Proveedores",
+      icon: <BookOutlined />,
+      allowed: canManageProducts,
+    },
+    {
+      key: "magazine",
+      label: "Catalogo",
+      icon: <FileMarkdownOutlined />,
+      allowed: canManageProducts,
+    },
+    {
+      key: "branchs",
+      label: "Sucursales",
+      icon: <ProfileOutlined />,
+      allowed: canManageProducts,
+    },
+    {
+      key: "categories",
+      label: "Categorias",
+      icon: <OrderedListOutlined />,
+      allowed: canManageProducts,
+    },
+    {
+      key: "products",
+      label: "Productos",
+      icon: <ProductOutlined />,
+      allowed: canManageProducts,
+    },
+    {
+      key: "reasons",
+      label: "Razones",
+      icon: <FileSearchOutlined />,
+      allowed: canManageTools,
+    },
+    {
+      key: "typeOutputs",
+      label: "Tipo salidas",
+      icon: <SnippetsFilled />,
+      allowed: canManageTools,
+    },
   ];
 
   const handleMenuClick = (key: string) => {
@@ -93,6 +170,11 @@ function NavBarMenu() {
         label: "Proveedores",
       },
       {
+        key: "branchs",
+        icon: <SnippetsFilled />,
+        label: "Sucursales",
+      },
+      {
         key: "categories",
         icon: <BookOutlined />,
         label: "Categorias",
@@ -101,6 +183,11 @@ function NavBarMenu() {
         key: "products",
         icon: <OrderedListOutlined />,
         label: "Productos",
+      },
+      {
+        key: "magazine",
+        icon: <FileMarkdownOutlined />,
+        label: "Magazine",
       },
     ],
   };
@@ -134,11 +221,6 @@ function NavBarMenu() {
         icon: <ProfileOutlined />,
         label: "Nueva Salida",
       },
-      // {
-      //   key: "priceHistory",
-      //   icon: <ReadOutlined />,
-      //   label: "Historial de precios",
-      // },
       // {
       //   key: "detailOutput",
       //   icon: <SolutionOutlined />,

@@ -13,6 +13,7 @@ export const getListOutputDetail = async (idOutput: number) => {
               nameUser
               lastNameUser
               nameTypeOutput
+              nameBranch
               codeOutput
               dateOutput
             }

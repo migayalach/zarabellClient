@@ -1,5 +1,4 @@
 "use client";
-import { useEffect } from "react";
 import { useTOutputs } from "@/app/features/typeOutputs/hooks/useTypeOutputs";
 import {
   OutputTypeButtonModal,
@@ -7,20 +6,13 @@ import {
   OutputTypeTable,
 } from "@/app/features/typeOutputs/components";
 import Loading from "@/app/shared/components/Loading";
+import { useInitialLoading } from "@/app/features/auth/hooks/useInitialLoading";
 
 function Page() {
-  const { info, results, getAllTOutputs, resetDataTOutput, loading } =
-    useTOutputs();
+  const { info, results, getAllTOutputs, resetDataTOutput } = useTOutputs();
+  const initialLoading = useInitialLoading(getAllTOutputs, resetDataTOutput);
 
-  useEffect(() => {
-    getAllTOutputs();
-
-    return () => {
-      resetDataTOutput();
-    };
-  }, []);
-
-  if (loading) return <Loading />;
+  if (initialLoading) return <Loading />;
 
   return (
     <div className="flex flex-col flex-1">

@@ -1,8 +1,11 @@
 "use client";
 import { ArrowDownOutlined } from "@ant-design/icons";
 import { ISalesYesterdayData } from "../types";
+import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
 
 function SalesReportYesterday({ info }: { info: ISalesYesterdayData }) {
+  const canView = useHasPermission([1]);
+
   return (
     <div className="w-full md:max-w-87.5 min-h-32 bg-white rounded-2xl shadow-md p-6 border border-gray-100 hover:shadow-lg transition-all duration-300">
       <div className="flex items-center gap-4 mb-5">
@@ -24,12 +27,14 @@ function SalesReportYesterday({ info }: { info: ISalesYesterdayData }) {
           </h2>
         </div>
 
-        <div>
-          <p className="text-gray-500 text-sm">Total vendido</p>
-          <h2 className="text-[18px] font-bold">
-            Bs. {info.totalWinYesterday.toFixed(2)}
-          </h2>
-        </div>
+        {canView && (
+          <div>
+            <p className="text-gray-500 text-sm">Total vendido</p>
+            <h2 className="text-[18px] font-bold">
+              Bs. {info.totalWinYesterday.toFixed(2)}
+            </h2>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,7 +1,10 @@
 import { api } from "@/app/shared/api/axios";
 import { IPriceHistoryCreate, IPriceHistoryUpdate } from "../types";
 
-export const getAllPriceHistories = async (idInputRecord: number, page?: number) => {
+export const getAllPriceHistories = async (
+  idInputRecord: number,
+  page?: number,
+) => {
   const response = await api.post("", {
     query: `
       query($idInputRecord: Int!, $page: Int){
@@ -129,6 +132,65 @@ export const updateOnePriceHistory = async (data: IPriceHistoryUpdate) => {
       detailHistory: data.detailHistory,
     },
   });
-  
+
   return response.data.data.updateOnePriceHistory;
+};
+
+export const getAllMagazine = async (page?: number) => {
+  const response = await api.post("", {
+    query: `
+      query($page: Int){
+        getMagazine(page: $page){
+          info {
+            count
+            pages
+            next
+            prev
+          }
+          results {
+            nameProvider
+            nameProduct
+            countIRecord
+            unitPriceHistory
+            quarterPriceHistory
+            dozenPriceHistory
+            mayorPriceHistory
+            
+          }
+        }
+      }
+    `,
+    variables: {
+      page,
+    },
+  });
+
+  return response.data.data.getMagazine;
+};
+
+export const getAllMagazineData = async () => {
+  const response = await api.post("", {
+    query: `
+      query{
+        getAllMagazine{
+          info {
+            count
+            pages
+          }
+          results {
+            nameProvider
+            nameProduct
+            countIRecord
+            unitPriceHistory
+            quarterPriceHistory
+            dozenPriceHistory
+            mayorPriceHistory
+            
+          }
+        }
+      }
+    `,
+  });
+
+  return response.data.data.getAllMagazine;
 };
