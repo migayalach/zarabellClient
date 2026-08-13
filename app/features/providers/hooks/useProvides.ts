@@ -7,7 +7,6 @@ import {
   selectProvidersLoading,
   selectProvidersResults,
 } from "../store/provider.selector";
-
 import {
   clearCurrentProviderData,
   createProvider,
@@ -17,7 +16,7 @@ import {
   resetAllDataProvider,
   updateOneProviderByID,
 } from "../store/provider.slice";
-
+import { unwrapResult } from "@reduxjs/toolkit";
 import { IProviderCreate, IProviderUpdate } from "../types";
 
 export const useProviders = () => {
@@ -28,24 +27,29 @@ export const useProviders = () => {
   const loading = useAppSelector(selectProvidersLoading);
   const error = useAppSelector(selectProvidersError);
 
-  const getAllProviders = (page?: number) => {
-    dispatch(getAllListProvider(page));
+  const getAllProviders = async (page?: number) => {
+    const result = await dispatch(getAllListProvider(page));
+    return unwrapResult(result);
   };
 
-  const getOneProvider = (idProvider: number) => {
-    dispatch(getProviderByID(idProvider));
+  const getOneProvider = async (idProvider: number) => {
+    const result = await dispatch(getProviderByID(idProvider));
+    return unwrapResult(result);
   };
 
-  const createNewProvider = (infoProvider: IProviderCreate) => {
-    dispatch(createProvider(infoProvider));
+  const createNewProvider = async (infoProvider: IProviderCreate) => {
+    const result = await dispatch(createProvider(infoProvider));
+    return unwrapResult(result);
   };
 
-  const deleteOneProvider = (idProvider: number) => {
-    dispatch(deleteOneProviderByID(idProvider));
+  const deleteOneProvider = async (idProvider: number) => {
+    const result = await dispatch(deleteOneProviderByID(idProvider));
+    return unwrapResult(result);
   };
 
-  const updateOneProvider = (infoProvider: IProviderUpdate) => {
-    dispatch(updateOneProviderByID(infoProvider));
+  const updateOneProvider = async (infoProvider: IProviderUpdate) => {
+    const result = await dispatch(updateOneProviderByID(infoProvider));
+    return unwrapResult(result);
   };
 
   const clearDataCurrentProvider = () => {
