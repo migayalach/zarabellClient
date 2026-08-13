@@ -1,7 +1,5 @@
 "use client";
-
 import { useAppDispatch } from "@/app/store/hooks";
-
 import {
   clearCurrentPriceHistoryData,
   createPriceHistory,
@@ -10,8 +8,11 @@ import {
   updateOnePriceHistoryByID,
   resetCreateUpdateData,
   clearInfoPriceHistoryError,
+  getMagazineProducts,
+  resetMagazineData,
+  getMagazineAllProducts,
+  resetMagazinePDF,
 } from "../store/priceHistory.slice";
-
 import { IPriceHistoryCreate, IPriceHistoryUpdate } from "../types";
 import { unwrapResult } from "@reduxjs/toolkit";
 
@@ -25,6 +26,16 @@ export const usePriceHistoryActions = () => {
         page,
       }),
     );
+    return unwrapResult(result);
+  };
+
+  const getProductMagazine = async (page?: number) => {
+    const result = await dispatch(getMagazineProducts({ page }));
+    return unwrapResult(result);
+  };
+
+  const getMagazinePDF = async () => {
+    const result = await dispatch(getMagazineAllProducts());
     return unwrapResult(result);
   };
 
@@ -46,6 +57,14 @@ export const usePriceHistoryActions = () => {
     dispatch(resetAllDataPriceHistory());
   };
 
+  const resetMagazine = () => {
+    dispatch(resetMagazineData());
+  };
+
+  const resetPDFMagazine = () => {
+    dispatch(resetMagazinePDF());
+  };
+
   const resetActionCreateUpdate = () => {
     dispatch(resetCreateUpdateData());
   };
@@ -56,11 +75,15 @@ export const usePriceHistoryActions = () => {
 
   return {
     getAllPriceHistory,
+    getProductMagazine,
     createNewPriceHistory,
     updatePriceHistory,
     clearCurrentPriceHistory,
     resetPriceHistory,
+    resetMagazine,
     resetActionCreateUpdate,
     clearErrorInfo,
+    getMagazinePDF,
+    resetPDFMagazine,
   };
 };
