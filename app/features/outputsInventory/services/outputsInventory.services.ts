@@ -16,8 +16,10 @@ export const getAllOutputs = async (page?: number) => {
             idOutput
             idTypeOutput
             idUser
+            idBranch
             nameTypeOutput
             nameUser
+            nameBranch
             dateOutput
             codeOutput
           }
@@ -41,9 +43,11 @@ export const getOneOutputByID = async (idOutput: number) => {
           value {
             idOutput
             idTypeOutput
+            idBranch
             idUser
             nameTypeOutput
             nameUser
+            nameBranch
             dateOutput
             codeOutput
           }
@@ -60,10 +64,11 @@ export const getOneOutputByID = async (idOutput: number) => {
 export const createNewOutput = async (infoOutput: IOutputCreate) => {
   const response = await api.post("", {
     query: `
-      mutation($idUser: Int!, $idTypeOutput: Int!, $dateOutput: String!) {
+      mutation($idUser: Int!, $idTypeOutput: Int!, $idBranch: Int!, $dateOutput: String!) {
         createOutput(dataOutput: {
           idUser: $idUser
           idTypeOutput: $idTypeOutput
+          idBranch: $idBranch
           dateOutput: $dateOutput
         }){
           message
@@ -72,8 +77,10 @@ export const createNewOutput = async (infoOutput: IOutputCreate) => {
             idOutput
             idTypeOutput
             idUser
+            idBranch
             nameTypeOutput
             nameUser
+            nameBranch
             dateOutput
             codeOutput
           }
@@ -83,6 +90,7 @@ export const createNewOutput = async (infoOutput: IOutputCreate) => {
     variables: {
       idUser: infoOutput.idUser,
       idTypeOutput: infoOutput.idTypeOutput,
+      idBranch: infoOutput.idBranch,
       dateOutput: infoOutput.dateOutput,
     },
   });
@@ -92,11 +100,12 @@ export const createNewOutput = async (infoOutput: IOutputCreate) => {
 export const updateOneOutput = async (infoOutput: IOutputUpdate) => {
   const response = await api.post("", {
     query: `
-      mutation($idOutput: Int!, $idTypeOutput: Int!, $idUser: Int!, $dateOutput: String!) {
+      mutation($idOutput: Int!, $idTypeOutput: Int!, $idUser: Int!, $idBranch: Int!, $dateOutput: String!) {
         updateOutput(dataOutput: {
           idOutput: $idOutput
           idTypeOutput: $idTypeOutput
           idUser: $idUser
+          idBranch: $idBranch
           dateOutput: $dateOutput
         }){
         message
@@ -105,8 +114,10 @@ export const updateOneOutput = async (infoOutput: IOutputUpdate) => {
             idOutput
             idTypeOutput
             idUser
+            idBranch
             nameTypeOutput
             nameUser
+            nameBranch
             dateOutput
             codeOutput
           }
@@ -134,8 +145,10 @@ export const deleteOneOutput = async (idOutput: number) => {
             idOutput
             idTypeOutput
             idUser
+            idBranch
             nameTypeOutput
             nameUser
+            nameBranch
             dateOutput
             codeOutput
           }
