@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useInitialLoading } from "@/app/features/auth/hooks/useInitialLoading";
 import {
   ReasonButtonModal,
   ReasonPagination,
@@ -9,18 +9,10 @@ import { useReasons } from "@/app/features/reasons/hooks/useReason";
 import Loading from "@/app/shared/components/Loading";
 
 function Page() {
-  const { info, results, getAllReasons, resetDataReason, loading } =
-    useReasons();
+  const { info, results, getAllReasons, resetDataReason } = useReasons();
+  const initialLoading = useInitialLoading(getAllReasons, resetDataReason);
 
-  useEffect(() => {
-    getAllReasons();
-
-    return () => {
-      resetDataReason();
-    };
-  }, []);
-
-  if (loading) return <Loading />;
+  if (initialLoading) return <Loading />;
 
   return (
     <div className="flex flex-col flex-1">
