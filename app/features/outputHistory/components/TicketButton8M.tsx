@@ -29,7 +29,7 @@ function TicketButton8M({ idOutput }: { idOutput: number }) {
     let y = 40;
 
     listProducts.listProducts.forEach(() => {
-      y += 14;
+      y += 15;
     });
 
     y += 60;
@@ -70,24 +70,29 @@ function TicketButton8M({ idOutput }: { idOutput: number }) {
     pdf.text(`${infoUser.codeOutput}`, 43, 24);
 
     pdf.setFont("helvetica", "bold");
-    pdf.text("FECHA DE SALIDA:", 12.7, 28);
+    pdf.text("SUCURSAL:", 22.5, 28);
     pdf.setFont("helvetica", "normal");
-    pdf.text(`${infoUser.dateOutput}`, 43, 28);
+    pdf.text(`${infoUser.nameBranch}`, 43, 28);
 
     pdf.setFont("helvetica", "bold");
-    pdf.text("FECHA DE IMPRESION:", 7.2, 32);
+    pdf.text("FECHA DE SALIDA:", 12.6, 32);
     pdf.setFont("helvetica", "normal");
-    pdf.text(`${printDate}`, 43, 32);
+    pdf.text(`${infoUser.dateOutput}`, 43, 32);
+
+    pdf.setFont("helvetica", "bold");
+    pdf.text("FECHA DE IMPRESION:", 7.1, 36);
+    pdf.setFont("helvetica", "normal");
+    pdf.text(`${printDate}`, 43, 36);
 
     pdf.setFontSize(16);
-    pdf.text("- - - - - - - - - - - - - - - - - - - - -", 40, 36, {
+    pdf.text("- - - - - - - - - - - - - - - - - - - - -", 40, 40, {
       align: "center",
     });
     pdf.setFontSize(8);
     pdf.setFont("helvetica", "bold");
-    pdf.text("DETALLE", 40, 40, { align: "center" });
+    pdf.text("DETALLE", 40, 44, { align: "center" });
 
-    y = 44;
+    y = 48;
 
     const productLists = listProducts.listProducts;
     // let totalPrice = 0;

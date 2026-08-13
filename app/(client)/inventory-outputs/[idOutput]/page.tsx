@@ -11,6 +11,7 @@ import {
   TicketButton8M,
 } from "@/app/features/outputHistory/components";
 import Loading from "@/app/shared/components/Loading";
+import { useInitialLoading } from "@/app/features/auth/hooks/useInitialLoading";
 
 interface IParams {
   params: Promise<{
@@ -20,18 +21,14 @@ interface IParams {
 
 function Page({ params }: IParams) {
   const { idOutput } = React.use(params);
-  const { info, results, loading } = useOutputHistory();
+  const { info, results } = useOutputHistory();
   const { getAllOutputHistory, resetOutputHistory } = useOutputHistoryActions();
+  const initialLoading = useInitialLoading(
+    () => getAllOutputHistory(+idOutput),
+    resetOutputHistory,
+  );
 
-  useEffect(() => {
-    getAllOutputHistory(+idOutput);
-
-    return () => {
-      resetOutputHistory();
-    };
-  }, []);
-
-  if (loading) return <Loading />;
+  if (initialLoading) return <Loading />;
 
   return (
     <div className="flex flex-col flex-1">

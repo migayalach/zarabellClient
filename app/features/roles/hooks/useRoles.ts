@@ -16,7 +16,7 @@ import {
   clearCurrentRoleData,
   resetAllDataRole,
 } from "../store/role.slice";
-
+import { unwrapResult } from "@reduxjs/toolkit";
 import { IRole } from "../types";
 
 export const useRoles = () => {
@@ -27,24 +27,29 @@ export const useRoles = () => {
   const loading = useAppSelector(selectRolesLoading);
   const error = useAppSelector(selectRolesError);
 
-  const getAllRoles = (page?: number) => {
-    dispatch(getAllListRole(page));
+  const getAllRoles = async (page?: number) => {
+    const result = await dispatch(getAllListRole(page));
+    return unwrapResult(result);
   };
 
-  const getOneRole = (idRole: number) => {
-    dispatch(getRoleByID(idRole));
+  const getOneRole = async (idRole: number) => {
+    const result = await dispatch(getRoleByID(idRole));
+    return unwrapResult(result);
   };
 
-  const createNewRole = (nameRole: string) => {
-    dispatch(createRole(nameRole));
+  const createNewRole = async (nameRole: string) => {
+    const result = await dispatch(createRole(nameRole));
+    return unwrapResult(result);
   };
 
-  const deleteOneRole = (idRole: number) => {
-    dispatch(deleteOneRoleByID(idRole));
+  const deleteOneRole = async (idRole: number) => {
+    const result = await dispatch(deleteOneRoleByID(idRole));
+    return unwrapResult(result);
   };
 
-  const updateOneRole = (dataRole: IRole) => {
-    dispatch(updateOneRoleByID(dataRole));
+  const updateOneRole = async (dataRole: IRole) => {
+    const result = await dispatch(updateOneRoleByID(dataRole));
+    return unwrapResult(result);
   };
 
   const clearDataCurrentRole = () => {

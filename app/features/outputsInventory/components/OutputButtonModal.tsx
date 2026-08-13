@@ -11,6 +11,8 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import CustomTooltip from "@/app/shared/components/CustomTooltip";
 import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
+import { useBranchsActions } from "../../branchs/hooks";
+import { BranchList } from "../../branchs/components";
 
 dayjs.extend(customParseFormat);
 const dateFormat = "YYYY-MM-DD";
@@ -21,6 +23,7 @@ type IOutputForm = {
   idTypeOutput?: number;
   idOutput?: number;
   idUser?: number;
+  idBranch?: number;
 };
 
 function OutputButtonModal({
@@ -29,13 +32,15 @@ function OutputButtonModal({
   idTypeOutput,
   idOutput,
   idUser,
+  idBranch,
 }: IOutputForm) {
   const canCreate = useHasPermission([1]);
   const canUpdate = useHasPermission([1]);
   const canDelete = useHasPermission([1]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { getAllUsers, resetDataUser, getOneUser } = useUsers();
-  const { getAllTOutputs, resetDataTOutput, getOneTOutput } = useTOutputs();
+  const { resetDataUser, getOneUser } = useUsers();
+  const { resetDataTOutput, getOneTOutput } = useTOutputs();
+  const { resetBranch, getOneBranchByID } = useBranchsActions();
   const {
     getOneOutputByID,
     createNewOutput,
@@ -49,8 +54,10 @@ function OutputButtonModal({
     idOutput: 0,
     idUser: 0,
     idTypeOutput: 0,
+    idBranch: 0,
     nameTypeOutput: "",
     nameUser: "",
+    nameBranch: "",
     dateOutput: "",
   });
 
@@ -59,21 +66,23 @@ function OutputButtonModal({
       idOutput: 0,
       idUser: 0,
       idTypeOutput: 0,
+      idBranch: 0,
       nameTypeOutput: "",
       nameUser: "",
+      nameBranch: "",
       dateOutput: "",
     });
   };
 
   const showModal = () => {
     setIsModalOpen(true);
-    getAllUsers();
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
     resetDataUser();
     resetDataTOutput();
+    resetBranch();
     clearCurrentOutput();
     resetOutputHistory();
   };
@@ -92,6 +101,13 @@ function OutputButtonModal({
     }));
   };
 
+  const handleBranchChange = (value: number) => {
+    setOutputData((prev) => ({
+      ...prev,
+      idBranch: value,
+    }));
+  };
+
   const onChangeDate =
     (field: keyof typeof outputData): DatePickerProps["onChange"] =>
     (date) => {
@@ -107,7 +123,7 @@ function OutputButtonModal({
       setIsModalOpen(false);
       resetOutputHistory();
     }
-    if (action === "update" && idOutput && idUser && idTypeOutput) {
+    if (action === "update" && idOutput && idUser && idTypeOutput && idBranch) {
       updateOutput(outputData);
     }
 
@@ -119,10 +135,11 @@ function OutputButtonModal({
 
   useEffect(() => {
     if (!isModalOpen) return;
-    if (action === "update" && idOutput && idUser && idTypeOutput) {
+    if (action === "update" && idOutput && idUser && idTypeOutput && idBranch) {
       getOneOutputByID(idOutput);
       getOneUser(idUser);
       getOneTOutput(idTypeOutput);
+      getOneBranchByID(idBranch);
     }
   }, [isModalOpen]);
 
@@ -195,6 +212,10 @@ function OutputButtonModal({
 
                 <Form.Item label="Tipo de salida">
                   <OutputTypeList handleTypeOutput={handleOutputTypeChange} />
+                </Form.Item>
+
+                <Form.Item label="Sucursal">
+                  <BranchList handleBranch={handleBranchChange} />
                 </Form.Item>
 
                 <Form.Item label="Fecha de salida">

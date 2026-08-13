@@ -16,7 +16,7 @@ import {
   resetAllDataTOutput,
   updateOneTOutputByID,
 } from "../store/typeOutput.slice";
-
+import { unwrapResult } from "@reduxjs/toolkit";
 import { ITypeOutputCreate, ITypeOutputUpdate } from "../types";
 
 export const useTOutputs = () => {
@@ -27,24 +27,29 @@ export const useTOutputs = () => {
   const loading = useAppSelector(selectTOutputsLoading);
   const error = useAppSelector(selectTOutputsError);
 
-  const getAllTOutputs = (page?: number) => {
-    dispatch(getAllListTOutput(page));
+  const getAllTOutputs = async (page?: number) => {
+    const result = await dispatch(getAllListTOutput(page));
+    return unwrapResult(result);
   };
 
-  const getOneTOutput = (idTypeOutput: number) => {
-    dispatch(getTOutputByID(idTypeOutput));
+  const getOneTOutput = async (idTypeOutput: number) => {
+    const result = await dispatch(getTOutputByID(idTypeOutput));
+    return unwrapResult(result);
   };
 
-  const createNewTOutput = (infoTypeOutput: ITypeOutputCreate) => {
-    dispatch(createTOutput(infoTypeOutput));
+  const createNewTOutput = async (infoTypeOutput: ITypeOutputCreate) => {
+    const result = await dispatch(createTOutput(infoTypeOutput));
+    return unwrapResult(result);
   };
 
-  const deleteOneTOutput = (idTypeOutput: number) => {
-    dispatch(deleteOneTOutputByID(idTypeOutput));
+  const deleteOneTOutput = async (idTypeOutput: number) => {
+    const result = await dispatch(deleteOneTOutputByID(idTypeOutput));
+    return unwrapResult(result);
   };
 
-  const updateOneTOutput = (infoTypeOutput: ITypeOutputUpdate) => {
-    dispatch(updateOneTOutputByID(infoTypeOutput));
+  const updateOneTOutput = async (infoTypeOutput: ITypeOutputUpdate) => {
+    const result = await dispatch(updateOneTOutputByID(infoTypeOutput));
+    return unwrapResult(result);
   };
 
   const clearDataCurrentTOutput = () => {

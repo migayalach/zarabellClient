@@ -20,6 +20,7 @@ import {
   clearInfoWatch,
 } from "../store/user.slice";
 import { IUserInfo, IUserUpdate } from "../types";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 export const useUsers = () => {
   const dispatch = useAppDispatch();
@@ -30,26 +31,31 @@ export const useUsers = () => {
   const error = useAppSelector(selectUsersError);
   const watch = useAppSelector(selectInfoWatchUser);
 
-  const getAllUsers = (page?: number) => {
-    dispatch(getAllListUsers(page));
+  const getAllUsers = async (page?: number) => {
+    const result = await dispatch(getAllListUsers(page));
+    return unwrapResult(result);
   };
 
-  const getOneUser = (idUser: number) => {
-    dispatch(getUserByID(idUser));
+  const getOneUser = async (idUser: number) => {
+    const result = await dispatch(getUserByID(idUser));
+    return unwrapResult(result);
   };
 
-  const createNewUser = (
+  const createNewUser = async (
     dataUser: Omit<IUserInfo, "idUser" | "stateUser" | "nameRole">,
   ) => {
-    dispatch(createUser(dataUser));
+    const result = await dispatch(createUser(dataUser));
+    return unwrapResult(result);
   };
 
-  const deleteOneUser = (idUser: number) => {
-    dispatch(deleteOneUserByID(idUser));
+  const deleteOneUser = async (idUser: number) => {
+    const result = await dispatch(deleteOneUserByID(idUser));
+    return unwrapResult(result);
   };
 
-  const updateOneUser = (dataUser: IUserUpdate) => {
-    dispatch(updateOneUserByID(dataUser));
+  const updateOneUser = async (dataUser: IUserUpdate) => {
+    const result = await dispatch(updateOneUserByID(dataUser));
+    return unwrapResult(result);
   };
 
   const clearDataCurrentUser = () => {
