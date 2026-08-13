@@ -17,6 +17,7 @@ import {
   updateOneCategoryByID,
 } from "../store/category.slice";
 import { ICategory } from "../types";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 export const useCategory = () => {
   const dispatch = useAppDispatch();
@@ -26,24 +27,29 @@ export const useCategory = () => {
   const loading = useAppSelector(selectCategoryLoading);
   const error = useAppSelector(selectCategoryError);
 
-  const getAllCategories = (page?: number) => {
-    dispatch(getAllListCategories(page));
+  const getAllCategories = async (page?: number) => {
+    const result = await dispatch(getAllListCategories(page));
+    return unwrapResult(result);
   };
 
-  const getOneCategory = (idCategory: number) => {
-    dispatch(getCategoryByID(idCategory));
+  const getOneCategory = async (idCategory: number) => {
+    const result = await dispatch(getCategoryByID(idCategory));
+    return unwrapResult(result);
   };
 
-  const createNewCategory = (nameCategory: string) => {
-    dispatch(createCategory(nameCategory));
+  const createNewCategory = async (nameCategory: string) => {
+    const result = await dispatch(createCategory(nameCategory));
+    return unwrapResult(result);
   };
 
-  const deleteOneCategory = (idCategory: number) => {
-    dispatch(deleteOneCategoryByID(idCategory));
+  const deleteOneCategory = async (idCategory: number) => {
+    const result = await dispatch(deleteOneCategoryByID(idCategory));
+    return unwrapResult(result);
   };
 
-  const updateOneCategory = (dataCategory: ICategory) => {
-    dispatch(updateOneCategoryByID(dataCategory));
+  const updateOneCategory = async (dataCategory: ICategory) => {
+    const result = await dispatch(updateOneCategoryByID(dataCategory));
+    return unwrapResult(result);
   };
 
   const clearDataCurrentCategory = () => {
