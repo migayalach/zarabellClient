@@ -1,6 +1,7 @@
 "use client";
 import {
   BranchButtonModal,
+  BranchFilter,
   BranchPagination,
   BranchTable,
 } from "@/app/features/branchs/components";
@@ -17,6 +18,8 @@ function Page() {
 
   return (
     <div className="flex flex-col flex-1">
+      <BranchFilter />
+
       <div className="flex items-center justify-between">
         <h1 className="text-[30px] font-bold">Lista de sucursales</h1>
         <BranchButtonModal text="Crear" action="create" />
