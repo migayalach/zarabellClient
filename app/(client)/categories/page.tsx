@@ -1,6 +1,7 @@
 "use client";
 import { useCategory } from "@/app/features/categories/hooks/useCategories";
 import {
+  CategoriesFilter,
   CategoryButtonModal,
   CategoryPagination,
   CategoryTable,
@@ -9,14 +10,14 @@ import Loading from "@/app/shared/components/Loading";
 import { useInitialLoading } from "@/app/features/auth/hooks/useInitialLoading";
 
 function Page() {
-  const { info, results, getAllCategories, resetDataCategory } =
-    useCategory();
-    
+  const { info, results, getAllCategories, resetDataCategory } = useCategory();
+
   const initialLoading = useInitialLoading(getAllCategories, resetDataCategory);
 
   if (initialLoading) return <Loading />;
   return (
     <div className="flex flex-col flex-1">
+      <CategoriesFilter />
       <div className="flex items-center justify-between">
         <h1 className="text-[30px] font-bold">Lista de Categorias</h1>
         <CategoryButtonModal text="Crear" action="create" />
