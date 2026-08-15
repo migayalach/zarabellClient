@@ -6,6 +6,7 @@ import UserTable from "@/app/features/users/components/UserTable";
 import { useRequirePermission } from "@/app/features/auth/hooks/usePermise";
 import Loading from "@/app/shared/components/Loading";
 import { useInitialLoading } from "@/app/features/auth/hooks/useInitialLoading";
+import UserFilter from "@/app/features/users/components/UserFilter";
 
 function Page() {
   const blocked = useRequirePermission([1, 2]);
@@ -23,6 +24,7 @@ function Page() {
 
   return (
     <div className="flex flex-col flex-1">
+      <UserFilter />
       <div className="flex items-center justify-between">
         <h1 className="text-[30px] font-bold">Lista de usuarios</h1>
         <UserButtonModal text="Crear" action="create" />
