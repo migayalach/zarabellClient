@@ -4,6 +4,7 @@ import {
   ProductButtonModal,
   ProductTable,
   ProductPagination,
+  ProductFilter,
 } from "@/app/features/products/components";
 import { useRequirePermission } from "@/app/features/auth/hooks/usePermise";
 import Loading from "@/app/shared/components/Loading";
@@ -25,6 +26,7 @@ function Page() {
 
   return (
     <div className="flex flex-col flex-1">
+      <ProductFilter />
       <div className="flex items-center justify-between">
         <h1 className="text-[30px] font-bold">Lista de productos</h1>
         <ProductButtonModal text="Crear" action="create" />
