@@ -8,6 +8,8 @@ import {
   PasswordChangeSuccess,
   IPasswordInfo,
   IUpdateProfile,
+  IRefreshTokenResponse,
+  ISignOut,
 } from "../types";
 import {
   getCurrentInfoUser,
@@ -15,6 +17,8 @@ import {
   changePassword,
   updateInfoUser,
   resetPasswordUser,
+  refreshToken,
+  signOut,
 } from "../services/auth.services";
 
 export interface SignState {
@@ -91,6 +95,30 @@ export const updateInfoProfile = createAsyncThunk<
   }
 });
 
+export const refreshTokenUser = createAsyncThunk<
+  IRefreshTokenResponse,
+  void,
+  { rejectValue: LoginError }
+>("auth/refreshToken", async (_, { rejectWithValue }) => {
+  try {
+    return await refreshToken();
+  } catch (error) {
+    return rejectWithValue(error as LoginError);
+  }
+});
+
+export const signOutSession = createAsyncThunk<
+  ISignOut,
+  void,
+  { rejectValue: LoginError }
+>("auth/signOut", async (_, { rejectWithValue }) => {
+  try {
+    return await signOut();
+  } catch (error) {
+    return rejectWithValue(error as LoginError);
+  }
+});
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -157,6 +185,35 @@ const authSlice = createSlice({
         state.initialized = action.payload.success;
       })
       .addCase(updateInfoProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message ?? null;
+      })
+
+      .addCase(refreshTokenUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(refreshTokenUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.info = action.payload.value;
+        state.initialized = action.payload.success;
+      })
+      .addCase(refreshTokenUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message ?? null;
+      })
+
+      .addCase(signOutSession.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(signOutSession.fulfilled, (state) => {
+        state.loading = false;
+        state.info = null;
+        state.initialized = false;
+        state.error = null;
+      })
+      .addCase(signOutSession.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message ?? null;
       });
