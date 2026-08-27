@@ -14,7 +14,7 @@ function SalesReportYesterday({ info }: { info: ISalesYesterdayData }) {
         </div>
 
         <div>
-          <h3 className="text-lg font-bold text-gray-800">Ventas de ayer</h3>
+          <h3 className="text-lg font-bold text-gray-800">Salidas de ayer</h3>
           <p className="text-sm text-gray-400">Resumen diario</p>
         </div>
       </div>
