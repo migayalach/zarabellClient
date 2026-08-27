@@ -7,7 +7,15 @@ import { SIZE_PAGINATION } from "@/app/helpers/constans.helpers";
 
 function UserPagination({ pages }: { pages: number }) {
   const [current, setCurrent] = useState(1);
-  const { getAllUsers, results, clearInfoWatchAction, watch } = useUsers();
+  const {
+    getAllUsers,
+    results,
+    clearInfoWatchAction,
+    watch,
+    info,
+    error,
+    clearDataCurrentUser,
+  } = useUsers();
 
   const onChange: PaginationProps["onChange"] = (page) => {
     getAllUsers(page);
@@ -17,23 +25,39 @@ function UserPagination({ pages }: { pages: number }) {
   useEffect(() => {
     if (!watch) return;
 
-    if (watch === "create" && results.length) {
-      const index = results.length + 1;
-      if (index <= SIZE_PAGINATION) {
-        getAllUsers(current);
-      } else {
-        const nextPage = current + 1;
-        setCurrent(nextPage);
-        getAllUsers(nextPage);
+    switch (watch) {
+      case "create": {
+        const page =
+          (info!.count + 1) % SIZE_PAGINATION === 1 ? pages + 1 : pages;
+        setCurrent(page);
+        getAllUsers(page);
+        break;
       }
-    } else if (watch === "delete") {
-    } else if (watch === "update") {
-    }
 
-    setTimeout(() => {
-      clearInfoWatchAction();
-    }, 1000);
+      case "update": {
+        getAllUsers(current);
+        break;
+      }
+
+      case "delete": {
+        if (results.length === 1 && current > 1) {
+          const previousPage = current - 1;
+          setCurrent(previousPage);
+          getAllUsers(previousPage);
+        } else {
+          getAllUsers(current);
+        }
+        break;
+      }
+    }
+    clearInfoWatchAction();
   }, [watch]);
+
+  useEffect(() => {
+    if (error) {
+      clearDataCurrentUser();
+    }
+  }, [error]);
 
   return (
     <Pagination
