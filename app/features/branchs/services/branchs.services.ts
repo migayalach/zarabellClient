@@ -1,5 +1,5 @@
 import { api } from "@/app/shared/api/axios";
-import { IBranchCreate, IBranchUpdate } from "../types";
+import { IBranchCreate, IBranchUpdate, IFilterBranch } from "../types";
 
 export const getAllBranchs = async (page?: number) => {
   const response = await api.post("", {
@@ -150,6 +150,53 @@ export const deleteOneRole = async (idBranch: number) => {
       idBranch,
     },
   });
-  
+
   return response.data.data.removeBranch;
+};
+
+export const filterBranchs = async (
+  filterBranchs?: IFilterBranch,
+  page?: number,
+) => {
+  const response = await api.post("", {
+    query: `
+      query FilterBranchs(
+        $page: Int
+        $nameBranch: String
+        $stateBranch: Boolean
+        $order: Order
+      ) {
+        filterBranchs(
+          page: $page
+          filters: {
+            nameBranch: $nameBranch
+            stateBranch: $stateBranch
+            order: $order
+          }
+        ) {
+          info {
+            pages
+            count
+            next
+            prev
+          }
+          results {
+            idBranch
+            nameBranch
+            address
+            phone
+            stateBranch
+          }
+        }
+      }
+    `,
+    variables: {
+      page,
+      nameBranch: filterBranchs?.nameBranch,
+      stateBranch: filterBranchs?.stateBranch,
+      order: filterBranchs?.order,
+    },
+  });
+
+  return response.data.data.filterBranchs;
 };
