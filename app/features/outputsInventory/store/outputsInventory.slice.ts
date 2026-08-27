@@ -5,6 +5,7 @@ import {
   getAllOutputs,
   getOneOutputByID,
   updateOneOutput,
+  filterOutputs,
 } from "../services/outputsInventory.services";
 
 import {
@@ -15,9 +16,10 @@ import {
   IPaginationOutput,
   IResponseOutput,
   IResponseOutputs,
+  IFilterOutputs,
 } from "../types";
 
-type TResponseOutput = "create" | "delete" | "update";
+type TResponseOutput = "create" | "delete" | "update" | "filters";
 
 interface IOutputState {
   info: IPaginationOutput | null;
@@ -99,6 +101,21 @@ export const deleteOneOutputByID = createAsyncThunk<
   }
 });
 
+export const outputFilters = createAsyncThunk<
+  IResponseOutputs,
+  {
+    filters?: IFilterOutputs;
+    page?: number | undefined;
+  },
+  { rejectValue: IErrorOutput }
+>("inputRecord/filter", async ({ filters, page }, { rejectWithValue }) => {
+  try {
+    return await filterOutputs(filters, page);
+  } catch (error) {
+    return rejectWithValue(error as IErrorOutput);
+  }
+});
+
 const outputSlice = createSlice({
   name: "output",
   initialState,
@@ -116,6 +133,9 @@ const outputSlice = createSlice({
       state.loading = false;
       state.error = null;
       state.success = false;
+    },
+    clearInfoWatch: (state) => {
+      state.action = null;
     },
     resetOutputCreateUpdateData: (state) => {
       state.success = false;
@@ -204,6 +224,22 @@ const outputSlice = createSlice({
       .addCase(deleteOneOutputByID.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message ?? "Error";
+      })
+
+      // TODO FILTERS
+      .addCase(outputFilters.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(outputFilters.fulfilled, (state, action) => {
+        state.loading = false;
+        state.info = action.payload.info;
+        state.results = action.payload.results;
+        state.action = "filters";
+      })
+      .addCase(outputFilters.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message ?? "Error";
       });
   },
 });
@@ -216,4 +252,5 @@ export const {
   resetAllDataOutput,
   resetOutputCreateUpdateData,
   resetStateAction,
+  clearInfoWatch,
 } = outputSlice.actions;
