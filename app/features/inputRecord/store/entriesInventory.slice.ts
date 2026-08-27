@@ -5,6 +5,7 @@ import {
   createNewInputRecord,
   updateOneInputRecord,
   deleteOneInputRecord,
+  filterInputRecord,
 } from "../services/entriesInventory.services";
 import {
   IRecordInput,
@@ -14,9 +15,10 @@ import {
   IErrorRecordInput,
   IResponseRecordInputs,
   IResponseRecordnput,
+  IFilterRecordInput,
 } from "../types";
 
-type TInputRecord = "create" | "delete" | "update";
+type TInputRecord = "create" | "delete" | "update" | "filters";
 
 interface IRecordInputState {
   info: IPaginationRecordInput | null;
@@ -104,6 +106,21 @@ export const deleteOneInputRecordByID = createAsyncThunk<
   },
 );
 
+export const inputRecordFilters = createAsyncThunk<
+  IResponseRecordInputs,
+  {
+    filters?: IFilterRecordInput;
+    page?: number | undefined;
+  },
+  { rejectValue: IErrorRecordInput }
+>("inputRecord/filter", async ({ filters, page }, { rejectWithValue }) => {
+  try {
+    return await filterInputRecord(filters, page);
+  } catch (error) {
+    return rejectWithValue(error as IErrorRecordInput);
+  }
+});
+
 const inputRecordSlice = createSlice({
   name: "input-record",
   initialState,
@@ -113,6 +130,9 @@ const inputRecordSlice = createSlice({
     },
     clearCurrentInputRecordData: (state) => {
       state.currentInputRecord = null;
+    },
+    clearInfoWatch: (state) => {
+      state.action = null;
     },
     resetAllDataInputRecord: (state) => {
       state.info = null;
@@ -209,6 +229,22 @@ const inputRecordSlice = createSlice({
       .addCase(deleteOneInputRecordByID.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message ?? "Error";
+      })
+
+      // TODO FILTERS
+      .addCase(inputRecordFilters.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(inputRecordFilters.fulfilled, (state, action) => {
+        state.loading = false;
+        state.info = action.payload.info;
+        state.results = action.payload.results;
+        state.action = "filters";
+      })
+      .addCase(inputRecordFilters.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message ?? "Error";
       });
   },
 });
@@ -221,4 +257,5 @@ export const {
   resetAllDataInputRecord,
   resetInputRecordCreateUpdateData,
   resetStateActionInputRecord,
+  clearInfoWatch,
 } = inputRecordSlice.actions;
