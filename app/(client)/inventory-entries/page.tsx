@@ -3,6 +3,7 @@ import {
   InputRecordButtonModal,
   InputRecodTable,
   InputRecordPagination,
+  InputRecordFilter,
 } from "@/app/features/inputRecord/components";
 import {
   useInputRecord,
@@ -29,6 +30,7 @@ function Page() {
 
   return (
     <div className="flex flex-col flex-1">
+      <InputRecordFilter />
       <div className="flex items-center justify-between">
         <h1 className="text-[30px] font-bold">Lista de entradas</h1>
         <InputRecordButtonModal text="Crear" action="create" />
