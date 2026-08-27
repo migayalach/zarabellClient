@@ -6,6 +6,7 @@ import {
   selectProductsInfo,
   selectProductsLoading,
   selectProductsResults,
+  selectInfoWatchProduct,
 } from "../store/product.selector";
 import {
   clearCurrentProductData,
@@ -15,8 +16,11 @@ import {
   getProductByID,
   resetAllDataProduct,
   updateOneProductByID,
+  addInfoWatch,
+  clearInfoWatch,
+  productFilters,
 } from "../store/product.slice";
-import { IProductCreate, IProductUpdate } from "../types";
+import { IProductCreate, IProductUpdate, IFilterProducts } from "../types";
 import { unwrapResult } from "@reduxjs/toolkit";
 
 export const useProducts = () => {
@@ -26,9 +30,15 @@ export const useProducts = () => {
   const currentProduct = useAppSelector(selectCurrentProduct);
   const loading = useAppSelector(selectProductsLoading);
   const error = useAppSelector(selectProductsError);
+  const watch = useAppSelector(selectInfoWatchProduct);
 
   const getAllProducts = async (page?: number) => {
     const result = await dispatch(getAllListProducts(page));
+    return unwrapResult(result);
+  };
+
+  const filterProducts = async (filters: IFilterProducts, page?: number) => {
+    const result = await dispatch(productFilters({ filters, page }));
     return unwrapResult(result);
   };
 
@@ -60,6 +70,10 @@ export const useProducts = () => {
     dispatch(resetAllDataProduct());
   };
 
+  const clearInfoWatchProduct = () => {
+    dispatch(clearInfoWatch());
+  };
+
   return {
     info,
     results,
@@ -73,5 +87,9 @@ export const useProducts = () => {
     updateOneProduct,
     clearDataCurrentProduct,
     resetDataProduct,
+    filterProducts,
+    addInfoWatch,
+    clearInfoWatchProduct,
+    watch,
   };
 };
