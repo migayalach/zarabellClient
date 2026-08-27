@@ -1,3 +1,5 @@
+import { Order } from "@/app/helpers/filters.types";
+
 export interface IProvider {
   idProvider: number;
   nameProvider: string;
@@ -40,3 +42,12 @@ export interface IResponseProvider {
   message: string;
   value: IProvider;
 }
+
+export interface IFilterProviders {
+  nameProvider?: string;
+  phoneProvider?: string;
+  stateProvider?: boolean;
+  order?: Order;
+}
+
+export type TProviderActionWatch = "create" | "delete" | "update" | "filters";
