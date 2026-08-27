@@ -2,3 +2,4 @@ export { default as ProductButtonModal } from "./ProductButtonModal";
 export { default as ProductPagination } from "./ProductPagination";
 export { default as ProductTable } from "./ProductTable";
 export { default as ProductList } from "./ProductList";
+export { default as ProductFilter } from "./ProductFilter";
