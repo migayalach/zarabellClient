@@ -1,3 +1,5 @@
+import { Order } from "@/app/helpers/filters.types";
+
 export interface IRecordInput {
   idInputRecord: number;
   idCategory: number;
@@ -53,4 +55,16 @@ export interface IResponseRecordnput {
   success: boolean;
   message: string;
   value: IRecordInput;
+}
+
+export interface IFilterRecordInput {
+  idCategory?: number;
+  idProduct?: number;
+  idProvider?: number;
+  dateInputRecordFrom?: string;
+  dateInputRecordTo?: string;
+  expirationDateFrom?: string;
+  expirationDateTo?: string;
+  stateInputRecord?: boolean;
+  order?: Order;
 }

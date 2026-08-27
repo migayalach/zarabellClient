@@ -5,6 +5,7 @@ import {
   deleteOneUser,
   getAllUsers,
   getOneUserByID,
+  filterUsers,
 } from "../services/users.services";
 import {
   IErrorUser,
@@ -14,6 +15,7 @@ import {
   IUserInfo,
   IUserUpdate,
   TUserActionWatch,
+  IFilterUser,
 } from "../types";
 
 interface IUserState {
@@ -22,6 +24,7 @@ interface IUserState {
   currentUser: IUserInfo | null;
   loading: boolean;
   error: string | null;
+  success: boolean;
   actionWatch: TUserActionWatch | null;
 }
 
@@ -31,6 +34,7 @@ const initialState: IUserState = {
   currentUser: null,
   loading: false,
   error: null,
+  success: false,
   actionWatch: null,
 };
 
@@ -89,6 +93,21 @@ export const deleteOneUserByID = createAsyncThunk<
 >("users/deleteUser", async (idUser, { rejectWithValue }) => {
   try {
     return await deleteOneUser(idUser);
+  } catch (error) {
+    return rejectWithValue(error as IErrorUser);
+  }
+});
+
+export const userFilters = createAsyncThunk<
+  IResponseUsers,
+  {
+    filters?: IFilterUser;
+    page?: number | undefined;
+  },
+  { rejectValue: IErrorUser }
+>("users/filter", async ({ filters, page }, { rejectWithValue }) => {
+  try {
+    return await filterUsers(filters, page);
   } catch (error) {
     return rejectWithValue(error as IErrorUser);
   }
@@ -157,7 +176,9 @@ const userSlice = createSlice({
       })
       .addCase(createUser.fulfilled, (state, action) => {
         state.loading = false;
-        // state.results.unshift(action.payload.value);
+        state.success = action.payload.success;
+        state.currentUser = action.payload.value;
+        state.actionWatch = "create";
       })
       .addCase(createUser.rejected, (state, action) => {
         state.loading = false;
@@ -171,10 +192,9 @@ const userSlice = createSlice({
       })
       .addCase(updateOneUserByID.fulfilled, (state, action) => {
         state.loading = false;
-        const updated = action.payload.value;
-        state.results = state.results.map((item) =>
-          item.idUser === updated.idUser ? updated : item,
-        );
+        state.success = action.payload.success;
+        state.currentUser = action.payload.value;
+        state.actionWatch = "update";
       })
       .addCase(updateOneUserByID.rejected, (state, action) => {
         state.loading = false;
@@ -188,10 +208,27 @@ const userSlice = createSlice({
       })
       .addCase(deleteOneUserByID.fulfilled, (state, action) => {
         state.loading = false;
-        // const idUser = action.payload.value.idUser;
-        // state.results = state.results.filter((item) => item.idUser !== idUser);
+        state.success = action.payload.success;
+        state.currentUser = action.payload.value;
+        state.actionWatch = "delete";
       })
       .addCase(deleteOneUserByID.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message ?? "Error";
+      })
+
+      // TODO FILTERS
+      .addCase(userFilters.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(userFilters.fulfilled, (state, action) => {
+        state.loading = false;
+        state.info = action.payload.info;
+        state.results = action.payload.results;
+        state.actionWatch = "filters";
+      })
+      .addCase(userFilters.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message ?? "Error";
       });

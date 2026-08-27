@@ -1,5 +1,5 @@
 import { api } from "@/app/shared/api/axios";
-import { ICategory } from "../types";
+import { ICategory, IFilterCategory } from "../types";
 
 export const getAllCategories = async (page?: number) => {
   const response = await api.post("", {
@@ -120,4 +120,49 @@ export const updateOneCategory = async (infoCategory: ICategory) => {
   });
 
   return response.data.data.updateCategory;
+};
+
+export const filterCategories = async (
+  filterCategory?: IFilterCategory,
+  page?: number,
+) => {
+  const response = await api.post("", {
+    query: `
+      query filterCategories(
+        $page: Int
+        $nameCategory: String
+        $stateCategory: Boolean
+        $order: Order
+      ) {
+        filterCategories(
+          page: $page
+          filters: {
+            nameCategory: $nameCategory
+            stateCategory: $stateCategory
+            order: $order
+          }
+        ) {
+          info {
+            pages
+            count
+            next
+            prev
+          }
+          results {
+            idCategory
+            nameCategory
+            stateCategory
+          }
+        }
+      }
+    `,
+    variables: {
+      page,
+      nameCategory: filterCategory?.nameCategory,
+      stateCategory: filterCategory?.stateCategory,
+      order: filterCategory?.order,
+    },
+  });
+
+  return response.data.data.filterCategories;
 };

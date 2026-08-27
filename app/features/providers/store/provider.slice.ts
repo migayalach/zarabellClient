@@ -5,6 +5,7 @@ import {
   getAllProviders,
   getOneProviderByID,
   updateOneProvider,
+  filterProviders,
 } from "../services/providers.services";
 
 import {
@@ -15,6 +16,8 @@ import {
   IErrorProvider,
   IResponseProviders,
   IResponseProvider,
+  IFilterProviders,
+  TProviderActionWatch,
 } from "../types";
 
 interface IProviderState {
@@ -23,6 +26,8 @@ interface IProviderState {
   currentProvider: IProvider | null;
   loading: boolean;
   error: string | null;
+  success: boolean;
+  actionWatch: TProviderActionWatch | null;
 }
 
 const initialState: IProviderState = {
@@ -31,6 +36,8 @@ const initialState: IProviderState = {
   currentProvider: null,
   loading: false,
   error: null,
+  success: false,
+  actionWatch: null,
 };
 
 export const getAllListProvider = createAsyncThunk<
@@ -93,10 +100,31 @@ export const deleteOneProviderByID = createAsyncThunk<
   }
 });
 
+export const providerFilters = createAsyncThunk<
+  IResponseProviders,
+  {
+    filters?: IFilterProviders;
+    page?: number | undefined;
+  },
+  { rejectValue: IErrorProvider }
+>("providers/filter", async ({ filters, page }, { rejectWithValue }) => {
+  try {
+    return await filterProviders(filters, page);
+  } catch (error) {
+    return rejectWithValue(error as IErrorProvider);
+  }
+});
+
 const providerSlice = createSlice({
   name: "provider",
   initialState,
   reducers: {
+    addInfoWatch: (state, action) => {
+      state.actionWatch = action.payload;
+    },
+    clearInfoWatch: (state) => {
+      state.actionWatch = null;
+    },
     clearInfoProviderError: (state) => {
       state.error = null;
     },
@@ -182,9 +210,27 @@ const providerSlice = createSlice({
       .addCase(deleteOneProviderByID.fulfilled, (state, action) => {
         state.loading = false;
         const idProvider = action.payload.value.idProvider;
-        state.results = state.results.filter((item) => item.idProvider !== idProvider);
+        state.results = state.results.filter(
+          (item) => item.idProvider !== idProvider,
+        );
       })
       .addCase(deleteOneProviderByID.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message ?? "Error";
+      })
+
+      // TODO FILTERS
+      .addCase(providerFilters.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(providerFilters.fulfilled, (state, action) => {
+        state.loading = false;
+        state.info = action.payload.info;
+        state.results = action.payload.results;
+        state.actionWatch = "filters";
+      })
+      .addCase(providerFilters.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message ?? "Error";
       });
@@ -197,4 +243,6 @@ export const {
   clearInfoProviderError,
   clearCurrentProviderData,
   resetAllDataProvider,
+  addInfoWatch,
+  clearInfoWatch,
 } = providerSlice.actions;

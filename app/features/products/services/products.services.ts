@@ -1,5 +1,5 @@
 import { api } from "@/app/shared/api/axios";
-import { IProductCreate, IProductUpdate } from "../types";
+import { IFilterProducts, IProductCreate, IProductUpdate } from "../types";
 
 export const getAllProducts = async (page?: number) => {
   const response = await api.post("", {
@@ -145,4 +145,56 @@ export const deleteOneProduct = async (idProduct: number) => {
   });
 
   return response.data.data.deleteProduct;
+};
+
+export const filterProducts = async (
+  filterProducts?: IFilterProducts,
+  page?: number,
+) => {
+  const response = await api.post("", {
+    query: `
+      query filterProducts(
+        $page: Int
+        $idCategory: Int
+        $nameCategory: String
+        $nameProduct: String
+        $stateProduct: Boolean
+        $order: Order
+      ) {
+        filterProducts(
+          page: $page
+          filters: {
+            idCategory: $idCategory
+            nameCategory: $nameCategory
+            nameProduct: $nameProduct
+            stateProduct: $stateProduct
+            order: $order
+          }
+        ) {
+          info {
+            pages
+            count
+            next
+            prev
+          }
+          results {
+            idProduct
+            idCategory
+            nameCategory
+            nameProduct
+            stateProduct
+          }
+        }
+      }
+    `,
+    variables: {
+      page,
+      idCategory: filterProducts?.idCategory || undefined,
+      nameCategory: filterProducts?.nameCategory || undefined,
+      nameProduct: filterProducts?.nameProduct || undefined,
+      stateProduct: filterProducts?.stateProduct ?? undefined,
+      order: filterProducts?.order ?? "ASC",
+    },
+  });
+  return response.data.data.filterProducts;
 };

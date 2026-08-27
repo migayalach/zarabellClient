@@ -1,6 +1,7 @@
 "use client";
 import {
   OutputButtonModal,
+  OutputFilters,
   OutputPagination,
   OutputTable,
 } from "@/app/features/outputsInventory/components";
@@ -20,6 +21,7 @@ function Page() {
 
   return (
     <div className="flex flex-col flex-1">
+      <OutputFilters />
       <div className="flex items-center justify-between">
         <h1 className="text-[30px] font-bold">Lista de salidas</h1>
         <OutputButtonModal text="Crear" action="create" />

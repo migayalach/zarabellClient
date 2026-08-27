@@ -1,3 +1,5 @@
+import { Order } from "@/app/helpers/filters.types";
+
 export interface IBranchs {
   idBranch: number;
   nameBranch: string;
@@ -41,4 +43,10 @@ export interface IResponseBranch {
   success: boolean;
   message: string;
   value: IBranchs;
+}
+
+export interface IFilterBranch {
+  nameBranch?: string;
+  stateBranch?: boolean;
+  order?: Order;
 }

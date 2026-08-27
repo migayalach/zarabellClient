@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Layout, Dropdown, Button, Drawer } from "antd";
+import { Layout, Dropdown, Button, Drawer, MenuProps } from "antd";
 import {
   HomeOutlined,
   ShoppingCartOutlined,
@@ -38,10 +38,12 @@ function NavBarMenu() {
   const { user } = useAuth();
   const router = useRouter();
 
+  const canManageHistory = useHasPermission([1, 2]);
   const canManageUsers = useHasPermission([1]);
   const canManageProducts = useHasPermission([1, 2]);
   const canManageTools = useHasPermission([1, 2]);
-  const canManageHistory = useHasPermission([1, 2]);
+  const canViewProviders = useHasPermission([1, 2]);
+  const canViewProducts = useHasPermission([1, 2]);
 
   const mobileItems = [
     {
@@ -80,47 +82,51 @@ function NavBarMenu() {
       icon: <UserOutlined />,
       allowed: canManageUsers,
     },
+
+    // PRODUCTOS
     {
       key: "providers",
       label: "Proveedores",
       icon: <BookOutlined />,
-      allowed: canManageProducts,
-    },
-    {
-      key: "magazine",
-      label: "Catalogo",
-      icon: <FileMarkdownOutlined />,
-      allowed: canManageProducts,
+      allowed: canViewProviders,
     },
     {
       key: "branchs",
       label: "Sucursales",
       icon: <ProfileOutlined />,
-      allowed: canManageProducts,
+      allowed: true,
     },
     {
       key: "categories",
       label: "Categorias",
       icon: <OrderedListOutlined />,
-      allowed: canManageProducts,
+      allowed: true,
     },
     {
       key: "products",
       label: "Productos",
       icon: <ProductOutlined />,
-      allowed: canManageProducts,
+      allowed: canViewProducts,
     },
+    {
+      key: "magazine",
+      label: "Magazine",
+      icon: <FileMarkdownOutlined />,
+      allowed: true,
+    },
+
+    // HERRAMIENTAS
     {
       key: "reasons",
       label: "Razones",
       icon: <FileSearchOutlined />,
-      allowed: canManageTools,
+      allowed: true,
     },
     {
       key: "typeOutputs",
       label: "Tipo salidas",
       icon: <SnippetsFilled />,
-      allowed: canManageTools,
+      allowed: true,
     },
   ];
 
@@ -161,10 +167,10 @@ function NavBarMenu() {
     ],
   };
 
-  const productMenu = {
-    onClick: ({ key }: { key: string }) => handleMenuClick(key),
+  const productMenu: MenuProps = {
+    onClick: ({ key }) => handleMenuClick(key),
     items: [
-      {
+      canViewProviders && {
         key: "providers",
         icon: <ContactsOutlined />,
         label: "Proveedores",
@@ -179,7 +185,7 @@ function NavBarMenu() {
         icon: <BookOutlined />,
         label: "Categorias",
       },
-      {
+      canViewProducts && {
         key: "products",
         icon: <OrderedListOutlined />,
         label: "Productos",
@@ -189,7 +195,7 @@ function NavBarMenu() {
         icon: <FileMarkdownOutlined />,
         label: "Magazine",
       },
-    ],
+    ].filter(Boolean) as NonNullable<MenuProps["items"]>,
   };
 
   const optionsMenu = {
@@ -221,34 +227,24 @@ function NavBarMenu() {
         icon: <ProfileOutlined />,
         label: "Nueva Salida",
       },
-      // {
-      //   key: "detailOutput",
-      //   icon: <SolutionOutlined />,
-      //   label: "Detalle de salida",
-      // },
-      {
-        key: "inventory-returns",
-        icon: <FileSearchOutlined />,
-        label: "Historial de regreso",
-      },
     ],
   };
 
   const desktopMenu = (
     <div className="hidden md:flex items-center w-full justify-between">
-      {/* IZQUIERDA */}
       <div className="flex items-center gap-2 text-white">
         <HomeOutlined onClick={() => router.push("/home")} />
       </div>
 
-      {/* DERECHA */}
       <div className="flex items-center gap-6 text-white">
-        <Dropdown menu={optionsHistory} placement="bottomRight">
-          <div className="flex items-center gap-1 cursor-pointer">
-            <HistoryOutlined />
-            <span>Historial</span>
-          </div>
-        </Dropdown>
+        {canManageHistory && (
+          <Dropdown menu={optionsHistory} placement="bottomRight">
+            <div className="flex items-center gap-1 cursor-pointer">
+              <HistoryOutlined />
+              <span>Historial</span>
+            </div>
+          </Dropdown>
+        )}
 
         <Dropdown menu={optionsMenu} placement="bottomRight">
           <div className="flex items-center gap-1 cursor-pointer">
@@ -264,12 +260,14 @@ function NavBarMenu() {
           </div>
         </Dropdown>
 
-        <Dropdown menu={userMenu} placement="bottomRight">
-          <div className="flex items-center gap-1 cursor-pointer">
-            <ReadOutlined />
-            <span>Usuarios</span>
-          </div>
-        </Dropdown>
+        {canManageUsers && (
+          <Dropdown menu={userMenu} placement="bottomRight">
+            <div className="flex items-center gap-1 cursor-pointer">
+              <ReadOutlined />
+              <span>Usuarios</span>
+            </div>
+          </Dropdown>
+        )}
 
         <Dropdown menu={infoMenu} placement="bottomRight">
           <div className="flex items-center gap-1 cursor-pointer">
@@ -283,7 +281,6 @@ function NavBarMenu() {
 
   const mobileMenu = (
     <div className="flex md:hidden items-center justify-between w-full text-white">
-      {/* HOME */}
       <div
         className="flex items-center gap-2 cursor-pointer"
         onClick={() => router.push("/home")}
@@ -291,7 +288,6 @@ function NavBarMenu() {
         <HomeOutlined />
       </div>
 
-      {/* BOTÓN MENU */}
       <Button
         type="text"
         icon={<MenuOutlined />}
@@ -299,7 +295,6 @@ function NavBarMenu() {
         style={{ color: "white" }}
       />
 
-      {/* DRAWER */}
       <Drawer
         title="Menú"
         placement="right"
@@ -309,20 +304,25 @@ function NavBarMenu() {
       >
         <div className="flex flex-col gap-4">
           <AuthFormInformation />
+
           <AuthChangePassword />
-          {mobileItems.map((item) => (
-            <div
-              key={item.key}
-              className="flex items-center gap-2 cursor-pointer"
-              onClick={() => {
-                setOpen(false);
-                router.push(`/${item.key}`);
-              }}
-            >
-              {item.icon}
-              {item.label}
-            </div>
-          ))}
+
+          {mobileItems
+            .filter((item) => item.allowed)
+            .map((item) => (
+              <div
+                key={item.key}
+                className="flex items-center gap-2 cursor-pointer"
+                onClick={() => {
+                  setOpen(false);
+                  router.push(`/${item.key}`);
+                }}
+              >
+                {item.icon}
+                {item.label}
+              </div>
+            ))}
+
           <div className="flex items-center gap-2 cursor-pointer">
             <AuthSignOut />
           </div>
@@ -332,7 +332,15 @@ function NavBarMenu() {
   );
 
   return (
-    <Header className="flex items-center bg-[#001529] px-4">
+    <Header
+      className="flex items-center bg-[#001529] px-4"
+      style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 1000,
+        width: "100%",
+      }}
+    >
       {desktopMenu}
       {mobileMenu}
     </Header>

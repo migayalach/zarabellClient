@@ -1,3 +1,5 @@
+import { Order } from "@/app/helpers/filters.types";
+
 export interface IUserCreate {
   idRole: number;
   nameUser: string;
@@ -54,4 +56,12 @@ export interface IResponseUser {
 
 export type IClientSingleResponse = IApiResponse<IUserInfo>;
 
-export type TUserActionWatch = "create" | "delete" | "update";
+export type TUserActionWatch = "create" | "delete" | "update" | "filters";
+
+export interface IFilterUser {
+  idRol?: number;
+  nameUser?: string;
+  emailUser?: string;
+  stateUser?: boolean;
+  order?: Order;
+}

@@ -15,8 +15,9 @@ import {
   getCategoryByID,
   resetAllDataCategory,
   updateOneCategoryByID,
+  categoryFilters,
 } from "../store/category.slice";
-import { ICategory } from "../types";
+import { ICategory, IFilterCategory } from "../types";
 import { unwrapResult } from "@reduxjs/toolkit";
 
 export const useCategory = () => {
@@ -29,6 +30,11 @@ export const useCategory = () => {
 
   const getAllCategories = async (page?: number) => {
     const result = await dispatch(getAllListCategories(page));
+    return unwrapResult(result);
+  };
+
+  const filterCategories = async (filters: IFilterCategory, page?: number) => {
+    const result = await dispatch(categoryFilters({ filters, page }));
     return unwrapResult(result);
   };
 
@@ -73,5 +79,6 @@ export const useCategory = () => {
     updateOneCategory,
     clearDataCurrentCategory,
     resetDataCategory,
+    filterCategories,
   };
 };

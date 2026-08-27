@@ -1,5 +1,5 @@
 import { api } from "@/app/shared/api/axios";
-import { IProviderCreate, IProviderUpdate } from "../types";
+import { IFilterProviders, IProviderCreate, IProviderUpdate } from "../types";
 
 export const getAllProviders = async (page?: number) => {
   const response = await api.post("", {
@@ -138,4 +138,53 @@ export const deleteOneProvider = async (idProvider: number) => {
   });
 
   return response.data.data.deleteProvider;
+};
+
+export const filterProviders = async (
+  filterProviders?: IFilterProviders,
+  page?: number,
+) => {
+  const response = await api.post("", {
+    query: `
+      query filterProviders(
+        $page: Int
+        $nameProvider: String
+        $phoneProvider: String
+        $stateProvider: Boolean
+        $order: Order
+      ) {
+        filterProviders(
+          page: $page
+          filters: {
+            nameProvider: $nameProvider
+            phoneProvider: $phoneProvider
+            stateProvider: $stateProvider
+            order: $order
+          }
+        ) {
+          info {
+            pages
+            count
+            next
+            prev
+          }
+
+          results {
+            idProvider
+            nameProvider
+            phoneProvider
+            stateProvider
+          }
+        }
+      }
+    `,
+    variables: {
+      page,
+      nameProvider: filterProviders?.nameProvider || undefined,
+      phoneProvider: filterProviders?.phoneProvider || undefined,
+      stateProvider: filterProviders?.stateProvider ?? undefined,
+      order: filterProviders?.order ?? "ASC",
+    },
+  });
+  return response.data.data.filterProviders;
 };

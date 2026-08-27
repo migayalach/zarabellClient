@@ -18,8 +18,9 @@ import {
   resetAllDataUser,
   addInfoWatch,
   clearInfoWatch,
+  userFilters,
 } from "../store/user.slice";
-import { IUserInfo, IUserUpdate } from "../types";
+import { IFilterUser, IUserInfo, IUserUpdate } from "../types";
 import { unwrapResult } from "@reduxjs/toolkit";
 
 export const useUsers = () => {
@@ -33,6 +34,11 @@ export const useUsers = () => {
 
   const getAllUsers = async (page?: number) => {
     const result = await dispatch(getAllListUsers(page));
+    return unwrapResult(result);
+  };
+
+  const filterUsers = async (filters: IFilterUser, page?: number) => {
+    const result = await dispatch(userFilters({ filters, page }));
     return unwrapResult(result);
   };
 
@@ -90,5 +96,6 @@ export const useUsers = () => {
     resetDataUser,
     addInfoWatchAction,
     clearInfoWatchAction,
+    filterUsers,
   };
 };
