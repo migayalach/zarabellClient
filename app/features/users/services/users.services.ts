@@ -1,5 +1,5 @@
 import { api } from "@/app/shared/api/axios";
-import { IUserCreate, IUserUpdate } from "../types";
+import { IFilterUser, IUserCreate, IUserUpdate } from "../types";
 
 export const getAllUsers = async (page?: number) => {
   const response = await api.post("", {
@@ -181,4 +181,53 @@ export const deleteOneUser = async (idUser: number) => {
   });
 
   return response.data.data.deleteUser;
+};
+
+export const filterUsers = async (
+  filterUsers?: IFilterUser,
+  page?: number,
+) => {
+  const response = await api.post("", {
+    query: `
+      query filterUsers($page: Int, $idRol: Int, $nameUser: String, $emailUser: String, $stateUser: Boolean, $order: Order) {
+        filterUsers(
+          page: $page
+          filters: {
+            idRol: $idRol
+            nameUser: $nameUser
+            emailUser: $emailUser
+            stateUser: $stateUser
+            order: $order
+          }
+        ) {
+          info {
+            pages
+            count
+            next
+            prev
+          }
+          results {
+            idUser
+            idRole
+            nameRole
+            nameUser
+            lastNameUser
+            emailUser
+            phoneUser
+            stateUser
+          }
+        }
+      }
+    `,
+    variables: {
+      page,
+      idRol: filterUsers?.idRol || undefined,
+      nameUser: filterUsers?.nameUser || undefined,
+      emailUser: filterUsers?.emailUser || undefined,
+      stateUser: filterUsers?.stateUser ?? undefined,
+      order: filterUsers?.order ?? "ASC",
+    },
+  });
+
+  return response.data.data.filterUsers;
 };
