@@ -1,5 +1,5 @@
 import { api } from "@/app/shared/api/axios";
-import { IRecordICreate, IRecordIUpdate } from "../types";
+import { IFilterRecordInput, IRecordICreate, IRecordIUpdate } from "../types";
 
 export const getAllInputRecords = async (page?: number) => {
   const response = await api.post("", {
@@ -190,4 +190,75 @@ export const deleteOneInputRecord = async (idInputRecord: number) => {
   });
 
   return response.data.data.deleteIRecord;
+};
+
+export const filterInputRecord = async (
+  filterRecordInput?: IFilterRecordInput,
+  page?: number,
+) => {
+  const response = await api.post("", {
+    query: `
+      query filterInputRecords(
+        $page: Int
+        $idCategory: Int
+        $idProduct: Int
+        $idProvider: Int
+        $dateInputRecordFrom: String
+        $dateInputRecordTo: String
+        $expirationDateFrom: String
+        $expirationDateTo: String
+        $stateInputRecord: Boolean
+        $order: Order
+      ) {
+        filterInputRecords(
+          page: $page
+          filters: {
+            idCategory: $idCategory
+            idProduct: $idProduct
+            idProvider: $idProvider
+            dateInputRecordFrom: $dateInputRecordFrom
+            dateInputRecordTo: $dateInputRecordTo
+            expirationDateFrom: $expirationDateFrom
+            expirationDateTo: $expirationDateTo
+            stateInputRecord: $stateInputRecord
+            order: $order
+          }
+        ) {
+          info {
+            pages
+            count
+            next
+            prev
+          }
+          results {
+            idInputRecord
+            idCategory
+            idProduct
+            idProvider
+            nameProvider
+            nameCategory
+            nameProduct
+            dateInputRecord
+            expirationDateIRecord
+            countIRecord
+            priceBuyIRecord
+            statusIRecord
+          }
+        }
+      }
+    `,
+    variables: {
+      page,
+      idCategory: filterRecordInput?.idCategory || undefined,
+      idProduct: filterRecordInput?.idProduct || undefined,
+      idProvider: filterRecordInput?.idProvider || undefined,
+      dateInputRecordFrom: filterRecordInput?.dateInputRecordFrom || undefined,
+      dateInputRecordTo: filterRecordInput?.dateInputRecordTo || undefined,
+      expirationDateFrom: filterRecordInput?.expirationDateFrom || undefined,
+      expirationDateTo: filterRecordInput?.expirationDateTo || undefined,
+      stateInputRecord: filterRecordInput?.stateInputRecord ?? undefined,
+      order: filterRecordInput?.order ?? "ASC",
+    },
+  });
+  return response.data.data.filterInputRecords;
 };
