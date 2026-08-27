@@ -11,8 +11,9 @@ import {
   resetBranchCreateUpdateData,
   resetStateActionBranch,
   updateOneBranchByID,
+  branchFilters,
 } from "../store/branch.slice";
-import { IBranchCreate, IBranchUpdate } from "../types";
+import { IBranchCreate, IBranchUpdate, IFilterBranch } from "../types";
 import { unwrapResult } from "@reduxjs/toolkit";
 
 export const useBranchsActions = () => {
@@ -20,6 +21,11 @@ export const useBranchsActions = () => {
 
   const getAllBranchs = async (page?: number) => {
     const result = await dispatch(getAllListBranchs(page));
+    return unwrapResult(result);
+  };
+
+  const filterBranchs = async (filters: IFilterBranch, page?: number) => {
+    const result = await dispatch(branchFilters({ filters, page }));
     return unwrapResult(result);
   };
 
@@ -74,5 +80,6 @@ export const useBranchsActions = () => {
     resetBranchActCreateUpdate,
     clearErrorBranch,
     resetBranchActionState,
+    filterBranchs
   };
 };
