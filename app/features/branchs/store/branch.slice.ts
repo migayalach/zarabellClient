@@ -6,6 +6,7 @@ import {
   getAllBranchs,
   getOneBranchByID,
   updateOneRole,
+  filterBranchs,
 } from "../services/branchs.services";
 
 import {
@@ -16,9 +17,10 @@ import {
   IBranchs,
   IBranchCreate,
   IBranchUpdate,
+  IFilterBranch,
 } from "../types";
 
-type TBranch = "create" | "delete" | "update";
+type TBranch = "create" | "delete" | "update" | "filters";
 
 interface IBranchState {
   info: IPaginationBranch | null;
@@ -95,6 +97,21 @@ export const deleteOneBranchByID = createAsyncThunk<
 >("branchs/deleteOneBranchByID", async (idBranch, { rejectWithValue }) => {
   try {
     return await deleteOneRole(idBranch);
+  } catch (error) {
+    return rejectWithValue(error as IErrorBranch);
+  }
+});
+
+export const branchFilters = createAsyncThunk<
+  IResponseBranchs,
+  {
+    filters?: IFilterBranch;
+    page?: number | undefined;
+  },
+  { rejectValue: IErrorBranch }
+>("branchs/filter", async ({ filters, page }, { rejectWithValue }) => {
+  try {
+    return await filterBranchs(filters, page);
   } catch (error) {
     return rejectWithValue(error as IErrorBranch);
   }
@@ -203,6 +220,22 @@ const branchSlice = createSlice({
         state.action = "delete";
       })
       .addCase(deleteOneBranchByID.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message ?? "Error";
+      })
+
+      // TODO FILTERS
+      .addCase(branchFilters.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(branchFilters.fulfilled, (state, action) => {
+        state.loading = false;
+        state.info = action.payload.info;
+        state.results = action.payload.results;
+        state.action = "filters";
+      })
+      .addCase(branchFilters.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message ?? "Error";
       });
