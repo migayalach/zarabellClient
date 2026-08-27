@@ -1,3 +1,5 @@
+import { Order } from "@/app/helpers/filters.types";
+
 export interface IOutput {
   idOutput: number;
   idUser: number;
@@ -46,4 +48,13 @@ export interface IResponseOutput {
   success: boolean;
   message: string;
   value: IOutput;
+}
+
+export interface IFilterOutputs {
+  idBranch?: number;
+  idTypeOutput?: number;
+  idUser?: number;
+  dateOutputFrom?: string;
+  dateOutputTo?: string;
+  order?: Order;
 }
