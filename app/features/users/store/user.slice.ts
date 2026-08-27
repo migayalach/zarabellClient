@@ -176,7 +176,9 @@ const userSlice = createSlice({
       })
       .addCase(createUser.fulfilled, (state, action) => {
         state.loading = false;
-        // state.results.unshift(action.payload.value);
+        state.success = action.payload.success;
+        state.currentUser = action.payload.value;
+        state.actionWatch = "create";
       })
       .addCase(createUser.rejected, (state, action) => {
         state.loading = false;
@@ -190,10 +192,9 @@ const userSlice = createSlice({
       })
       .addCase(updateOneUserByID.fulfilled, (state, action) => {
         state.loading = false;
-        const updated = action.payload.value;
-        state.results = state.results.map((item) =>
-          item.idUser === updated.idUser ? updated : item,
-        );
+        state.success = action.payload.success;
+        state.currentUser = action.payload.value;
+        state.actionWatch = "update";
       })
       .addCase(updateOneUserByID.rejected, (state, action) => {
         state.loading = false;
@@ -207,8 +208,9 @@ const userSlice = createSlice({
       })
       .addCase(deleteOneUserByID.fulfilled, (state, action) => {
         state.loading = false;
-        // const idUser = action.payload.value.idUser;
-        // state.results = state.results.filter((item) => item.idUser !== idUser);
+        state.success = action.payload.success;
+        state.currentUser = action.payload.value;
+        state.actionWatch = "delete";
       })
       .addCase(deleteOneUserByID.rejected, (state, action) => {
         state.loading = false;
