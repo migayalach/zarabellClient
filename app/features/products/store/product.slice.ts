@@ -5,6 +5,7 @@ import {
   getAllProducts,
   getOneProductByID,
   updateOneProduct,
+  filterProducts,
 } from "../services/products.services";
 import {
   IErrorProduct,
@@ -14,6 +15,8 @@ import {
   IProductUpdate,
   IResponseProduct,
   IResponseProducts,
+  IFilterProducts,
+  TProductActionWatch,
 } from "../types";
 
 interface IProductState {
@@ -22,6 +25,8 @@ interface IProductState {
   currentProduct: IProduct | null;
   loading: boolean;
   error: string | null;
+  success: boolean;
+  actionWatch: TProductActionWatch | null;
 }
 
 const initialState: IProductState = {
@@ -30,6 +35,8 @@ const initialState: IProductState = {
   currentProduct: null,
   loading: false,
   error: null,
+  success: false,
+  actionWatch: null,
 };
 
 export const getAllListProducts = createAsyncThunk<
@@ -92,10 +99,31 @@ export const deleteOneProductByID = createAsyncThunk<
   }
 });
 
+export const productFilters = createAsyncThunk<
+  IResponseProducts,
+  {
+    filters?: IFilterProducts;
+    page?: number | undefined;
+  },
+  { rejectValue: IErrorProduct }
+>("products/filter", async ({ filters, page }, { rejectWithValue }) => {
+  try {
+    return await filterProducts(filters, page);
+  } catch (error) {
+    return rejectWithValue(error as IErrorProduct);
+  }
+});
+
 const productsSlice = createSlice({
   name: "products",
   initialState,
   reducers: {
+    addInfoWatch: (state, action) => {
+      state.actionWatch = action.payload;
+    },
+    clearInfoWatch: (state) => {
+      state.actionWatch = null;
+    },
     clearInfoProductError: (state) => {
       state.error = null;
     },
@@ -188,6 +216,22 @@ const productsSlice = createSlice({
       .addCase(deleteOneProductByID.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message ?? "Error";
+      })
+
+      // TODO FILTERS
+      .addCase(productFilters.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(productFilters.fulfilled, (state, action) => {
+        state.loading = false;
+        state.info = action.payload.info;
+        state.results = action.payload.results;
+        state.actionWatch = "filters";
+      })
+      .addCase(productFilters.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message ?? "Error";
       });
   },
 });
@@ -198,4 +242,6 @@ export const {
   clearInfoProductError,
   clearCurrentProductData,
   resetAllDataProduct,
+  addInfoWatch,
+  clearInfoWatch,
 } = productsSlice.actions;
