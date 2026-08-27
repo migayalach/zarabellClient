@@ -39,5 +39,5 @@ export const getInfoDashboard = async () => {
       }
     `,
   });
-  return response.data.data.getDashboardInfo;
+  return response.data.data?.getDashboardInfo;
 };
