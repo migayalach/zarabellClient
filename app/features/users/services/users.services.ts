@@ -4,7 +4,7 @@ import { IFilterUser, IUserCreate, IUserUpdate } from "../types";
 export const getAllUsers = async (page?: number) => {
   const response = await api.post("", {
     query: `
-    query GetAllUsers($page: Int) {
+    query getAllUsers($page: Int) {
       getAllUsers(page: $page) {
         info {
           count
@@ -29,14 +29,14 @@ export const getAllUsers = async (page?: number) => {
       page,
     },
   });
-
+  
   return response.data.data.getAllUsers;
 };
 
 export const getOneUserByID = async (idUser: number) => {
   const response = await api.post("", {
     query: `
-      query FindOneUser($idUser: Int!) {
+      query findOneUser($idUser: Int!) {
         findOneUser(idUser: $idUser) {
           message
           value {
