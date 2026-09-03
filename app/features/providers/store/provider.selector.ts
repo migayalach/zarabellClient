@@ -8,3 +8,5 @@ export const selectProvidersLoading = (state: RootState) =>
 export const selectProvidersError = (state: RootState) => state.providers.error;
 export const selectCurrentProvider = (state: RootState) =>
   state.providers.currentProvider;
+export const selectInfoWatchProvider = (state: RootState) =>
+  state.providers.actionWatch;

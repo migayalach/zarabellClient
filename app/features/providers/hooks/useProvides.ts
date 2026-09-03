@@ -6,6 +6,7 @@ import {
   selectProvidersInfo,
   selectProvidersLoading,
   selectProvidersResults,
+  selectInfoWatchProvider,
 } from "../store/provider.selector";
 import {
   clearCurrentProviderData,
@@ -15,9 +16,12 @@ import {
   getProviderByID,
   resetAllDataProvider,
   updateOneProviderByID,
+  addInfoWatch,
+  clearInfoWatch,
+  providerFilters,
 } from "../store/provider.slice";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { IProviderCreate, IProviderUpdate } from "../types";
+import { IFilterProviders, IProviderCreate, IProviderUpdate } from "../types";
 
 export const useProviders = () => {
   const dispatch = useAppDispatch();
@@ -26,9 +30,15 @@ export const useProviders = () => {
   const currentProvider = useAppSelector(selectCurrentProvider);
   const loading = useAppSelector(selectProvidersLoading);
   const error = useAppSelector(selectProvidersError);
+  const watch = useAppSelector(selectInfoWatchProvider);
 
   const getAllProviders = async (page?: number) => {
     const result = await dispatch(getAllListProvider(page));
+    return unwrapResult(result);
+  };
+
+  const filterProviders = async (filters: IFilterProviders, page?: number) => {
+    const result = await dispatch(providerFilters({ filters, page }));
     return unwrapResult(result);
   };
 
@@ -60,6 +70,10 @@ export const useProviders = () => {
     dispatch(resetAllDataProvider());
   };
 
+  const clearInfoWatchProvider = () => {
+    dispatch(clearInfoWatch());
+  };
+
   return {
     info,
     results,
@@ -73,5 +87,9 @@ export const useProviders = () => {
     updateOneProvider,
     clearDataCurrentProvider,
     resetDataProvider,
+    filterProviders,
+    addInfoWatch,
+    clearInfoWatchProvider,
+    watch,
   };
 };

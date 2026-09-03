@@ -1,6 +1,7 @@
 "use client";
 import {
   ProviderButtonModal,
+  ProviderFilter,
   ProviderPagination,
   ProviderTable,
 } from "@/app/features/providers/components";
@@ -24,6 +25,7 @@ function Page() {
 
   return (
     <div className="flex flex-col flex-1">
+      <ProviderFilter />
       <div className="flex items-center justify-between">
         <h1 className="text-[30px] font-bold">Lista de Proveedores</h1>
         <ProviderButtonModal text="Crear" action="create" />

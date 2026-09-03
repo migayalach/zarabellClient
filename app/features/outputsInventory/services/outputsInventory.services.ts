@@ -1,5 +1,5 @@
 import { api } from "@/app/shared/api/axios";
-import { IOutputCreate, IOutputUpdate } from "../types";
+import { IFilterOutputs, IOutputCreate, IOutputUpdate } from "../types";
 
 export const getAllOutputs = async (page?: number) => {
   const response = await api.post("", {
@@ -160,4 +160,63 @@ export const deleteOneOutput = async (idOutput: number) => {
     },
   });
   return response.data.data.deleteOutput;
+};
+
+export const filterOutputs = async (
+  filterOutputs?: IFilterOutputs,
+  page?: number,
+) => {
+  const response = await api.post("", {
+    query: `
+      query filterInputProducts(
+        $page: Int
+        $idBranch: Int
+        $idTypeOutput: Int
+        $idUser: Int
+        $dateOutputFrom: String
+        $dateOutputTo: String
+        $order: Order
+      ) {
+        filterInputProducts(
+          page: $page
+          filters: {
+            idBranch: $idBranch
+            idTypeOutput: $idTypeOutput
+            idUser: $idUser
+            dateOutputFrom: $dateOutputFrom
+            dateOutputTo: $dateOutputTo
+            order: $order
+          }
+        ) {
+          info {
+            pages
+            count
+            next
+            prev
+          }
+          results {
+            idOutput
+            idUser
+            idBranch
+            idTypeOutput
+            nameTypeOutput
+            nameUser
+            nameBranch
+            dateOutput
+            codeOutput
+          }
+        }
+      }
+    `,
+    variables: {
+      page,
+      idBranch: filterOutputs?.idBranch || undefined,
+      idTypeOutput: filterOutputs?.idTypeOutput || undefined,
+      idUser: filterOutputs?.idUser || undefined,
+      dateOutputFrom: filterOutputs?.dateOutputFrom || undefined,
+      dateOutputTo: filterOutputs?.dateOutputTo || undefined,
+      order: filterOutputs?.order ?? "ASC",
+    },
+  });
+  return response.data.data.filterInputProducts;
 };

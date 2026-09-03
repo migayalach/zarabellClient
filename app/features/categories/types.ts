@@ -1,3 +1,5 @@
+import { Order } from "@/app/helpers/filters.types";
+
 export interface ICategory {
   idCategory: number;
   nameCategory: string;
@@ -32,4 +34,10 @@ export interface IResponseCategory {
   success: boolean;
   message: string;
   value: ICategory;
+}
+
+export interface IFilterCategory {
+  nameCategory?: string;
+  stateCategory?: boolean;
+  order?: Order;
 }

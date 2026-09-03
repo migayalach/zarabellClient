@@ -11,10 +11,12 @@ import {
   resetAllDataOutput,
   resetOutputCreateUpdateData,
   updateOneOutputByID,
-  resetStateAction
+  resetStateAction,
+  clearInfoWatch,
+  outputFilters,
 } from "../store/outputsInventory.slice";
 
-import { IOutputCreate, IOutputUpdate } from "../types";
+import { IOutputCreate, IOutputUpdate, IFilterOutputs } from "../types";
 import { unwrapResult } from "@reduxjs/toolkit";
 
 export const useOutputActions = () => {
@@ -22,6 +24,11 @@ export const useOutputActions = () => {
 
   const getAllOutputs = async (page?: number) => {
     const result = await dispatch(getAllOutput({ page }));
+    return unwrapResult(result);
+  };
+
+  const filteroutputs = async (filters: IFilterOutputs, page?: number) => {
+    const result = await dispatch(outputFilters({ filters, page }));
     return unwrapResult(result);
   };
 
@@ -63,7 +70,11 @@ export const useOutputActions = () => {
 
   const resetActionState = () => {
     dispatch(resetStateAction());
-  }
+  };
+
+  const clearInfoWatchAction = () => {
+    dispatch(clearInfoWatch());
+  };
 
   return {
     getAllOutputs,
@@ -75,6 +86,8 @@ export const useOutputActions = () => {
     resetOutput,
     resetOutputActCreateUpdate,
     clearErrorOutput,
-    resetActionState
+    resetActionState,
+    filteroutputs,
+    clearInfoWatchAction,
   };
 };

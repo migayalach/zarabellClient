@@ -8,3 +8,5 @@ export const selectProductsLoading = (state: RootState) =>
 export const selectProductsError = (state: RootState) => state.products.error;
 export const selectCurrentProduct = (state: RootState) =>
   state.products.currentProduct;
+export const selectInfoWatchProduct = (state: RootState) =>
+  state.products.actionWatch;

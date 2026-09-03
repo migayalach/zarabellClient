@@ -1,3 +1,5 @@
+import { Order } from "@/app/helpers/filters.types";
+
 export interface IProduct {
   idProduct: number;
   idCategory: number;
@@ -48,3 +50,13 @@ export interface IResponseProduct {
   message: string;
   value: IProduct;
 }
+
+export interface IFilterProducts {
+  idCategory?: number;
+  nameCategory?: string;
+  nameProduct?: string;
+  stateProduct?: boolean;
+  order?: Order;
+}
+
+export type TProductActionWatch = "create" | "delete" | "update" | "filters";

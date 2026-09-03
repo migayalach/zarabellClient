@@ -25,9 +25,10 @@ const columnsRoles = [
   },
   {
     title: "Acciones",
+    dataIndex: "idRole",
     key: "actions",
     width: 140,
-    render: ({ idRole }: { idRole: number }) => (
+    render: (idRole: number) => (
       <div className="flex gap-1">
         <RoleButtonModal text="Editar" action="update" idRole={idRole} />
         <RoleButtonModal text="Eliminar" action="delete" idRole={idRole} />

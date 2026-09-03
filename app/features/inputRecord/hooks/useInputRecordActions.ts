@@ -11,9 +11,11 @@ import {
   resetInputRecordCreateUpdateData,
   resetStateActionInputRecord,
   updateOneInputRecordByID,
+  clearInfoWatch,
+  inputRecordFilters,
 } from "../store/entriesInventory.slice";
 
-import { IRecordICreate, IRecordIUpdate } from "../types";
+import { IFilterRecordInput, IRecordICreate, IRecordIUpdate } from "../types";
 import { unwrapResult } from "@reduxjs/toolkit";
 
 export const useInputRecordActions = () => {
@@ -21,6 +23,14 @@ export const useInputRecordActions = () => {
 
   const getAllInputRecords = async (page?: number) => {
     const result = await dispatch(getAllListInputRecord(page));
+    return unwrapResult(result);
+  };
+
+  const filterInputRecords = async (
+    filters: IFilterRecordInput,
+    page?: number,
+  ) => {
+    const result = await dispatch(inputRecordFilters({ filters, page }));
     return unwrapResult(result);
   };
 
@@ -64,6 +74,10 @@ export const useInputRecordActions = () => {
     dispatch(resetStateActionInputRecord());
   };
 
+  const clearInfoWatchAction = () => {
+    dispatch(clearInfoWatch());
+  };
+
   return {
     getAllInputRecords,
     getOneInputRecordByID,
@@ -75,5 +89,7 @@ export const useInputRecordActions = () => {
     resetInputRecordActCreateUpdate,
     clearErrorInputRecord,
     resetInputRecordActionState,
+    filterInputRecords,
+    clearInfoWatchAction,
   };
 };

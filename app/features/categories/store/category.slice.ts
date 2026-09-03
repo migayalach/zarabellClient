@@ -5,6 +5,7 @@ import {
   updateOneCategory,
   getAllCategories,
   getOneCategoryByID,
+  filterCategories,
 } from "../services/categories.services";
 import {
   IErrorCategory,
@@ -12,7 +13,10 @@ import {
   IResponseCategory,
   ICategory,
   IResponseCaterogies,
+  IFilterCategory,
 } from "../types";
+
+type TCategory = "create" | "delete" | "update" | "filters";
 
 interface ICategoryState {
   info: IPaginationCaterogy | null;
@@ -20,6 +24,8 @@ interface ICategoryState {
   currentCategory: ICategory | null;
   loading: boolean;
   error: string | null;
+  success: boolean;
+  action: TCategory | null;
 }
 
 const initialState: ICategoryState = {
@@ -28,6 +34,8 @@ const initialState: ICategoryState = {
   currentCategory: null,
   loading: false,
   error: null,
+  success: false,
+  action: null,
 };
 
 export const getAllListCategories = createAsyncThunk<
@@ -85,6 +93,21 @@ export const deleteOneCategoryByID = createAsyncThunk<
 >("categories/deleteCategory", async (idCategory, { rejectWithValue }) => {
   try {
     return await deleteOneCategory(idCategory);
+  } catch (error) {
+    return rejectWithValue(error as IErrorCategory);
+  }
+});
+
+export const categoryFilters = createAsyncThunk<
+  IResponseCaterogies,
+  {
+    filters?: IFilterCategory;
+    page?: number | undefined;
+  },
+  { rejectValue: IErrorCategory }
+>("categories/filter", async ({ filters, page }, { rejectWithValue }) => {
+  try {
+    return await filterCategories(filters, page);
   } catch (error) {
     return rejectWithValue(error as IErrorCategory);
   }
@@ -184,6 +207,22 @@ const categorySlice = createSlice({
         );
       })
       .addCase(deleteOneCategoryByID.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message ?? "Error";
+      })
+
+      // TODO FILTERS
+      .addCase(categoryFilters.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(categoryFilters.fulfilled, (state, action) => {
+        state.loading = false;
+        state.info = action.payload.info;
+        state.results = action.payload.results;
+        state.action = "filters";
+      })
+      .addCase(categoryFilters.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message ?? "Error";
       });

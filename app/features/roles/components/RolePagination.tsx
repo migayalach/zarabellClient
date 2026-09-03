@@ -7,33 +7,57 @@ import { SIZE_PAGINATION } from "@/app/helpers/constans.helpers";
 
 function RolePagination({ pages }: { pages: number }) {
   const [current, setCurrent] = useState(1);
-  const { getAllRoles, results } = useRoles();
+  const {
+    getAllRoles,
+    results,
+    info,
+    actionRole,
+    error,
+    clearErrorRole,
+    resetActionDataRole,
+  } = useRoles();
 
   const onChange: PaginationProps["onChange"] = (page) => {
     getAllRoles(page);
     setCurrent(page);
   };
 
-  // useEffect(() => {
-  //   if (!watch) return;
+  useEffect(() => {
+    if (!actionRole) return;
 
-  //   if (watch === "create" && results.length) {
-  //     const index = results.length + 1;
-  //     if (index <= SIZE_PAGINATION) {
-  //       getAllUsers(current);
-  //     } else {
-  //       const nextPage = current + 1;
-  //       setCurrent(nextPage);
-  //       getAllUsers(nextPage);
-  //     }
-  //   } else if (watch === "delete") {
-  //   } else if (watch === "update") {
-  //   }
+    switch (actionRole) {
+      case "create": {
+        const page =
+          (info!.count + 1) % SIZE_PAGINATION === 1 ? pages + 1 : pages;
+        setCurrent(page);
+        getAllRoles(page);
+        break;
+      }
 
-  //   setTimeout(() => {
-  //     clearInfoWatchAction();
-  //   }, 1000);
-  // }, [watch]);
+      case "update": {
+        getAllRoles(current);
+        break;
+      }
+
+      case "delete": {
+        if (results.length === 1 && current > 1) {
+          const previousPage = current - 1;
+          setCurrent(previousPage);
+          getAllRoles(previousPage);
+        } else {
+          getAllRoles(current);
+        }
+        break;
+      }
+    }
+    resetActionDataRole();
+  }, [actionRole]);
+
+  useEffect(() => {
+    if (error) {
+      clearErrorRole();
+    }
+  }, [error]);
 
   return (
     <Pagination
