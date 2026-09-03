@@ -1,6 +1,7 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import {
+  selectActionRole,
   selectCurrentRole,
   selectRolesError,
   selectRolesInfo,
@@ -15,6 +16,8 @@ import {
   deleteOneRoleByID,
   clearCurrentRoleData,
   resetAllDataRole,
+  clearInfoRoleError,
+  resetActionData,
 } from "../store/role.slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { IRole } from "../types";
@@ -26,6 +29,7 @@ export const useRoles = () => {
   const currentRole = useAppSelector(selectCurrentRole);
   const loading = useAppSelector(selectRolesLoading);
   const error = useAppSelector(selectRolesError);
+  const actionRole = useAppSelector(selectActionRole);
 
   const getAllRoles = async (page?: number) => {
     const result = await dispatch(getAllListRole(page));
@@ -60,12 +64,21 @@ export const useRoles = () => {
     dispatch(resetAllDataRole());
   };
 
+  const clearErrorRole = () => {
+    dispatch(clearInfoRoleError());
+  };
+
+  const resetActionDataRole = () => {
+    dispatch(resetActionData());
+  }
+
   return {
     info,
     results,
     currentRole,
     loading,
     error,
+    actionRole,
     getAllRoles,
     getOneRole,
     createNewRole,
@@ -73,5 +86,7 @@ export const useRoles = () => {
     updateOneRole,
     clearDataCurrentRole,
     resetDataRole,
+    clearErrorRole,
+    resetActionDataRole
   };
 };
