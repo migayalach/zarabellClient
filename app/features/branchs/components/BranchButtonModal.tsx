@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { DeleteOutlined, PlusOutlined, FormOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Modal, Switch } from "antd";
+import { Button, Form, Input, Modal, Switch, message } from "antd";
 import { useBranchs, useBranchsActions } from "@/app/features/branchs/hooks";
 import CustomTooltip from "@/app/shared/components/CustomTooltip";
 import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
@@ -10,6 +10,14 @@ type IBranchForm = {
   text: string;
   action: string;
   idBranch?: number;
+};
+
+const initialBranchInfo = {
+  idBranch: 0,
+  nameBranch: "",
+  address: "",
+  phone: "",
+  stateBranch: false,
 };
 
 function BranchButtonModal({ text, action, idBranch }: IBranchForm) {
@@ -23,58 +31,29 @@ function BranchButtonModal({ text, action, idBranch }: IBranchForm) {
   const {
     createNewBranch,
     getOneBranchByID,
-    getAllBranchs,
     updateBranch,
     deleteBranch,
     clearCurrentBranch,
   } = useBranchsActions();
 
-  const [branchInfo, setBranchInfo] = useState({
-    idBranch: 0,
-    nameBranch: "",
-    address: "",
-    phone: "",
-    stateBranch: false,
-  });
+  const [branchInfo, setBranchInfo] = useState(initialBranchInfo);
 
   const resetBranchInfo = () => {
-    setBranchInfo({
-      idBranch: 0,
-      nameBranch: "",
-      address: "",
-      phone: "",
-      stateBranch: false,
-    });
+    setBranchInfo(initialBranchInfo);
   };
 
   const showModal = () => {
+    if (action === "create") {
+      clearCurrentBranch();
+      resetBranchInfo();
+    }
     setIsModalOpen(true);
-
-    // if (action !== "delete") {
-    //   getAllBranchs();
-    // }
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
     clearCurrentBranch();
-  };
-
-  const onFinish = async () => {
-    if (action === "create") {
-      createNewBranch(branchInfo);
-      setIsModalOpen(false);
-      resetBranchInfo();
-    }
-
-    if (action === "update") {
-      updateBranch(branchInfo);
-    }
-
-    if (action === "delete" && idBranch) {
-      deleteBranch(idBranch);
-      setIsModalOpen(false);
-    }
+    resetBranchInfo();
   };
 
   const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,18 +73,45 @@ function BranchButtonModal({ text, action, idBranch }: IBranchForm) {
     }));
   };
 
+  const onFinish = async () => {
+    try {
+      if (action === "create") {
+        await createNewBranch(branchInfo);
+        message.success("Sucursal creada correctamente");
+        setIsModalOpen(false);
+        resetBranchInfo();
+      }
+
+      if (action === "update") {
+        await updateBranch(branchInfo);
+        message.success("Sucursal actualizada correctamente");
+        // setIsModalOpen(false);
+        // clearCurrentBranch();
+        // resetBranchInfo();
+      }
+
+      if (action === "delete" && idBranch) {
+        await deleteBranch(idBranch);
+        message.success("Sucursal eliminada correctamente");
+        setIsModalOpen(false);
+      }
+    } catch {
+      message.error("No se pudo realizar la operación");
+    }
+  };
+
   useEffect(() => {
     if (!isModalOpen) return;
 
     if (action === "update" && idBranch) {
       getOneBranchByID(idBranch);
     }
-  }, [isModalOpen]);
+  }, [isModalOpen, action, idBranch]);
 
   useEffect(() => {
-    if (!isModalOpen || !currentBranch) return;
+    if (!isModalOpen || action !== "update" || !currentBranch) return;
     setBranchInfo(currentBranch);
-  }, [currentBranch, isModalOpen]);
+  }, [currentBranch, isModalOpen, action]);
 
   if (
     (action === "create" && !canCreate) ||
