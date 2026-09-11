@@ -85,7 +85,7 @@ export default function ResetPasswordPage() {
 
   return (
     <div className="min-h-screen bg-amber-300 flex items-center justify-center px-4">
-      <div className="w-full max-w-[380px] bg-white rounded-2xl shadow-xl p-8">
+      <div className="w-full max-w-95 bg-white rounded-2xl shadow-xl p-8">
         <div className="text-center mb-7">
           <h1 className="text-2xl font-semibold text-gray-800">
             Restablecer contraseña
