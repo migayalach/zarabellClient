@@ -40,6 +40,10 @@ export const signInRequest = async (
     },
   });
 
+  if (response.data.errors?.length) {
+    throw new Error(response.data.errors[0].message);
+  }
+
   return response.data.data.singIn;
 };
 
@@ -177,4 +181,60 @@ export const signOut = async (): Promise<ISignOut> => {
   });
 
   return response.data.data.signOut;
+};
+
+export const forgotPasswordRequest = async (
+  emailUser: string,
+): Promise<{ success: boolean; message: string }> => {
+  const response = await api.post("/graphql", {
+    query: `
+      mutation forgotPassword($emailUser: String!) {
+        forgotPassword(emailUser: $emailUser) {
+          success
+          message
+        }
+      }
+    `,
+    variables: {
+      emailUser,
+    },
+  });
+
+  if (response.data.errors?.length) {
+    throw new Error(response.data.errors[0].message);
+  }
+
+  return response.data.data.forgotPassword;
+};
+
+export const resetPasswordByEmail = async (
+  token: string,
+  password: string,
+): Promise<{ success: boolean; message: string }> => {
+  const response = await api.post("/graphql", {
+    query: `
+      mutation resetPasswordByUserFromEmail(
+        $token: String!
+        $password: String!
+      ) {
+        resetPasswordByUserFromEmail(
+          token: $token
+          password: $password
+        ) {
+          success
+          message
+        }
+      }
+    `,
+    variables: {
+      token,
+      password,
+    },
+  });
+
+  if (response.data.errors?.length) {
+    throw new Error(response.data.errors[0].message);
+  }
+
+  return response.data.data.resetPasswordByUserFromEmail;
 };
