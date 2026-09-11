@@ -1,9 +1,15 @@
 ```
 └── 📁zarabell-client
+    └── 📁__test__
+        └── 📁integration
+        └── 📁unit
+    └── 📁.github
     └── 📁.vscode
         ├── settings.json
     └── 📁app
         └── 📁(client)
+            └── 📁branchs
+                ├── page.tsx
             └── 📁categories
                 ├── page.tsx
             └── 📁home
@@ -20,6 +26,8 @@
             └── 📁inventory-returns
                 └── 📁[idReturn]
                     ├── page.tsx
+                ├── page.tsx
+            └── 📁magazine
                 ├── page.tsx
             └── 📁products
                 ├── page.tsx
@@ -41,6 +49,7 @@
             └── 📁auth
                 └── 📁components
                     ├── AuthChangePassword.tsx
+                    ├── AuthForgotPassword.tsx
                     ├── AuthFormInformation.tsx
                     ├── AuthResetPassword.tsx
                     ├── AuthSignOut.tsx
@@ -48,21 +57,44 @@
                     ├── SignInForm.tsx
                 └── 📁hooks
                     ├── useAuth.ts
+                    ├── useForgotPassword.ts
                     ├── useHasPermission.ts
+                    ├── useInitialLoading.tsx
                     ├── usePermise.ts
                     ├── useProfile.ts
+                    ├── useRefreshToken.ts
                     ├── useRequireAuth.ts
                     ├── useResetPassword.ts
                     ├── useRestoreSession.ts
                     ├── useSignIn.ts
+                    ├── useSignOut.ts
                 └── 📁services
                     ├── auth.services.ts
                 └── 📁store
                     ├── auth.selector.ts
                     ├── auth.slice.ts
                 ├── types.ts
+            └── 📁branchs
+                └── 📁components
+                    ├── BranchButtonModal.tsx
+                    ├── BranchFilter.tsx
+                    ├── BranchList.tsx
+                    ├── BranchPagination.tsx
+                    ├── BranchTable.tsx
+                    ├── index.ts
+                └── 📁hooks
+                    ├── index.ts
+                    ├── useBranch.ts
+                    ├── useBranchActions.ts
+                └── 📁services
+                    ├── branchs.services.ts
+                └── 📁store
+                    ├── branch.selector.ts
+                    ├── branch.slice.ts
+                ├── types.ts
             └── 📁categories
                 └── 📁components
+                    ├── CategoriesFilter.tsx
                     ├── CategoryButtonModal.tsx
                     ├── CategoryList.tsx
                     ├── CategoryPagination.tsx
@@ -114,6 +146,7 @@
                     ├── InputRecodTable.tsx
                     ├── InputRecordBtnAction.tsx
                     ├── InputRecordButtonModal.tsx
+                    ├── InputRecordFilter.tsx
                     ├── InputRecordList.tsx
                     ├── InputRecordListDetail.tsx
                     ├── InputRecordPagination.tsx
@@ -149,6 +182,7 @@
                     ├── index.ts
                     ├── OutputBtnAction.tsx
                     ├── OutputButtonModal.tsx
+                    ├── OutputFilters.tsx
                     ├── OutputPagination.tsx
                     ├── OutputTable.tsx
                 └── 📁hooks
@@ -164,6 +198,9 @@
             └── 📁priceHistory
                 └── 📁components
                     ├── index.ts
+                    ├── MagazinePagination.tsx
+                    ├── MagazinPDF.tsx
+                    ├── PHListMagazine.tsx
                     ├── PriceHistoryModalAction.tsx
                     ├── PriceHistoryPagination.tsx
                     ├── PriceHistoryTable.tsx
@@ -181,6 +218,7 @@
                 └── 📁components
                     ├── index.ts
                     ├── ProductButtonModal.tsx
+                    ├── ProductFilter.tsx
                     ├── ProductList.tsx
                     ├── ProductPagination.tsx
                     ├── ProductTable.tsx
@@ -196,6 +234,7 @@
                 └── 📁components
                     ├── index.ts
                     ├── ProviderButtonModal.tsx
+                    ├── ProviderFilter.tsx
                     ├── ProviderPagination.tsx
                     ├── ProviderSelect.tsx
                     ├── ProviderTable.tsx
@@ -265,6 +304,7 @@
             └── 📁users
                 └── 📁components
                     ├── UserButtonModal.tsx
+                    ├── UserFilter.tsx
                     ├── UserList.tsx
                     ├── UserPagination.tsx
                     ├── UserTable.tsx
@@ -279,28 +319,28 @@
         └── 📁helpers
             ├── constans.helpers.ts
             ├── currentHour.ts
+            ├── filters.types.ts
             ├── numberToText.ts
         └── 📁images
+        └── 📁reset-password
+            ├── page.tsx
         └── 📁shared
             └── 📁api
                 ├── api.interface.ts
                 ├── axios.ts
             └── 📁components
                 ├── CustomTooltip.tsx
+                ├── FilterDrawer.tsx
                 ├── Loading.tsx
-                ├── NotFound.tsx
                 ├── SCNavBar.tsx
-                ├── ServerError.tsx
                 ├── SNotifications.tsx
-                ├── Unauthorized.tsx
             └── 📁helpers
                 ├── index.ts
         └── 📁store
             ├── hooks.ts
             ├── provider.tsx
             ├── store.ts
-        └── 📁unauthorized
-            ├── page.tsx
+        ├── favicon.ico
         ├── globals.css
         ├── layout.tsx
         ├── page.tsx
