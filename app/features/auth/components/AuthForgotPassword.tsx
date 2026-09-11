@@ -3,11 +3,9 @@
 import React, { useState } from "react";
 import { Button, Input, message } from "antd";
 import { useForgotPassword } from "../hooks/useForgotPassword";
-import { useRouter } from "next/navigation";
 
 const AuthForgotPassword: React.FC = () => {
   const { forgotPassword } = useForgotPassword();
-  const router = useRouter();
 
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
