@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { DeleteOutlined, PlusOutlined, FormOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Modal, Switch } from "antd";
+import { Button, Form, Input, Modal, Switch, message } from "antd";
 import { useCategory } from "../hooks/useCategories";
 import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
 import CustomTooltip from "@/app/shared/components/CustomTooltip";
@@ -12,6 +12,12 @@ type IUserForm = {
   idCategory?: number;
 };
 
+const initialCategoryInfo = {
+  idCategory: 0,
+  nameCategory: "",
+  stateCategory: true,
+};
+
 function CategoryButtonModal({ text, action, idCategory }: IUserForm) {
   const canCreate = useHasPermission([1]);
   const canUpdate = useHasPermission([1]);
@@ -20,59 +26,30 @@ function CategoryButtonModal({ text, action, idCategory }: IUserForm) {
   const {
     createNewCategory,
     getOneCategory,
-    getAllCategories,
     updateOneCategory,
     deleteOneCategory,
     currentCategory,
     clearDataCurrentCategory,
   } = useCategory();
 
-  const [categoryInfo, setCategoryInfo] = useState({
-    idCategory: 0,
-    nameCategory: "",
-    stateCategory: true,
-  });
+  const [categoryInfo, setCategoryInfo] = useState(initialCategoryInfo);
 
   const resetCategoryInfo = () => {
-    setCategoryInfo({
-      idCategory: 0,
-      nameCategory: "",
-      stateCategory: true,
-    });
+    setCategoryInfo(initialCategoryInfo);
   };
 
   const showModal = () => {
-    setIsModalOpen(true);
-    if (action !== "delete") {
-      getAllCategories();
+    if (action === "create") {
+      clearDataCurrentCategory();
+      resetCategoryInfo();
     }
+    setIsModalOpen(true);
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
     clearDataCurrentCategory();
-  };
-
-  const onFinish = async () => {
-    if (action === "create") {
-      createNewCategory(categoryInfo.nameCategory);
-      setIsModalOpen(false);
-      resetCategoryInfo();
-    }
-    if (action === "update") {
-      updateOneCategory(categoryInfo);
-    }
-    if (action === "delete" && idCategory) {
-      deleteOneCategory(idCategory);
-      setIsModalOpen(false);
-    }
-  };
-
-  const handleStateChange = (checked: boolean) => {
-    setCategoryInfo((prev) => ({
-      ...prev,
-      stateCategory: checked,
-    }));
+    resetCategoryInfo();
   };
 
   const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,19 +61,51 @@ function CategoryButtonModal({ text, action, idCategory }: IUserForm) {
     }));
   };
 
+  const handleStateChange = (checked: boolean) => {
+    setCategoryInfo((prev) => ({
+      ...prev,
+      stateCategory: checked,
+    }));
+  };
+
+  const onFinish = async () => {
+    try {
+      if (action === "create") {
+        await createNewCategory(categoryInfo.nameCategory);
+        message.success("Categoría creada correctamente");
+        setIsModalOpen(false);
+        resetCategoryInfo();
+      }
+
+      if (action === "update") {
+        await updateOneCategory(categoryInfo);
+        message.success("Categoría actualizada correctamente");
+        setIsModalOpen(false);
+        clearDataCurrentCategory();
+        resetCategoryInfo();
+      }
+
+      if (action === "delete" && idCategory) {
+        await deleteOneCategory(idCategory);
+        message.success("Categoría eliminada correctamente");
+        setIsModalOpen(false);
+      }
+    } catch {
+      message.error("No se pudo realizar la operación");
+    }
+  };
+
   useEffect(() => {
     if (!isModalOpen) return;
     if (action === "update" && idCategory) {
       getOneCategory(idCategory);
     }
-  }, [isModalOpen]);
+  }, [isModalOpen, action, idCategory]);
 
   useEffect(() => {
-    if (!isModalOpen || !currentCategory) return;
-    requestAnimationFrame(() => {
-      setCategoryInfo(currentCategory);
-    });
-  }, [currentCategory, isModalOpen]);
+    if (!isModalOpen || action !== "update" || !currentCategory) return;
+    setCategoryInfo(currentCategory);
+  }, [currentCategory, isModalOpen, action]);
 
   if (
     (action === "create" && !canCreate) ||
@@ -128,6 +137,7 @@ function CategoryButtonModal({ text, action, idCategory }: IUserForm) {
         title={`${text} categoria`}
         open={isModalOpen}
         onCancel={handleCancel}
+        destroyOnHidden
         footer={[
           <Button
             key="submit"
@@ -156,7 +166,7 @@ function CategoryButtonModal({ text, action, idCategory }: IUserForm) {
             <>
               <Form.Item label="Nombres">
                 <Input
-                  name="nameRole"
+                  name="nameCategory"
                   value={categoryInfo.nameCategory}
                   onChange={handleChangeInput}
                 />
