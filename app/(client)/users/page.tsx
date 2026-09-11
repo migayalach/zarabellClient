@@ -1,4 +1,5 @@
 "use client";
+
 import { useUsers } from "@/app/features/users/hooks/useUsers";
 import UserButtonModal from "@/app/features/users/components/UserButtonModal";
 import UserPagination from "@/app/features/users/components/UserPagination";
@@ -7,6 +8,7 @@ import { useRequirePermission } from "@/app/features/auth/hooks/usePermise";
 import Loading from "@/app/shared/components/Loading";
 import { useInitialLoading } from "@/app/features/auth/hooks/useInitialLoading";
 import UserFilter from "@/app/features/users/components/UserFilter";
+import FilterDrawer from "@/app/shared/components/FilterDrawer";
 
 function Page() {
   const blocked = useRequirePermission([1, 2]);
@@ -24,11 +26,15 @@ function Page() {
 
   return (
     <div className="flex flex-col flex-1">
-      <UserFilter />
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-4">
         <h1 className="text-[30px] font-bold">Lista de usuarios</h1>
+
         <UserButtonModal text="Crear" action="create" />
       </div>
+
+      <FilterDrawer title="Filtro de usuarios">
+        <UserFilter />
+      </FilterDrawer>
 
       <div className="flex-1 mt-2">
         <UserTable info={results} />
