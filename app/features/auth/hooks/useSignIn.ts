@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { signInSession, clearInfoSessionError } from "../store/auth.slice";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 export const useSignIn = () => {
   const dispatch = useAppDispatch();
@@ -16,6 +17,7 @@ export const useSignIn = () => {
       localStorage.setItem("accessToken", results.payload.access_token);
       router.push("/home");
     }
+    return unwrapResult(results);
   };
 
   useEffect(() => {
