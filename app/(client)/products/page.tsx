@@ -1,4 +1,5 @@
 "use client";
+
 import { useProducts } from "@/app/features/products/hooks/useProducts";
 import {
   ProductButtonModal,
@@ -9,6 +10,7 @@ import {
 import { useRequirePermission } from "@/app/features/auth/hooks/usePermise";
 import Loading from "@/app/shared/components/Loading";
 import { useInitialLoading } from "@/app/features/auth/hooks/useInitialLoading";
+import FilterDrawer from "@/app/shared/components/FilterDrawer";
 
 function Page() {
   const blocked = useRequirePermission([1, 2]);
@@ -26,11 +28,15 @@ function Page() {
 
   return (
     <div className="flex flex-col flex-1">
-      <ProductFilter />
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-4">
         <h1 className="text-[30px] font-bold">Lista de productos</h1>
+
         <ProductButtonModal text="Crear" action="create" />
       </div>
+
+      <FilterDrawer title="Filtro de productos">
+        <ProductFilter />
+      </FilterDrawer>
 
       <div className="flex-1 mt-2">
         <ProductTable info={results} />

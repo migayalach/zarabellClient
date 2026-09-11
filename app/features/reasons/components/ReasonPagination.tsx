@@ -7,12 +7,57 @@ import { useReasons } from "../hooks/useReason";
 
 function ReasonPagination({ pages }: { pages: number }) {
   const [current, setCurrent] = useState(1);
-  const { getAllReasons, results } = useReasons();
+  const {
+    getAllReasons,
+    results,
+    error,
+    info,
+    action,
+    clearErrorReason,
+    resetActionDataReason,
+  } = useReasons();
 
   const onChange: PaginationProps["onChange"] = (page) => {
     getAllReasons(page);
     setCurrent(page);
   };
+
+  useEffect(() => {
+    if (!action) return;
+
+    switch (action) {
+      case "create": {
+        const page =
+          (info!.count + 1) % SIZE_PAGINATION === 1 ? pages + 1 : pages;
+        setCurrent(page);
+        getAllReasons(page);
+        break;
+      }
+
+      case "update": {
+        getAllReasons(current);
+        break;
+      }
+
+      case "delete": {
+        if (results.length === 1 && current > 1) {
+          const previousPage = current - 1;
+          setCurrent(previousPage);
+          getAllReasons(previousPage);
+        } else {
+          getAllReasons(current);
+        }
+        break;
+      }
+    }
+    resetActionDataReason();
+  }, [action]);
+
+  useEffect(() => {
+    if (error) {
+      clearErrorReason();
+    }
+  }, [error]);
 
   return (
     <Pagination

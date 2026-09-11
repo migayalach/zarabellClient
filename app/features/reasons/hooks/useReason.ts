@@ -6,6 +6,7 @@ import {
   selectReasonsInfo,
   selectReasonsLoading,
   selectReasonsResults,
+  selectInfoActionReason,
 } from "../store/reason.selector";
 
 import {
@@ -16,6 +17,8 @@ import {
   getReasonByID,
   resetAllDataReason,
   updateOneReasonByID,
+  clearInfoAction,
+  clearInfoReasonError,
 } from "../store/reason.slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { IReasonCreate, IReasonUpdate } from "../types";
@@ -27,6 +30,7 @@ export const useReasons = () => {
   const currentReason = useAppSelector(selectCurrentReason);
   const loading = useAppSelector(selectReasonsLoading);
   const error = useAppSelector(selectReasonsError);
+  const action = useAppSelector(selectInfoActionReason);
 
   const getAllReasons = async (page?: number) => {
     const result = await dispatch(getAllListReason(page));
@@ -61,11 +65,20 @@ export const useReasons = () => {
     dispatch(resetAllDataReason());
   };
 
+  const clearErrorReason = () => {
+    dispatch(clearInfoReasonError());
+  };
+
+  const resetActionDataReason = () => {
+    dispatch(clearInfoAction());
+  };
+
   return {
     info,
     results,
     currentReason,
     loading,
+    action,
     error,
     getAllReasons,
     getOneReason,
@@ -74,5 +87,7 @@ export const useReasons = () => {
     updateOneReason,
     clearDataCurrentReason,
     resetDataReason,
+    clearErrorReason,
+    resetActionDataReason,
   };
 };

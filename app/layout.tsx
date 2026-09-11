@@ -19,13 +19,13 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Control de ventas",
+    default: "Zarabell",
     template: "%s",
   },
   icons: {
     // icon: icon_consulta.src,
   },
-  description: "Sistema de facturación",
+  description: "Sistema de control",
 };
 
 export default function RootLayout({

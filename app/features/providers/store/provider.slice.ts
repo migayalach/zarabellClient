@@ -178,7 +178,9 @@ const providerSlice = createSlice({
       })
       .addCase(createProvider.fulfilled, (state, action) => {
         state.loading = false;
-        state.results.unshift(action.payload.value);
+        state.success = true;
+        state.currentProvider = action.payload.value;
+        state.actionWatch = "create";
       })
       .addCase(createProvider.rejected, (state, action) => {
         state.loading = false;
@@ -192,10 +194,9 @@ const providerSlice = createSlice({
       })
       .addCase(updateOneProviderByID.fulfilled, (state, action) => {
         state.loading = false;
-        const updated = action.payload.value;
-        state.results = state.results.map((item) =>
-          item.idProvider === updated.idProvider ? updated : item,
-        );
+        state.success = true;
+        state.currentProvider = action.payload.value;
+        state.actionWatch = "update";
       })
       .addCase(updateOneProviderByID.rejected, (state, action) => {
         state.loading = false;
@@ -209,10 +210,9 @@ const providerSlice = createSlice({
       })
       .addCase(deleteOneProviderByID.fulfilled, (state, action) => {
         state.loading = false;
-        const idProvider = action.payload.value.idProvider;
-        state.results = state.results.filter(
-          (item) => item.idProvider !== idProvider,
-        );
+        state.success = true;
+        state.currentProvider = action.payload.value;
+        state.actionWatch = "delete";
       })
       .addCase(deleteOneProviderByID.rejected, (state, action) => {
         state.loading = false;

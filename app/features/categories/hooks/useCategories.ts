@@ -6,6 +6,7 @@ import {
   selectCategoryInfo,
   selectCategoryLoading,
   selectCurrentCategory,
+  selectActionCategory,
 } from "../store/category.selector";
 import {
   clearCurrentCategoryData,
@@ -16,6 +17,8 @@ import {
   resetAllDataCategory,
   updateOneCategoryByID,
   categoryFilters,
+  clearInfoCategoryError,
+  resetActionData,
 } from "../store/category.slice";
 import { ICategory, IFilterCategory } from "../types";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -27,6 +30,7 @@ export const useCategory = () => {
   const currentCategory = useAppSelector(selectCurrentCategory);
   const loading = useAppSelector(selectCategoryLoading);
   const error = useAppSelector(selectCategoryError);
+  const action = useAppSelector(selectActionCategory);
 
   const getAllCategories = async (page?: number) => {
     const result = await dispatch(getAllListCategories(page));
@@ -66,12 +70,21 @@ export const useCategory = () => {
     dispatch(resetAllDataCategory());
   };
 
+  const clearErrorCategory = () => {
+    dispatch(clearInfoCategoryError());
+  };
+
+  const resetActionDataCategory = () => {
+    dispatch(resetActionData());
+  };
+
   return {
     info,
     results,
     currentCategory,
     loading,
     error,
+    action,
     getAllCategories,
     getOneCategory,
     createNewCategory,
@@ -80,5 +93,7 @@ export const useCategory = () => {
     clearDataCurrentCategory,
     resetDataCategory,
     filterCategories,
+    clearErrorCategory,
+    resetActionDataCategory,
   };
 };

@@ -19,6 +19,7 @@ import {
   addInfoWatch,
   clearInfoWatch,
   providerFilters,
+  clearInfoProviderError,
 } from "../store/provider.slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { IFilterProviders, IProviderCreate, IProviderUpdate } from "../types";
@@ -74,6 +75,10 @@ export const useProviders = () => {
     dispatch(clearInfoWatch());
   };
 
+  const clearErrorProvider = () => {
+    dispatch(clearInfoProviderError());
+  };
+
   return {
     info,
     results,
@@ -91,5 +96,6 @@ export const useProviders = () => {
     addInfoWatch,
     clearInfoWatchProvider,
     watch,
+    clearErrorProvider,
   };
 };

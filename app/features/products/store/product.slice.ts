@@ -177,7 +177,9 @@ const productsSlice = createSlice({
       })
       .addCase(createProduct.fulfilled, (state, action) => {
         state.loading = false;
-        state.results.unshift(action.payload.value);
+        state.success = true;
+        state.currentProduct = action.payload.value;
+        state.actionWatch = "create";
       })
       .addCase(createProduct.rejected, (state, action) => {
         state.loading = false;
@@ -191,10 +193,9 @@ const productsSlice = createSlice({
       })
       .addCase(updateOneProductByID.fulfilled, (state, action) => {
         state.loading = false;
-        const updated = action.payload.value;
-        state.results = state.results.map((item) =>
-          item.idProduct === updated.idProduct ? updated : item,
-        );
+        state.success = true;
+        state.currentProduct = action.payload.value;
+        state.actionWatch = "update";
       })
       .addCase(updateOneProductByID.rejected, (state, action) => {
         state.loading = false;
@@ -208,10 +209,9 @@ const productsSlice = createSlice({
       })
       .addCase(deleteOneProductByID.fulfilled, (state, action) => {
         state.loading = false;
-        const idProduct = action.payload.value.idProduct;
-        state.results = state.results.filter(
-          (item) => item.idProduct !== idProduct,
-        );
+        state.success = true;
+        state.currentProduct = action.payload.value;
+        state.actionWatch = "delete";
       })
       .addCase(deleteOneProductByID.rejected, (state, action) => {
         state.loading = false;

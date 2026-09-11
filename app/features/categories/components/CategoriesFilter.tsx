@@ -64,7 +64,6 @@ function CategoriesFilter() {
   return (
     <Form id="categoryFilterForm" onFinish={onFinish} autoComplete="off">
       <Card
-        title="Filtros de categorias"
         styles={{
           body: {
             padding: "20px",

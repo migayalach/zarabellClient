@@ -78,7 +78,6 @@ function InputRecordFilter() {
   return (
     <Form id="inputRecordFilterForm" onFinish={onFinish} autoComplete="off">
       <Card
-        title="Filtros de entradas"
         styles={{
           body: {
             padding: "20px",

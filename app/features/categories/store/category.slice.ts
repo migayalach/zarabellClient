@@ -130,6 +130,11 @@ const categorySlice = createSlice({
       state.loading = false;
       state.error = null;
     },
+    resetActionData: (state) => {
+      state.action = null;
+      state.success = false;
+      state.currentCategory = null;
+    },
   },
 
   extraReducers: (builder) => {
@@ -170,7 +175,9 @@ const categorySlice = createSlice({
       })
       .addCase(createCategory.fulfilled, (state, action) => {
         state.loading = false;
-        state.results.unshift(action.payload.value);
+        state.success = true;
+        state.currentCategory = action.payload.value;
+        state.action = "create";
       })
       .addCase(createCategory.rejected, (state, action) => {
         state.loading = false;
@@ -184,10 +191,9 @@ const categorySlice = createSlice({
       })
       .addCase(updateOneCategoryByID.fulfilled, (state, action) => {
         state.loading = false;
-        const updated = action.payload.value;
-        state.results = state.results.map((item) =>
-          item.idCategory === updated.idCategory ? updated : item,
-        );
+        state.success = true;
+        state.currentCategory = action.payload.value;
+        state.action = "update";
       })
       .addCase(updateOneCategoryByID.rejected, (state, action) => {
         state.loading = false;
@@ -201,10 +207,9 @@ const categorySlice = createSlice({
       })
       .addCase(deleteOneCategoryByID.fulfilled, (state, action) => {
         state.loading = false;
-        const idCategory = action.payload.value.idCategory;
-        state.results = state.results.filter(
-          (item) => item.idCategory !== idCategory,
-        );
+        state.success = true;
+        state.currentCategory = action.payload.value;
+        state.action = "delete";
       })
       .addCase(deleteOneCategoryByID.rejected, (state, action) => {
         state.loading = false;
@@ -235,4 +240,5 @@ export const {
   clearInfoCategoryError,
   clearCurrentCategoryData,
   resetAllDataCategory,
+  resetActionData
 } = categorySlice.actions;
