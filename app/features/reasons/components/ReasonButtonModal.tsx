@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { DeleteOutlined, PlusOutlined, FormOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Modal } from "antd";
+import { Button, Form, Input, Modal, message } from "antd";
 import { useReasons } from "../hooks/useReason";
 import CustomTooltip from "@/app/shared/components/CustomTooltip";
 import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
@@ -10,6 +10,12 @@ type IReasonForm = {
   text: string;
   action: string;
   idReason?: number;
+};
+
+const initialReasonInfo = {
+  idReason: 0,
+  nameReason: "",
+  descriptionReason: "",
 };
 
 function ReasonButtonModal({ text, action, idReason }: IReasonForm) {
@@ -27,43 +33,50 @@ function ReasonButtonModal({ text, action, idReason }: IReasonForm) {
     clearDataCurrentReason,
   } = useReasons();
 
-  const [reasonInfo, setReasonInfo] = useState({
-    idReason: 0,
-    nameReason: "",
-    descriptionReason: "",
-  });
+  const [reasonInfo, setReasonInfo] = useState(initialReasonInfo);
 
   const resetReasonInfo = () => {
-    setReasonInfo({
-      idReason: 0,
-      nameReason: "",
-      descriptionReason: "",
-    });
+    setReasonInfo(initialReasonInfo);
   };
 
   const showModal = () => {
-    setIsModalOpen(true);
-    if (action !== "delete") {
+    if (action === "create") {
+      clearDataCurrentReason();
+      resetReasonInfo();
     }
+    setIsModalOpen(true);
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
     clearDataCurrentReason();
+    resetReasonInfo();
   };
 
   const onFinish = async () => {
-    if (action === "create") {
-      createNewReason(reasonInfo);
-      setIsModalOpen(false);
-      resetReasonInfo();
-    }
-    if (action === "update") {
-      updateOneReason(reasonInfo);
-    }
-    if (action === "delete" && idReason) {
-      deleteOneReason(idReason);
-      setIsModalOpen(false);
+    try {
+      if (action === "create") {
+        await createNewReason(reasonInfo);
+        message.success("Razón creada correctamente");
+        setIsModalOpen(false);
+        resetReasonInfo();
+      }
+
+      if (action === "update") {
+        await updateOneReason(reasonInfo);
+        message.success("Razón actualizada correctamente");
+        setIsModalOpen(false);
+        clearDataCurrentReason();
+        resetReasonInfo();
+      }
+
+      if (action === "delete" && idReason) {
+        await deleteOneReason(idReason);
+        message.success("Razón eliminada correctamente");
+        setIsModalOpen(false);
+      }
+    } catch {
+      message.error("No se pudo realizar la operación");
     }
   };
 
@@ -81,14 +94,12 @@ function ReasonButtonModal({ text, action, idReason }: IReasonForm) {
     if (action === "update" && idReason) {
       getOneReason(idReason);
     }
-  }, [isModalOpen]);
+  }, [isModalOpen, action, idReason]);
 
   useEffect(() => {
-    if (!isModalOpen || !currentReason) return;
-    requestAnimationFrame(() => {
-      setReasonInfo(currentReason);
-    });
-  }, [currentReason, isModalOpen]);
+    if (!isModalOpen || action !== "update" || !currentReason) return;
+    setReasonInfo(currentReason);
+  }, [currentReason, isModalOpen, action]);
 
   if (
     (action === "create" && !canCreate) ||
@@ -120,6 +131,7 @@ function ReasonButtonModal({ text, action, idReason }: IReasonForm) {
         title={`${text} razon`}
         open={isModalOpen}
         onCancel={handleCancel}
+        destroyOnHidden
         footer={[
           <Button
             key="submit"

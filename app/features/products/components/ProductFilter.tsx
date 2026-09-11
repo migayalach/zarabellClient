@@ -64,7 +64,6 @@ function ProductFilter() {
   return (
     <Form id="productFilterForm" onFinish={onFinish} autoComplete="off">
       <Card
-        title="Filtros de productos"
         styles={{
           body: {
             padding: "20px",

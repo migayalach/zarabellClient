@@ -54,7 +54,6 @@ function ProviderFilter() {
   return (
     <Form id="providerFilterForm" onFinish={onFinish} autoComplete="off">
       <Card
-        title="Filtro de proveedores"
         styles={{
           body: {
             padding: "20px",

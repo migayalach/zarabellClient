@@ -5,7 +5,7 @@ import {
   UserAddOutlined,
   FormOutlined,
 } from "@ant-design/icons";
-import { Button, Form, Input, Modal, Switch } from "antd";
+import { Button, Form, Input, Modal, Switch, message } from "antd";
 import { useProviders } from "../hooks/useProvides";
 import CustomTooltip from "@/app/shared/components/CustomTooltip";
 import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
@@ -14,6 +14,14 @@ type IProviderForm = {
   text: string;
   action: string;
   idProvider?: number;
+};
+
+const initialProviderInfo = {
+  idProvider: 0,
+  nameProvider: "",
+  phoneProvider: "",
+  emailProvider: "",
+  stateProvider: true,
 };
 
 function ProviderButtonModal({ text, action, idProvider }: IProviderForm) {
@@ -27,59 +35,26 @@ function ProviderButtonModal({ text, action, idProvider }: IProviderForm) {
     getOneProvider,
     updateOneProvider,
     deleteOneProvider,
-    currentProvider,
     clearDataCurrentProvider,
   } = useProviders();
 
-  const [providerInfo, setProviderInfo] = useState({
-    idProvider: 0,
-    nameProvider: "",
-    phoneProvider: "",
-    emailProvider: "",
-    stateProvider: true,
-  });
+  const [providerInfo, setProviderInfo] = useState(initialProviderInfo);
 
   const resetProviderInfo = () => {
-    setProviderInfo({
-      idProvider: 0,
-      nameProvider: "",
-      phoneProvider: "",
-      emailProvider: "",
-      stateProvider: true,
-    });
+    setProviderInfo(initialProviderInfo);
   };
 
   const showModal = () => {
-    setIsModalOpen(true);
-    if (action !== "delete") {
+    if (action === "create") {
+      resetProviderInfo();
     }
+    setIsModalOpen(true);
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
     clearDataCurrentProvider();
-  };
-
-  const onFinish = async () => {
-    if (action === "create") {
-      createNewProvider(providerInfo);
-      setIsModalOpen(false);
-      resetProviderInfo();
-    }
-    if (action === "update") {
-      updateOneProvider(providerInfo);
-    }
-    if (action === "delete" && idProvider) {
-      deleteOneProvider(idProvider);
-      setIsModalOpen(false);
-    }
-  };
-
-  const handleStateChange = (checked: boolean) => {
-    setProviderInfo((prev) => ({
-      ...prev,
-      stateProvider: checked,
-    }));
+    resetProviderInfo();
   };
 
   const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,19 +66,62 @@ function ProviderButtonModal({ text, action, idProvider }: IProviderForm) {
     }));
   };
 
-  useEffect(() => {
-    if (!isModalOpen) return;
-    if (action === "update" && idProvider) {
-      getOneProvider(idProvider);
+  const handleStateChange = (checked: boolean) => {
+    setProviderInfo((prev) => ({
+      ...prev,
+      stateProvider: checked,
+    }));
+  };
+
+  const onFinish = async () => {
+    try {
+      if (action === "create") {
+        await createNewProvider(providerInfo);
+        message.success("Proveedor creado correctamente");
+        setIsModalOpen(false);
+        resetProviderInfo();
+      }
+
+      if (action === "update") {
+        await updateOneProvider(providerInfo);
+        message.success("Proveedor actualizado correctamente");
+        setIsModalOpen(false);
+        clearDataCurrentProvider();
+        resetProviderInfo();
+      }
+
+      if (action === "delete" && idProvider) {
+        await deleteOneProvider(idProvider);
+        message.success("Proveedor eliminado correctamente");
+        setIsModalOpen(false);
+      }
+    } catch {
+      message.error("No se pudo realizar la operación");
     }
-  }, [isModalOpen]);
+  };
 
   useEffect(() => {
-    if (!isModalOpen || !currentProvider) return;
-    requestAnimationFrame(() => {
-      setProviderInfo(currentProvider);
-    });
-  }, [currentProvider, isModalOpen]);
+    if (!isModalOpen) return;
+    if (action !== "update") return;
+    if (!idProvider) return;
+
+    const loadProvider = async () => {
+      try {
+        const result = await getOneProvider(idProvider);
+        setProviderInfo({
+          idProvider: result.value.idProvider,
+          nameProvider: result.value.nameProvider,
+          phoneProvider: result.value.phoneProvider,
+          emailProvider: result.value.emailProvider,
+          stateProvider: result.value.stateProvider,
+        });
+      } catch {
+        message.error("No se pudo cargar el proveedor");
+      }
+    };
+
+    loadProvider();
+  }, [isModalOpen, action, idProvider]);
 
   if (
     (action === "create" && !canCreate) ||
@@ -135,6 +153,7 @@ function ProviderButtonModal({ text, action, idProvider }: IProviderForm) {
         title={`${text} proveedor`}
         open={isModalOpen}
         onCancel={handleCancel}
+        destroyOnHidden
         footer={[
           <Button
             key="submit"

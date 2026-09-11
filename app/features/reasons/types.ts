@@ -38,3 +38,5 @@ export interface IResponseReason {
   message: string;
   value: IReason;
 }
+
+export type TActionTReason = "create" | "delete" | "update" | "filters";

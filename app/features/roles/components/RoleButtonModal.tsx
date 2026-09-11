@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { DeleteOutlined, PlusOutlined, FormOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Modal } from "antd";
+import { Button, Form, Input, Modal, message } from "antd";
 import { useRoles } from "../../roles/hooks/useRoles";
 import CustomTooltip from "@/app/shared/components/CustomTooltip";
 import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
@@ -20,15 +20,10 @@ function RoleButtonModal({ text, action, idRole }: IUserForm) {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const {
-    createNewRole,
-    getOneRole,
-    getAllRoles,
-    updateOneRole,
-    deleteOneRole,
-    currentRole,
-    clearDataCurrentRole,
-  } = useRoles();
+  const [form] = Form.useForm();
+
+  const { createNewRole, getOneRole, updateOneRole, deleteOneRole } =
+    useRoles();
 
   const [roleInfo, setRoleInfo] = useState({
     idRole: 0,
@@ -40,65 +35,83 @@ function RoleButtonModal({ text, action, idRole }: IUserForm) {
       idRole: 0,
       nameRole: "",
     });
+
+    form.resetFields();
   };
 
   const showModal = () => {
     setIsModalOpen(true);
 
-    if (action !== "delete") {
-      getAllRoles();
+    if (action === "create") {
+      resetRoleInfo();
     }
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
-    clearDataCurrentRole();
+    resetRoleInfo();
   };
 
-  const onFinish = async () => {
-    if (action === "create") {
-      createNewRole(roleInfo.nameRole);
-      setIsModalOpen(false);
-      resetRoleInfo();
-    }
-
-    if (action === "update") {
-      updateOneRole(roleInfo);
-    }
-
-    if (action === "delete" && idRole) {
-      deleteOneRole(idRole);
-      setIsModalOpen(false);
-    }
-  };
-
-  const handleChangeInput = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const key = event.target.name;
-    const value = event.target.value;
+  const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
 
     setRoleInfo((prev) => ({
       ...prev,
-      [key]: value,
+      [name]: value,
     }));
+  };
+
+  const onFinish = async () => {
+    try {
+      if (action === "create") {
+        await createNewRole(roleInfo.nameRole);
+        message.success("Rol creado correctamente");
+        setIsModalOpen(false);
+        resetRoleInfo();
+        return;
+      }
+
+      if (action === "update" && idRole) {
+        await updateOneRole({
+          idRole,
+          nameRole: roleInfo.nameRole,
+        });
+        message.success("Rol actualizado correctamente");
+        return;
+      }
+
+      if (action === "delete" && idRole) {
+        await deleteOneRole(idRole);
+        message.success("Rol eliminado correctamente");
+        setIsModalOpen(false);
+        resetRoleInfo();
+        return;
+      }
+    } catch {
+      message.error("No se pudo realizar la operación");
+    }
   };
 
   useEffect(() => {
     if (!isModalOpen) return;
+    if (action !== "update") return;
+    if (!idRole) return;
 
-    if (action === "update" && idRole) {
-      getOneRole(idRole);
-    }
-  }, [isModalOpen]);
+    const loadRole = async () => {
+      try {
+        const result = await getOneRole(idRole);
 
-  useEffect(() => {
-    if (!isModalOpen || !currentRole) return;
+        setRoleInfo({
+          idRole: result.value.idRole,
+          nameRole: result.value.nameRole,
+        });
+      } catch {
+        message.error("No se pudo cargar el rol");
+      }
+    };
 
-    requestAnimationFrame(() => {
-      setRoleInfo(currentRole);
-    });
-  }, [currentRole, isModalOpen]);
+    loadRole();
+  }, [isModalOpen, action, idRole]);
 
   if (
     (action === "create" && !canCreate) ||
@@ -120,8 +133,8 @@ function RoleButtonModal({ text, action, idRole }: IUserForm) {
         }
       >
         <Button type="primary" onClick={showModal}>
-          {action === "delete" && <DeleteOutlined />}
           {action === "create" && <PlusOutlined />}
+          {action === "delete" && <DeleteOutlined />}
           {action === "update" && <FormOutlined />}
         </Button>
       </CustomTooltip>
@@ -131,27 +144,23 @@ function RoleButtonModal({ text, action, idRole }: IUserForm) {
         open={isModalOpen}
         onCancel={handleCancel}
         footer={[
-          <Button
-            key="submit"
-            type="primary"
-            htmlType="submit"
-            form="roleForm"
-          >
-            {action === "delete" && "Eliminar"}
+          <Button key="submit" type="primary" onClick={() => form.submit()}>
             {action === "create" && "Crear"}
+            {action === "delete" && "Eliminar"}
             {action === "update" && "Editar"}
           </Button>,
+
           <Button key="cancel" onClick={handleCancel}>
             Cancelar
           </Button>,
         ]}
       >
         <Form
-          id="roleForm"
+          form={form}
+          onFinish={onFinish}
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 10 }}
           layout="horizontal"
-          onFinish={onFinish}
           autoComplete="off"
         >
           {action !== "delete" && (
@@ -165,7 +174,7 @@ function RoleButtonModal({ text, action, idRole }: IUserForm) {
           )}
 
           {action === "delete" && (
-            <h1>Esta seguro que desea eliminar a este role</h1>
+            <h1>¿Está seguro que desea eliminar este rol?</h1>
           )}
         </Form>
       </Modal>

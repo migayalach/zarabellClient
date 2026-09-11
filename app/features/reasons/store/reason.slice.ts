@@ -14,6 +14,7 @@ import {
   IErrorReason,
   IResponseReasons,
   IResponseReason,
+  TActionTReason,
 } from "../types";
 
 interface IReasonState {
@@ -22,6 +23,8 @@ interface IReasonState {
   currentReason: IReason | null;
   loading: boolean;
   error: string | null;
+  success: boolean;
+  action: TActionTReason | null;
 }
 
 const initialState: IReasonState = {
@@ -30,6 +33,8 @@ const initialState: IReasonState = {
   currentReason: null,
   loading: false,
   error: null,
+  success: false,
+  action: null,
 };
 
 export const getAllListReason = createAsyncThunk<
@@ -109,6 +114,12 @@ const reasonSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
+    addInfoAction: (state, action) => {
+      state.action = action.payload;
+    },
+    clearInfoAction: (state) => {
+      state.action = null;
+    },
   },
 
   extraReducers: (builder) => {
@@ -149,7 +160,9 @@ const reasonSlice = createSlice({
       })
       .addCase(createReason.fulfilled, (state, action) => {
         state.loading = false;
-        state.results.unshift(action.payload.value);
+        state.success = true;
+        state.currentReason = action.payload.value;
+        state.action = "create";
       })
       .addCase(createReason.rejected, (state, action) => {
         state.loading = false;
@@ -163,10 +176,9 @@ const reasonSlice = createSlice({
       })
       .addCase(updateOneReasonByID.fulfilled, (state, action) => {
         state.loading = false;
-        const updated = action.payload.value;
-        state.results = state.results.map((item) =>
-          item.idReason === updated.idReason ? updated : item,
-        );
+        state.success = true;
+        state.currentReason = action.payload.value;
+        state.action = "update";
       })
       .addCase(updateOneReasonByID.rejected, (state, action) => {
         state.loading = false;
@@ -180,10 +192,9 @@ const reasonSlice = createSlice({
       })
       .addCase(deleteOneReasonByID.fulfilled, (state, action) => {
         state.loading = false;
-        const idReason = action.payload.value.idReason;
-        state.results = state.results.filter(
-          (item) => item.idReason !== idReason,
-        );
+        state.success = true;
+        state.currentReason = action.payload.value;
+        state.action = "delete";
       })
       .addCase(deleteOneReasonByID.rejected, (state, action) => {
         state.loading = false;
@@ -198,4 +209,6 @@ export const {
   clearInfoReasonError,
   clearCurrentReasonData,
   resetAllDataReason,
+  addInfoAction,
+  clearInfoAction,
 } = reasonSlice.actions;
