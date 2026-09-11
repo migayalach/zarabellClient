@@ -66,7 +66,6 @@ function BranchFilter() {
   return (
     <Form id="branchFilterForm" onFinish={onFinish} autoComplete="off">
       <Card
-        title="Filtros de sucursales"
         styles={{
           body: {
             padding: "20px",

@@ -65,7 +65,6 @@ function OutputFilters() {
   return (
     <Form id="outputFilterForm" onFinish={onFinish} autoComplete="off">
       <Card
-        title="Filtros de salidas"
         styles={{
           body: {
             padding: "20px",
