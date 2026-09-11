@@ -6,6 +6,7 @@ import {
   selectTOutputsInfo,
   selectTOutputsLoading,
   selectTOutputsResults,
+  selectInfoActionTOutput,
 } from "../store/typeOutput.selector";
 import {
   clearCurrentTOutputData,
@@ -15,6 +16,8 @@ import {
   getTOutputByID,
   resetAllDataTOutput,
   updateOneTOutputByID,
+  clearInfoAction,
+  clearInfoTOutputError,
 } from "../store/typeOutput.slice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { ITypeOutputCreate, ITypeOutputUpdate } from "../types";
@@ -26,6 +29,7 @@ export const useTOutputs = () => {
   const currentTOutput = useAppSelector(selectCurrentTOutput);
   const loading = useAppSelector(selectTOutputsLoading);
   const error = useAppSelector(selectTOutputsError);
+  const action = useAppSelector(selectInfoActionTOutput);
 
   const getAllTOutputs = async (page?: number) => {
     const result = await dispatch(getAllListTOutput(page));
@@ -60,12 +64,21 @@ export const useTOutputs = () => {
     dispatch(resetAllDataTOutput());
   };
 
+  const clearErrorTOutput = () => {
+    dispatch(clearInfoTOutputError());
+  };
+
+  const resetActionDataTOutput = () => {
+    dispatch(clearInfoAction());
+  };
+
   return {
     info,
     results,
     currentTOutput,
     loading,
     error,
+    action,
     getAllTOutputs,
     getOneTOutput,
     createNewTOutput,
@@ -73,5 +86,7 @@ export const useTOutputs = () => {
     updateOneTOutput,
     clearDataCurrentTOutput,
     resetDataTOutput,
+    clearErrorTOutput,
+    resetActionDataTOutput,
   };
 };

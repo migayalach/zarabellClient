@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { DeleteOutlined, PlusOutlined, FormOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Modal } from "antd";
+import { Button, Form, Input, Modal, message } from "antd";
 import { useTOutputs } from "../hooks/useTypeOutputs";
 import CustomTooltip from "@/app/shared/components/CustomTooltip";
 import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
@@ -10,6 +10,13 @@ type IOutputTypeForm = {
   text: string;
   action: string;
   idTypeOutput?: number;
+};
+
+const initialTOutputInfo = {
+  idTypeOutput: 0,
+  nameTypeOutput: "",
+  descriptionTypeOutput: "",
+  prefix: "",
 };
 
 function OutputTypeButtonModal({
@@ -31,45 +38,50 @@ function OutputTypeButtonModal({
     clearDataCurrentTOutput,
   } = useTOutputs();
 
-  const [tOutputInfo, setTOutputInfo] = useState({
-    idTypeOutput: 0,
-    nameTypeOutput: "",
-    descriptionTypeOutput: "",
-    prefix: "",
-  });
+  const [tOutputInfo, setTOutputInfo] = useState(initialTOutputInfo);
 
   const resetTOutputInfo = () => {
-    setTOutputInfo({
-      idTypeOutput: 0,
-      nameTypeOutput: "",
-      descriptionTypeOutput: "",
-      prefix: "",
-    });
+    setTOutputInfo(initialTOutputInfo);
   };
 
   const showModal = () => {
-    setIsModalOpen(true);
-    if (action !== "delete") {
+    if (action === "create") {
+      clearDataCurrentTOutput();
+      resetTOutputInfo();
     }
+    setIsModalOpen(true);
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
     clearDataCurrentTOutput();
+    resetTOutputInfo();
   };
 
   const onFinish = async () => {
-    if (action === "create") {
-      createNewTOutput(tOutputInfo);
-      setIsModalOpen(false);
-      resetTOutputInfo();
-    }
-    if (action === "update") {
-      updateOneTOutput(tOutputInfo);
-    }
-    if (action === "delete" && idTypeOutput) {
-      deleteOneTOutput(idTypeOutput);
-      setIsModalOpen(false);
+    try {
+      if (action === "create") {
+        await createNewTOutput(tOutputInfo);
+        message.success("Tipo de salida creado correctamente");
+        setIsModalOpen(false);
+        resetTOutputInfo();
+      }
+
+      if (action === "update") {
+        await updateOneTOutput(tOutputInfo);
+        message.success("Tipo de salida actualizado correctamente");
+        setIsModalOpen(false);
+        clearDataCurrentTOutput();
+        resetTOutputInfo();
+      }
+
+      if (action === "delete" && idTypeOutput) {
+        await deleteOneTOutput(idTypeOutput);
+        message.success("Tipo de salida eliminado correctamente");
+        setIsModalOpen(false);
+      }
+    } catch {
+      message.error("No se pudo realizar la operación");
     }
   };
 
@@ -87,12 +99,12 @@ function OutputTypeButtonModal({
     if (action === "update" && idTypeOutput) {
       getOneTOutput(idTypeOutput);
     }
-  }, [isModalOpen]);
+  }, [isModalOpen, action, idTypeOutput]);
 
   useEffect(() => {
-    if (!isModalOpen || !currentTOutput) return;
+    if (!isModalOpen || action !== "update" || !currentTOutput) return;
     setTOutputInfo(currentTOutput);
-  }, [currentTOutput, isModalOpen]);
+  }, [currentTOutput, isModalOpen, action]);
 
   if (
     (action === "create" && !canCreate) ||
@@ -124,6 +136,7 @@ function OutputTypeButtonModal({
         title={`${text} tipo`}
         open={isModalOpen}
         onCancel={handleCancel}
+        destroyOnHidden
         footer={[
           <Button
             key="submit"

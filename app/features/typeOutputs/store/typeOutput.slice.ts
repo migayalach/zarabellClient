@@ -14,6 +14,7 @@ import {
   IErrorTypeOutput,
   IResponseTypeOutputs,
   IResponseTypeOutput,
+  TActionTOutputs,
 } from "../types";
 
 interface ITOutputState {
@@ -22,6 +23,8 @@ interface ITOutputState {
   currentTOutput: ITypeOutput | null;
   loading: boolean;
   error: string | null;
+  success: boolean;
+  action: TActionTOutputs | null;
 }
 
 const initialState: ITOutputState = {
@@ -30,6 +33,8 @@ const initialState: ITOutputState = {
   currentTOutput: null,
   loading: false,
   error: null,
+  success: false,
+  action: null,
 };
 
 export const getAllListTOutput = createAsyncThunk<
@@ -62,7 +67,7 @@ export const createTOutput = createAsyncThunk<
   { rejectValue: IErrorTypeOutput }
 >("typeOutputs/createTOutput", async (infoTypeOutput, { rejectWithValue }) => {
   console.log(infoTypeOutput);
-  
+
   try {
     return await createNewTypeOutput(infoTypeOutput);
   } catch (error) {
@@ -111,6 +116,12 @@ const typeOutputSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
+    addInfoAction: (state, action) => {
+      state.action = action.payload;
+    },
+    clearInfoAction: (state) => {
+      state.action = null;
+    },
   },
 
   extraReducers: (builder) => {
@@ -151,7 +162,9 @@ const typeOutputSlice = createSlice({
       })
       .addCase(createTOutput.fulfilled, (state, action) => {
         state.loading = false;
-        state.results.unshift(action.payload.value);
+        state.success = true;
+        state.currentTOutput = action.payload.value;
+        state.action = "create";
       })
       .addCase(createTOutput.rejected, (state, action) => {
         state.loading = false;
@@ -165,10 +178,9 @@ const typeOutputSlice = createSlice({
       })
       .addCase(updateOneTOutputByID.fulfilled, (state, action) => {
         state.loading = false;
-        const updated = action.payload.value;
-        state.results = state.results.map((item) =>
-          item.idTypeOutput === updated.idTypeOutput ? updated : item,
-        );
+        state.success = true;
+        state.currentTOutput = action.payload.value;
+        state.action = "update";
       })
       .addCase(updateOneTOutputByID.rejected, (state, action) => {
         state.loading = false;
@@ -182,8 +194,9 @@ const typeOutputSlice = createSlice({
       })
       .addCase(deleteOneTOutputByID.fulfilled, (state, action) => {
         state.loading = false;
-        const idTypeOutput = action.payload.value.idTypeOutput;
-        state.results = state.results.filter((item) => item.idTypeOutput !== idTypeOutput);
+        state.success = true;
+        state.currentTOutput = action.payload.value;
+        state.action = "delete";
       })
       .addCase(deleteOneTOutputByID.rejected, (state, action) => {
         state.loading = false;
@@ -198,4 +211,6 @@ export const {
   clearInfoTOutputError,
   clearCurrentTOutputData,
   resetAllDataTOutput,
+  addInfoAction,
+  clearInfoAction,
 } = typeOutputSlice.actions;

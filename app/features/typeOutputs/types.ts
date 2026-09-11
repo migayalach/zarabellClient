@@ -39,3 +39,5 @@ export interface IResponseTypeOutput {
   message: string;
   value: ITypeOutput;
 }
+
+export type TActionTOutputs = "create" | "delete" | "update" | "filters";
