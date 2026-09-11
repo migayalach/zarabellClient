@@ -19,6 +19,7 @@ import {
   addInfoWatch,
   clearInfoWatch,
   productFilters,
+  clearInfoProductError,
 } from "../store/product.slice";
 import { IProductCreate, IProductUpdate, IFilterProducts } from "../types";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -74,6 +75,10 @@ export const useProducts = () => {
     dispatch(clearInfoWatch());
   };
 
+  const clearErrorProduct = () => {
+    dispatch(clearInfoProductError());
+  };
+
   return {
     info,
     results,
@@ -91,5 +96,6 @@ export const useProducts = () => {
     addInfoWatch,
     clearInfoWatchProduct,
     watch,
+    clearErrorProduct,
   };
 };

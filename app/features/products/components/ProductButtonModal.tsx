@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { DeleteOutlined, PlusOutlined, FormOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Modal, Switch } from "antd";
+import { Button, Form, Input, Modal, Switch, message } from "antd";
 import { useProducts } from "../hooks/useProducts";
 import { CategoryList } from "../../categories/components";
 import { useCategory } from "../../categories/hooks/useCategories";
@@ -13,6 +13,13 @@ type IProductForm = {
   action: string;
   idProduct?: number;
   idCategory?: number;
+};
+
+const initialProductInfo = {
+  idProduct: 0,
+  idCategory: 0,
+  nameProduct: "",
+  stateProduct: true,
 };
 
 function ProductButtonModal({
@@ -36,50 +43,54 @@ function ProductButtonModal({
   } = useProducts();
   const { getOneCategory, clearDataCurrentCategory } = useCategory();
 
-  const [productInfo, setProductInfo] = useState({
-    idProduct: 0,
-    idCategory: 0,
-    nameProduct: "",
-    stateProduct: true,
-  });
+  const [productInfo, setProductInfo] = useState(initialProductInfo);
 
   const resetProductInfo = () => {
-    setProductInfo({
-      idProduct: 0,
-      idCategory: 0,
-      nameProduct: "",
-      stateProduct: true,
-    });
+    setProductInfo(initialProductInfo);
   };
 
   const showModal = () => {
-    setIsModalOpen(true);
-    if (action !== "delete") {
-      // getAllRoles();
+    if (action === "create") {
+      clearDataCurrentProduct();
+      clearDataCurrentCategory();
+      resetProductInfo();
     }
+    setIsModalOpen(true);
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
-    // resetDataRole();
     clearDataCurrentProduct();
     clearDataCurrentCategory();
+    resetProductInfo();
   };
 
   const onFinish = async () => {
-    if (action === "create") {
-      createNewProduct(productInfo);
-      setIsModalOpen(false);
-      resetProductInfo();
+    try {
+      if (action === "create") {
+        await createNewProduct(productInfo);
+        message.success("Producto creado correctamente");
+        setIsModalOpen(false);
+        resetProductInfo();
+      }
+
+      if (action === "update") {
+        await updateOneProduct(productInfo);
+        message.success("Producto actualizado correctamente");
+        setIsModalOpen(false);
+        clearDataCurrentProduct();
+        clearDataCurrentCategory();
+        resetProductInfo();
+      }
+
+      if (action === "delete" && idProduct) {
+        await deleteOneProduct(idProduct);
+        message.success("Producto eliminado correctamente");
+        setIsModalOpen(false);
+      }
+    } catch {
+      message.error("No se pudo realizar la operación");
     }
-    if (action === "update") {
-      updateOneProduct(productInfo);
-    }
-    if (action === "delete" && idProduct) {
-      deleteOneProduct(idProduct);
-      setIsModalOpen(false);
-    }
-    // resetDataRole();
   };
 
   const handleRoleChange = (value: number) => {
@@ -112,14 +123,12 @@ function ProductButtonModal({
       getOneProduct(idProduct);
       getOneCategory(idCategory);
     }
-  }, [isModalOpen]);
+  }, [isModalOpen, action, idProduct, idCategory]);
 
   useEffect(() => {
-    if (!isModalOpen || !currentProduct) return;
-    requestAnimationFrame(() => {
-      setProductInfo(currentProduct);
-    });
-  }, [currentProduct, isModalOpen]);
+    if (!isModalOpen || action !== "update" || !currentProduct) return;
+    setProductInfo(currentProduct);
+  }, [currentProduct, isModalOpen, action]);
 
   if (
     (action === "create" && !canCreate) ||
@@ -151,6 +160,7 @@ function ProductButtonModal({
         title={`${text} producto`}
         open={isModalOpen}
         onCancel={handleCancel}
+        destroyOnHidden
         footer={[
           <Button
             key="submit"
@@ -177,7 +187,7 @@ function ProductButtonModal({
         >
           {action !== "delete" && (
             <>
-              <Form.Item label="Categoria" name="nameCategory">
+              <Form.Item label="Categoria">
                 <CategoryList handleCategory={handleRoleChange} />
               </Form.Item>
 
