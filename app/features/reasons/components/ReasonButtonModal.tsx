@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { DeleteOutlined, PlusOutlined, FormOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal, message } from "antd";
 import { useReasons } from "../hooks/useReason";
@@ -18,12 +18,44 @@ const initialReasonInfo = {
   descriptionReason: "",
 };
 
+type ReasonInfo = typeof initialReasonInfo;
+type ValidatedField = "nameReason" | "descriptionReason";
+type FieldErrors = Partial<Record<ValidatedField, string>>;
+
+const validateReason = (info: ReasonInfo): FieldErrors => {
+  const errors: FieldErrors = {};
+
+  // "?? ''" evita errores si el backend devuelve algún campo en null
+  const name = (info.nameReason ?? "").trim();
+  if (!name) {
+    errors.nameReason = "Ingresa el nombre de la razón";
+  } else if (name.length < 3) {
+    errors.nameReason = "El nombre debe tener al menos 3 caracteres";
+  } else if (name.length > 100) {
+    errors.nameReason = "El nombre no puede superar los 100 caracteres";
+  }
+
+  const description = (info.descriptionReason ?? "").trim();
+  if (!description) {
+    errors.descriptionReason = "Ingresa la descripción de la razón";
+  } else if (description.length < 5) {
+    errors.descriptionReason =
+      "La descripción debe tener al menos 5 caracteres";
+  } else if (description.length > 200) {
+    errors.descriptionReason =
+      "La descripción no puede superar los 200 caracteres";
+  }
+
+  return errors;
+};
+
 function ReasonButtonModal({ text, action, idReason }: IReasonForm) {
   const canCreate = useHasPermission([1, 2]);
   const canUpdate = useHasPermission([1, 2]);
   const canDelete = useHasPermission([1, 2]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     createNewReason,
     getOneReason,
@@ -34,9 +66,18 @@ function ReasonButtonModal({ text, action, idReason }: IReasonForm) {
   } = useReasons();
 
   const [reasonInfo, setReasonInfo] = useState(initialReasonInfo);
+  // Solo mostramos el error de un campo después de que el usuario lo tocó
+  const [touched, setTouched] = useState<
+    Partial<Record<ValidatedField, boolean>>
+  >({});
+
+  const errors = useMemo(() => validateReason(reasonInfo), [reasonInfo]);
+  const isFormValid = Object.keys(errors).length === 0;
+  const requiresValidation = action !== "delete";
 
   const resetReasonInfo = () => {
     setReasonInfo(initialReasonInfo);
+    setTouched({});
   };
 
   const showModal = () => {
@@ -53,17 +94,44 @@ function ReasonButtonModal({ text, action, idReason }: IReasonForm) {
     resetReasonInfo();
   };
 
+  const handleBlur = (field: ValidatedField) => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
+  };
+
+  // Devuelve el estado y el mensaje que espera Form.Item para cada campo
+  const getFieldStatus = (field: ValidatedField) => {
+    const hasError = touched[field] && errors[field];
+    return {
+      validateStatus: hasError ? ("error" as const) : ("" as const),
+      help: hasError ? errors[field] : undefined,
+    };
+  };
+
   const onFinish = async () => {
+    // Protección extra: aunque el botón esté deshabilitado, Enter no debe enviar datos inválidos
+    if (requiresValidation && !isFormValid) {
+      setTouched({ nameReason: true, descriptionReason: true });
+      return;
+    }
+
+    // Enviamos los datos sin espacios sobrantes
+    const cleanReasonInfo: ReasonInfo = {
+      ...reasonInfo,
+      nameReason: (reasonInfo.nameReason ?? "").trim(),
+      descriptionReason: (reasonInfo.descriptionReason ?? "").trim(),
+    };
+
+    setIsSubmitting(true);
     try {
       if (action === "create") {
-        await createNewReason(reasonInfo);
+        await createNewReason(cleanReasonInfo);
         message.success("Razón creada correctamente");
         setIsModalOpen(false);
         resetReasonInfo();
       }
 
       if (action === "update") {
-        await updateOneReason(reasonInfo);
+        await updateOneReason(cleanReasonInfo);
         message.success("Razón actualizada correctamente");
         setIsModalOpen(false);
         clearDataCurrentReason();
@@ -77,6 +145,8 @@ function ReasonButtonModal({ text, action, idReason }: IReasonForm) {
       }
     } catch {
       message.error("No se pudo realizar la operación");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -138,12 +208,14 @@ function ReasonButtonModal({ text, action, idReason }: IReasonForm) {
             type="primary"
             htmlType="submit"
             form="reasonForm"
+            loading={isSubmitting}
+            disabled={requiresValidation && !isFormValid}
           >
             {action === "delete" && "Eliminar"}
             {action === "create" && "Crear"}
             {action === "update" && "Editar"}
           </Button>,
-          <Button key="cancel" onClick={handleCancel}>
+          <Button key="cancel" onClick={handleCancel} disabled={isSubmitting}>
             Cancelar
           </Button>,
         ]}
@@ -151,26 +223,38 @@ function ReasonButtonModal({ text, action, idReason }: IReasonForm) {
         <Form
           id="reasonForm"
           labelCol={{ span: 8 }}
-          wrapperCol={{ span: 10 }}
+          wrapperCol={{ span: 14 }}
           layout="horizontal"
           onFinish={onFinish}
           autoComplete="off"
         >
           {action !== "delete" && (
             <>
-              <Form.Item label="Nombres">
+              <Form.Item
+                label="Nombres"
+                required
+                {...getFieldStatus("nameReason")}
+              >
                 <Input
                   name="nameReason"
                   value={reasonInfo.nameReason}
                   onChange={handleChangeInput}
+                  onBlur={() => handleBlur("nameReason")}
+                  maxLength={100}
                 />
               </Form.Item>
 
-              <Form.Item label="Descripcion">
+              <Form.Item
+                label="Descripcion"
+                required
+                {...getFieldStatus("descriptionReason")}
+              >
                 <Input
                   name="descriptionReason"
                   value={reasonInfo.descriptionReason}
                   onChange={handleChangeInput}
+                  onBlur={() => handleBlur("descriptionReason")}
+                  maxLength={200}
                 />
               </Form.Item>
             </>
