@@ -130,6 +130,9 @@ const authSlice = createSlice({
     clearInfoSessionError: (state) => {
       state.error = null;
     },
+    setInitialized: (state) => {
+      state.initialized = true;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -139,7 +142,7 @@ const authSlice = createSlice({
       })
       .addCase(signInSession.fulfilled, (state, action) => {
         state.loading = false;
-        state.info = action.payload.value;
+        state.info = action.payload?.success ? action.payload.value : null;
         state.initialized = action.payload.success;
       })
       .addCase(signInSession.rejected, (state, action) => {
@@ -153,13 +156,20 @@ const authSlice = createSlice({
       })
       .addCase(getCurrentUserInfo.fulfilled, (state, action) => {
         state.loading = false;
-        state.info = action.payload.value;
-        state.initialized = action.payload.success;
+        state.initialized = true;
+        if (action.payload?.success && action.payload.value) {
+          state.info = action.payload.value;
+        } else {
+          state.info = null;
+          localStorage.removeItem("accessToken");
+        }
       })
       .addCase(getCurrentUserInfo.rejected, (state, action) => {
         state.loading = false;
         state.initialized = true;
+        state.info = null;
         state.error = action.payload?.message ?? null;
+        localStorage.removeItem("accessToken");
       })
 
       .addCase(updatePasswordUser.pending, (state) => {
@@ -195,30 +205,42 @@ const authSlice = createSlice({
       })
       .addCase(refreshTokenUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.info = action.payload.value;
-        state.initialized = action.payload.success;
+        state.initialized = true;
+        if (action.payload?.success) {
+          state.info = action.payload.value;
+          localStorage.setItem("accessToken", action.payload.access_token);
+        }
       })
       .addCase(refreshTokenUser.rejected, (state, action) => {
         state.loading = false;
+        state.initialized = true;
+        state.info = null;
         state.error = action.payload?.message ?? null;
+        localStorage.removeItem("accessToken");
       })
 
       .addCase(signOutSession.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
+
       .addCase(signOutSession.fulfilled, (state) => {
         state.loading = false;
         state.info = null;
-        state.initialized = false;
+        state.initialized = true;
         state.error = null;
+        localStorage.removeItem("accessToken");
       })
       .addCase(signOutSession.rejected, (state, action) => {
         state.loading = false;
+        state.info = null;
+        state.initialized = true;
         state.error = action.payload?.message ?? null;
+        localStorage.removeItem("accessToken");
       });
   },
 });
 
 export default authSlice.reducer;
-export const { addInfoSession, clearInfoSessionError } = authSlice.actions;
+export const { addInfoSession, clearInfoSessionError, setInitialized } =
+  authSlice.actions;
