@@ -5,7 +5,11 @@ export const useSignOut = () => {
   const dispatch = useAppDispatch();
 
   const signOutUser = async () => {
-    return await dispatch(signOutSession()).unwrap();
+    try {
+      return await dispatch(signOutSession()).unwrap();
+    } catch {
+      return null;
+    }
   };
 
   return {

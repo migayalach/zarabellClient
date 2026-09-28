@@ -60,7 +60,30 @@ function AuthChangePassword() {
             name="currentPassword"
             rules={[
               { required: true, message: "Ingresa tu contraseña actual" },
-              { min: 5, message: "Mínimo 5 caracteres!" },
+              {
+                required: true,
+                message: "Por favor introduce tu contraseña!",
+              },
+              {
+                min: 8,
+                message: "La contraseña debe tener mínimo 8 caracteres!",
+              },
+              {
+                pattern: /[A-Z]/,
+                message: "Debe contener al menos una mayúscula!",
+              },
+              {
+                pattern: /[a-z]/,
+                message: "Debe contener al menos una minúscula!",
+              },
+              {
+                pattern: /[0-9]/,
+                message: "Debe contener al menos un número!",
+              },
+              {
+                pattern: /[^A-Za-z0-9]/,
+                message: "Debe contener al menos un carácter especial!",
+              },
             ]}
           >
             <Input.Password />
@@ -72,6 +95,30 @@ function AuthChangePassword() {
             dependencies={["currentPassword"]}
             rules={[
               { required: true, message: "Ingresa la nueva contraseña" },
+              {
+                required: true,
+                message: "Por favor introduce tu contraseña!",
+              },
+              {
+                min: 8,
+                message: "La contraseña debe tener mínimo 8 caracteres!",
+              },
+              {
+                pattern: /[A-Z]/,
+                message: "Debe contener al menos una mayúscula!",
+              },
+              {
+                pattern: /[a-z]/,
+                message: "Debe contener al menos una minúscula!",
+              },
+              {
+                pattern: /[0-9]/,
+                message: "Debe contener al menos un número!",
+              },
+              {
+                pattern: /[^A-Za-z0-9]/,
+                message: "Debe contener al menos un carácter especial!",
+              },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   const current = getFieldValue("currentPassword");
@@ -97,6 +144,30 @@ function AuthChangePassword() {
             dependencies={["newPassword"]}
             rules={[
               { required: true, message: "Confirma tu nueva contraseña" },
+              {
+                required: true,
+                message: "Por favor introduce tu contraseña!",
+              },
+              {
+                min: 8,
+                message: "La contraseña debe tener mínimo 8 caracteres!",
+              },
+              {
+                pattern: /[A-Z]/,
+                message: "Debe contener al menos una mayúscula!",
+              },
+              {
+                pattern: /[a-z]/,
+                message: "Debe contener al menos una minúscula!",
+              },
+              {
+                pattern: /[0-9]/,
+                message: "Debe contener al menos un número!",
+              },
+              {
+                pattern: /[^A-Za-z0-9]/,
+                message: "Debe contener al menos un carácter especial!",
+              },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (!value || getFieldValue("newPassword") === value) {

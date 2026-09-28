@@ -1,7 +1,7 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { DeleteOutlined, PlusOutlined, FormOutlined } from "@ant-design/icons";
-import { Button, DatePicker, DatePickerProps, Form, Input, Modal } from "antd";
+import { Button, DatePicker, DatePickerProps, Form, Modal } from "antd";
 import { useUsers } from "../../users/hooks/useUsers";
 import { useTOutputs } from "../../typeOutputs/hooks/useTypeOutputs";
 import { useOutputActions, useOutput } from "../hooks";
@@ -16,6 +16,8 @@ import { BranchList } from "../../branchs/components";
 
 dayjs.extend(customParseFormat);
 const dateFormat = "YYYY-MM-DD";
+const MIN_DATE = dayjs("2025-01-01", dateFormat);
+const MAX_DATE = dayjs("2030-12-31", dateFormat);
 
 type IOutputForm = {
   text: string;
@@ -24,6 +26,50 @@ type IOutputForm = {
   idOutput?: number;
   idUser?: number;
   idBranch?: number;
+};
+
+const initialOutputData = {
+  idOutput: 0,
+  idUser: 0,
+  idTypeOutput: 0,
+  idBranch: 0,
+  nameTypeOutput: "",
+  nameUser: "",
+  nameBranch: "",
+  dateOutput: "",
+};
+
+type OutputData = typeof initialOutputData;
+type ValidatedField = "idUser" | "idTypeOutput" | "idBranch" | "dateOutput";
+type FieldErrors = Partial<Record<ValidatedField, string>>;
+
+const ALL_FIELDS_TOUCHED: Record<ValidatedField, boolean> = {
+  idUser: true,
+  idTypeOutput: true,
+  idBranch: true,
+  dateOutput: true,
+};
+
+const validateOutput = (data: OutputData): FieldErrors => {
+  const errors: FieldErrors = {};
+
+  if (!data.idUser) {
+    errors.idUser = "Selecciona un usuario";
+  }
+
+  if (!data.idTypeOutput) {
+    errors.idTypeOutput = "Selecciona un tipo de salida";
+  }
+
+  if (!data.idBranch) {
+    errors.idBranch = "Selecciona una sucursal";
+  }
+
+  if (!data.dateOutput) {
+    errors.dateOutput = "Selecciona la fecha de salida";
+  }
+
+  return errors;
 };
 
 function OutputButtonModal({
@@ -50,28 +96,19 @@ function OutputButtonModal({
   } = useOutputActions();
   const { currentOutput } = useOutput();
 
-  const [outputData, setOutputData] = useState({
-    idOutput: 0,
-    idUser: 0,
-    idTypeOutput: 0,
-    idBranch: 0,
-    nameTypeOutput: "",
-    nameUser: "",
-    nameBranch: "",
-    dateOutput: "",
-  });
+  const [outputData, setOutputData] = useState(initialOutputData);
+  // Solo mostramos el error de un campo después de que el usuario lo tocó
+  const [touched, setTouched] = useState<
+    Partial<Record<ValidatedField, boolean>>
+  >({});
+
+  const errors = useMemo(() => validateOutput(outputData), [outputData]);
+  const isFormValid = Object.keys(errors).length === 0;
+  const requiresValidation = action !== "delete";
 
   const resetOutputHistory = () => {
-    setOutputData({
-      idOutput: 0,
-      idUser: 0,
-      idTypeOutput: 0,
-      idBranch: 0,
-      nameTypeOutput: "",
-      nameUser: "",
-      nameBranch: "",
-      dateOutput: "",
-    });
+    setOutputData(initialOutputData);
+    setTouched({});
   };
 
   const showModal = () => {
@@ -87,11 +124,16 @@ function OutputButtonModal({
     resetOutputHistory();
   };
 
+  const handleBlur = (field: ValidatedField) => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
+  };
+
   const handleUserChange = (value: number) => {
     setOutputData((prev) => ({
       ...prev,
       idUser: value,
     }));
+    handleBlur("idUser");
   };
 
   const handleOutputTypeChange = (value: number) => {
@@ -99,6 +141,7 @@ function OutputButtonModal({
       ...prev,
       idTypeOutput: value,
     }));
+    handleBlur("idTypeOutput");
   };
 
   const handleBranchChange = (value: number) => {
@@ -106,18 +149,35 @@ function OutputButtonModal({
       ...prev,
       idBranch: value,
     }));
+    handleBlur("idBranch");
   };
 
   const onChangeDate =
-    (field: keyof typeof outputData): DatePickerProps["onChange"] =>
+    (field: "dateOutput"): DatePickerProps["onChange"] =>
     (date) => {
       setOutputData((prev) => ({
         ...prev,
         [field]: date && !Array.isArray(date) ? date.format("YYYY-MM-DD") : "",
       }));
+      handleBlur(field);
     };
 
+  // Devuelve el estado y el mensaje que espera Form.Item para cada campo
+  const getFieldStatus = (field: ValidatedField) => {
+    const hasError = touched[field] && errors[field];
+    return {
+      validateStatus: hasError ? ("error" as const) : ("" as const),
+      help: hasError ? errors[field] : undefined,
+    };
+  };
+
   const onFinish = () => {
+    // Protección extra: aunque el botón esté deshabilitado, Enter no debe enviar datos inválidos
+    if (requiresValidation && !isFormValid) {
+      setTouched(ALL_FIELDS_TOUCHED);
+      return;
+    }
+
     if (action === "create") {
       createNewOutput(outputData);
       setIsModalOpen(false);
@@ -185,6 +245,7 @@ function OutputButtonModal({
             type="primary"
             htmlType="submit"
             form="inputRecordForm"
+            disabled={requiresValidation && !isFormValid}
           >
             {action === "create" && "Crear"}
             {action === "delete" && "Eliminar"}
@@ -198,7 +259,7 @@ function OutputButtonModal({
         <Form
           id="inputRecordForm"
           labelCol={{ span: 8 }}
-          wrapperCol={{ span: 10 }}
+          wrapperCol={{ span: 14 }}
           layout="horizontal"
           onFinish={onFinish}
           autoComplete="off"
@@ -206,19 +267,41 @@ function OutputButtonModal({
           <>
             {action !== "delete" && (
               <>
-                <Form.Item label="Usuario">
-                  <UserList handleUser={handleUserChange} />
+                <Form.Item
+                  label="Usuario"
+                  required
+                  {...getFieldStatus("idUser")}
+                >
+                  <div onBlur={() => handleBlur("idUser")}>
+                    <UserList handleUser={handleUserChange} />
+                  </div>
                 </Form.Item>
 
-                <Form.Item label="Tipo de salida">
-                  <OutputTypeList handleTypeOutput={handleOutputTypeChange} />
+                <Form.Item
+                  label="Tipo de salida"
+                  required
+                  {...getFieldStatus("idTypeOutput")}
+                >
+                  <div onBlur={() => handleBlur("idTypeOutput")}>
+                    <OutputTypeList handleTypeOutput={handleOutputTypeChange} />
+                  </div>
                 </Form.Item>
 
-                <Form.Item label="Sucursal">
-                  <BranchList handleBranch={handleBranchChange} />
+                <Form.Item
+                  label="Sucursal"
+                  required
+                  {...getFieldStatus("idBranch")}
+                >
+                  <div onBlur={() => handleBlur("idBranch")}>
+                    <BranchList handleBranch={handleBranchChange} />
+                  </div>
                 </Form.Item>
 
-                <Form.Item label="Fecha de salida">
+                <Form.Item
+                  label="Fecha de salida"
+                  required
+                  {...getFieldStatus("dateOutput")}
+                >
                   <DatePicker
                     value={
                       outputData.dateOutput
@@ -226,8 +309,9 @@ function OutputButtonModal({
                         : null
                     }
                     onChange={onChangeDate("dateOutput")}
-                    minDate={dayjs("2025-01-01", dateFormat)}
-                    maxDate={dayjs("2030-12-31", dateFormat)}
+                    onBlur={() => handleBlur("dateOutput")}
+                    minDate={MIN_DATE}
+                    maxDate={MAX_DATE}
                   />
                 </Form.Item>
               </>

@@ -10,7 +10,7 @@ export const useRequireAuth = () => {
 
   useEffect(() => {
     if (initialized && !loading && !user) {
-      router.push("/");
+      router.replace("/");
     }
   }, [user, loading, initialized, router]);
 };

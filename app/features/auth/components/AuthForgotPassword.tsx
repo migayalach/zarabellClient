@@ -43,7 +43,6 @@ const AuthForgotPassword: React.FC = () => {
 
   return (
     <div>
-      <h1 className="text-center text-[20px] mb-3">Recuperar contraseña</h1>
 
       <p className="text-[12px] text-center mb-4">
         Ingresa tu correo para recibir un enlace de recuperación

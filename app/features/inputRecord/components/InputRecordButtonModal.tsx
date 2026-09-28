@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { DeleteOutlined, PlusOutlined, FormOutlined } from "@ant-design/icons";
 import { Button, DatePicker, Form, Input, Modal, Switch } from "antd";
 import { useInputRecord, useInputRecordActions } from "../hooks";
@@ -15,6 +15,8 @@ import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
 
 dayjs.extend(customParseFormat);
 const dateFormat = "YYYY-MM-DD";
+const MIN_DATE = dayjs("2025-01-01", dateFormat);
+const MAX_DATE = dayjs("2030-12-31", dateFormat);
 
 type IRecordInputForm = {
   text: string;
@@ -22,6 +24,79 @@ type IRecordInputForm = {
   idInputRecord?: number;
   idProduct?: number;
   idProvider?: number;
+};
+
+const initialInputRecordInfo = {
+  idInputRecord: 0,
+  idProduct: 0,
+  idProvider: 0,
+  idCategory: 0,
+  nameProvider: "",
+  nameCategory: "",
+  nameProduct: "",
+  dateInputRecord: "",
+  expirationDateIRecord: "",
+  countIRecord: 0,
+  priceBuyIRecord: 0,
+  statusIRecord: false,
+};
+
+type InputRecordInfo = typeof initialInputRecordInfo;
+type ValidatedField =
+  | "idProvider"
+  | "idProduct"
+  | "dateInputRecord"
+  | "expirationDateIRecord"
+  | "countIRecord"
+  | "priceBuyIRecord";
+type FieldErrors = Partial<Record<ValidatedField, string>>;
+
+const ALL_FIELDS_TOUCHED: Record<ValidatedField, boolean> = {
+  idProvider: true,
+  idProduct: true,
+  dateInputRecord: true,
+  expirationDateIRecord: true,
+  countIRecord: true,
+  priceBuyIRecord: true,
+};
+
+const validateInputRecord = (info: InputRecordInfo): FieldErrors => {
+  const errors: FieldErrors = {};
+
+  if (!info.idProvider) {
+    errors.idProvider = "Selecciona un proveedor";
+  }
+
+  if (!info.idProduct) {
+    errors.idProduct = "Selecciona un producto";
+  }
+
+  if (!info.dateInputRecord) {
+    errors.dateInputRecord = "Selecciona la fecha de entrada";
+  }
+
+  if (!info.expirationDateIRecord) {
+    errors.expirationDateIRecord = "Selecciona la fecha de vencimiento";
+  } else if (
+    info.dateInputRecord &&
+    dayjs(info.expirationDateIRecord).isBefore(
+      dayjs(info.dateInputRecord),
+      "day",
+    )
+  ) {
+    errors.expirationDateIRecord =
+      "El vencimiento no puede ser anterior a la fecha de entrada";
+  }
+
+  if (!Number.isInteger(info.countIRecord) || info.countIRecord <= 0) {
+    errors.countIRecord = "La cantidad debe ser un número entero mayor a 0";
+  }
+
+  if (!(info.priceBuyIRecord > 0)) {
+    errors.priceBuyIRecord = "El precio de compra debe ser mayor a 0";
+  }
+
+  return errors;
 };
 
 function InputRecordButtonModal({
@@ -47,36 +122,19 @@ function InputRecordButtonModal({
   const { getAllProducts, getOneProduct, resetDataProduct } = useProducts();
   const { getAllProviders, getOneProvider, resetDataProvider } = useProviders();
 
-  const [irecordInfo, setIrecord] = useState({
-    idInputRecord: 0,
-    idProduct: 0,
-    idProvider: 0,
-    idCategory: 0,
-    nameProvider: "",
-    nameCategory: "",
-    nameProduct: "",
-    dateInputRecord: "",
-    expirationDateIRecord: "",
-    countIRecord: 0,
-    priceBuyIRecord: 0,
-    statusIRecord: false,
-  });
+  const [irecordInfo, setIrecord] = useState(initialInputRecordInfo);
+  // Solo mostramos el error de un campo después de que el usuario lo tocó
+  const [touched, setTouched] = useState<
+    Partial<Record<ValidatedField, boolean>>
+  >({});
+
+  const errors = useMemo(() => validateInputRecord(irecordInfo), [irecordInfo]);
+  const isFormValid = Object.keys(errors).length === 0;
+  const requiresValidation = action !== "delete";
 
   const resetInfoRecord = () => {
-    setIrecord({
-      idInputRecord: 0,
-      idProduct: 0,
-      idProvider: 0,
-      idCategory: 0,
-      nameProvider: "",
-      nameCategory: "",
-      nameProduct: "",
-      dateInputRecord: "",
-      expirationDateIRecord: "",
-      countIRecord: 0,
-      priceBuyIRecord: 0,
-      statusIRecord: false,
-    });
+    setIrecord(initialInputRecordInfo);
+    setTouched({});
   };
 
   const showModal = () => {
@@ -91,6 +149,10 @@ function InputRecordButtonModal({
     resetDataProduct();
     resetDataProvider();
     resetInfoRecord();
+  };
+
+  const handleBlur = (field: ValidatedField) => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
   };
 
   const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -118,6 +180,7 @@ function InputRecordButtonModal({
       ...prev,
       idProvider: value,
     }));
+    handleBlur("idProvider");
   };
 
   const handleProductChange = (value: number) => {
@@ -125,18 +188,37 @@ function InputRecordButtonModal({
       ...prev,
       idProduct: value,
     }));
+    handleBlur("idProduct");
   };
 
   const onChangeDate =
-    (field: keyof typeof irecordInfo): DatePickerProps["onChange"] =>
+    (
+      field: "dateInputRecord" | "expirationDateIRecord",
+    ): DatePickerProps["onChange"] =>
     (date) => {
       setIrecord((prev) => ({
         ...prev,
         [field]: date && !Array.isArray(date) ? date.format("YYYY-MM-DD") : "",
       }));
+      handleBlur(field);
     };
 
+  // Devuelve el estado y el mensaje que espera Form.Item para cada campo
+  const getFieldStatus = (field: ValidatedField) => {
+    const hasError = touched[field] && errors[field];
+    return {
+      validateStatus: hasError ? ("error" as const) : ("" as const),
+      help: hasError ? errors[field] : undefined,
+    };
+  };
+
   const onFinish = () => {
+    // Protección extra: aunque el botón esté deshabilitado, Enter no debe enviar datos inválidos
+    if (requiresValidation && !isFormValid) {
+      setTouched(ALL_FIELDS_TOUCHED);
+      return;
+    }
+
     if (action === "create") {
       createNewInputRecord(irecordInfo);
       setIsModalOpen(false);
@@ -202,6 +284,7 @@ function InputRecordButtonModal({
             type="primary"
             htmlType="submit"
             form="inputInputRecordForm"
+            disabled={requiresValidation && !isFormValid}
           >
             {action === "create" && "Crear"}
             {action === "delete" && "Eliminar"}
@@ -215,22 +298,38 @@ function InputRecordButtonModal({
         <Form
           id="inputInputRecordForm"
           labelCol={{ span: 8 }}
-          wrapperCol={{ span: 10 }}
+          wrapperCol={{ span: 14 }}
           layout="horizontal"
           onFinish={onFinish}
           autoComplete="off"
         >
           {action !== "delete" && (
             <>
-              <Form.Item label="Proveedor">
-                <ProviderSelect handleProvider={handleProviderChange} />
+              <Form.Item
+                label="Proveedor"
+                required
+                {...getFieldStatus("idProvider")}
+              >
+                <div onBlur={() => handleBlur("idProvider")}>
+                  <ProviderSelect handleProvider={handleProviderChange} />
+                </div>
               </Form.Item>
 
-              <Form.Item label="Producto">
-                <ProductList handleProduct={handleProductChange} />
+              <Form.Item
+                label="Producto"
+                required
+                {...getFieldStatus("idProduct")}
+              >
+                <div onBlur={() => handleBlur("idProduct")}>
+                  <ProductList handleProduct={handleProductChange} />
+                </div>
               </Form.Item>
 
-              <Form.Item label="Fecha de entrada">
+              <Form.Item
+                label="Fecha de entrada"
+                required
+                {...getFieldStatus("dateInputRecord")}
+              >
                 <DatePicker
                   value={
                     irecordInfo.dateInputRecord
@@ -238,12 +337,17 @@ function InputRecordButtonModal({
                       : null
                   }
                   onChange={onChangeDate("dateInputRecord")}
-                  minDate={dayjs("2025-01-01", dateFormat)}
-                  maxDate={dayjs("2030-12-31", dateFormat)}
+                  onBlur={() => handleBlur("dateInputRecord")}
+                  minDate={MIN_DATE}
+                  maxDate={MAX_DATE}
                 />
               </Form.Item>
 
-              <Form.Item label="Fecha de vencimiento">
+              <Form.Item
+                label="Fecha de vencimiento"
+                required
+                {...getFieldStatus("expirationDateIRecord")}
+              >
                 <DatePicker
                   value={
                     irecordInfo.expirationDateIRecord
@@ -251,27 +355,46 @@ function InputRecordButtonModal({
                       : null
                   }
                   onChange={onChangeDate("expirationDateIRecord")}
-                  minDate={dayjs("2025-01-01", dateFormat)}
-                  maxDate={dayjs("2030-12-31", dateFormat)}
+                  onBlur={() => handleBlur("expirationDateIRecord")}
+                  // No permite elegir un vencimiento anterior a la fecha de entrada
+                  minDate={
+                    irecordInfo.dateInputRecord
+                      ? dayjs(irecordInfo.dateInputRecord)
+                      : MIN_DATE
+                  }
+                  maxDate={MAX_DATE}
                 />
               </Form.Item>
 
-              <Form.Item label="Cantidad">
+              <Form.Item
+                label="Cantidad"
+                required
+                {...getFieldStatus("countIRecord")}
+              >
                 <Input
                   type="number"
+                  min={1}
+                  step={1}
                   name="countIRecord"
                   value={irecordInfo.countIRecord}
                   onChange={handleChangeInput}
+                  onBlur={() => handleBlur("countIRecord")}
                 />
               </Form.Item>
 
-              <Form.Item label="Precio de compra">
+              <Form.Item
+                label="Precio de compra"
+                required
+                {...getFieldStatus("priceBuyIRecord")}
+              >
                 <Input
                   type="number"
+                  min={0.01}
                   step="0.01"
                   name="priceBuyIRecord"
                   value={irecordInfo.priceBuyIRecord}
                   onChange={handleChangeInput}
+                  onBlur={() => handleBlur("priceBuyIRecord")}
                 />
               </Form.Item>
             </>

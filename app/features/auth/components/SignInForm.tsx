@@ -10,7 +10,7 @@ type FieldType = {
   password: string;
 };
 
-const SignInForm: React.FC = () => {
+const SignInForm = () => {
   const { signIn, loading, error } = useSignIn();
   const prevError = useRef<string | null>(null);
 
@@ -37,7 +37,7 @@ const SignInForm: React.FC = () => {
   };
 
   return (
-    <Form name="login-form" onFinish={onFinish} autoComplete="off">
+    <Form name="login-form" onFinish={onFinish} autoComplete="on">
       <Form.Item<FieldType>
         name="email"
         rules={[

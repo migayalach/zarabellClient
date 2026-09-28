@@ -4,6 +4,8 @@ import { Layout } from "antd";
 import NavBarMenu from "../shared/components/SCNavBar";
 import { useRequireAuth } from "@/app/features/auth/hooks/useRequireAuth";
 import { useRestoreSession } from "../features/auth/hooks/useRestoreSession";
+import { useAuth } from "@/app/features/auth/hooks/useAuth";
+import Loading from "../shared/components/Loading";
 
 const { Content, Footer } = Layout;
 
@@ -12,8 +14,11 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const { user, initialized } = useAuth();
   useRestoreSession();
   useRequireAuth();
+
+  if (!initialized || !user) return <Loading />;
 
   return (
     <Layout
