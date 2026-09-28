@@ -321,9 +321,9 @@
             ├── currentHour.ts
             ├── filters.types.ts
             ├── numberToText.ts
-        └── 📁images
         └── 📁reset-password
             ├── page.tsx
+            ├── ResetPasswordContent.tsx
         └── 📁shared
             └── 📁api
                 ├── api.interface.ts

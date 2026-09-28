@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { DeleteOutlined, PlusOutlined, FormOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal, Switch, message } from "antd";
 import { useCategory } from "../hooks/useCategories";
@@ -18,11 +18,32 @@ const initialCategoryInfo = {
   stateCategory: true,
 };
 
+type CategoryInfo = typeof initialCategoryInfo;
+type ValidatedField = "nameCategory";
+type FieldErrors = Partial<Record<ValidatedField, string>>;
+
+const validateCategory = (info: CategoryInfo): FieldErrors => {
+  const errors: FieldErrors = {};
+
+  // "?? ''" evita errores si el backend devuelve el campo en null
+  const name = (info.nameCategory ?? "").trim();
+  if (!name) {
+    errors.nameCategory = "Ingresa el nombre de la categoría";
+  } else if (name.length < 3) {
+    errors.nameCategory = "El nombre debe tener al menos 3 caracteres";
+  } else if (name.length > 100) {
+    errors.nameCategory = "El nombre no puede superar los 100 caracteres";
+  }
+
+  return errors;
+};
+
 function CategoryButtonModal({ text, action, idCategory }: IUserForm) {
   const canCreate = useHasPermission([1]);
   const canUpdate = useHasPermission([1]);
   const canDelete = useHasPermission([1]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     createNewCategory,
     getOneCategory,
@@ -33,9 +54,18 @@ function CategoryButtonModal({ text, action, idCategory }: IUserForm) {
   } = useCategory();
 
   const [categoryInfo, setCategoryInfo] = useState(initialCategoryInfo);
+  // Solo mostramos el error de un campo después de que el usuario lo tocó
+  const [touched, setTouched] = useState<
+    Partial<Record<ValidatedField, boolean>>
+  >({});
+
+  const errors = useMemo(() => validateCategory(categoryInfo), [categoryInfo]);
+  const isFormValid = Object.keys(errors).length === 0;
+  const requiresValidation = action !== "delete";
 
   const resetCategoryInfo = () => {
     setCategoryInfo(initialCategoryInfo);
+    setTouched({});
   };
 
   const showModal = () => {
@@ -61,6 +91,10 @@ function CategoryButtonModal({ text, action, idCategory }: IUserForm) {
     }));
   };
 
+  const handleBlur = (field: ValidatedField) => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
+  };
+
   const handleStateChange = (checked: boolean) => {
     setCategoryInfo((prev) => ({
       ...prev,
@@ -68,17 +102,39 @@ function CategoryButtonModal({ text, action, idCategory }: IUserForm) {
     }));
   };
 
+  // Devuelve el estado y el mensaje que espera Form.Item para cada campo
+  const getFieldStatus = (field: ValidatedField) => {
+    const hasError = touched[field] && errors[field];
+    return {
+      validateStatus: hasError ? ("error" as const) : ("" as const),
+      help: hasError ? errors[field] : undefined,
+    };
+  };
+
   const onFinish = async () => {
+    // Protección extra: aunque el botón esté deshabilitado, Enter no debe enviar datos inválidos
+    if (requiresValidation && !isFormValid) {
+      setTouched({ nameCategory: true });
+      return;
+    }
+
+    // Enviamos el nombre sin espacios sobrantes
+    const cleanCategoryInfo: CategoryInfo = {
+      ...categoryInfo,
+      nameCategory: (categoryInfo.nameCategory ?? "").trim(),
+    };
+
+    setIsSubmitting(true);
     try {
       if (action === "create") {
-        await createNewCategory(categoryInfo.nameCategory);
+        await createNewCategory(cleanCategoryInfo.nameCategory);
         message.success("Categoría creada correctamente");
         setIsModalOpen(false);
         resetCategoryInfo();
       }
 
       if (action === "update") {
-        await updateOneCategory(categoryInfo);
+        await updateOneCategory(cleanCategoryInfo);
         message.success("Categoría actualizada correctamente");
         setIsModalOpen(false);
         clearDataCurrentCategory();
@@ -92,6 +148,8 @@ function CategoryButtonModal({ text, action, idCategory }: IUserForm) {
       }
     } catch {
       message.error("No se pudo realizar la operación");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -144,12 +202,14 @@ function CategoryButtonModal({ text, action, idCategory }: IUserForm) {
             type="primary"
             htmlType="submit"
             form="categoryForm"
+            loading={isSubmitting}
+            disabled={requiresValidation && !isFormValid}
           >
             {action === "delete" && "Eliminar"}
             {action === "create" && "Crear"}
             {action === "update" && "Editar"}
           </Button>,
-          <Button key="cancel" onClick={handleCancel}>
+          <Button key="cancel" onClick={handleCancel} disabled={isSubmitting}>
             Cancelar
           </Button>,
         ]}
@@ -157,18 +217,24 @@ function CategoryButtonModal({ text, action, idCategory }: IUserForm) {
         <Form
           id="categoryForm"
           labelCol={{ span: 8 }}
-          wrapperCol={{ span: 10 }}
+          wrapperCol={{ span: 14 }}
           layout="horizontal"
           onFinish={onFinish}
           autoComplete="off"
         >
           {action !== "delete" && (
             <>
-              <Form.Item label="Nombres">
+              <Form.Item
+                label="Nombres"
+                required
+                {...getFieldStatus("nameCategory")}
+              >
                 <Input
                   name="nameCategory"
                   value={categoryInfo.nameCategory}
                   onChange={handleChangeInput}
+                  onBlur={() => handleBlur("nameCategory")}
+                  maxLength={100}
                 />
               </Form.Item>
             </>

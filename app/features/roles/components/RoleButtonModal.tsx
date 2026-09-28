@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DeleteOutlined, PlusOutlined, FormOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal, message } from "antd";
 import { useRoles } from "../../roles/hooks/useRoles";
@@ -13,28 +13,57 @@ type IUserForm = {
   idRole?: number;
 };
 
+const initialRoleInfo = {
+  idRole: 0,
+  nameRole: "",
+};
+
+type RoleInfo = typeof initialRoleInfo;
+type ValidatedField = "nameRole";
+type FieldErrors = Partial<Record<ValidatedField, string>>;
+
+const validateRole = (info: RoleInfo): FieldErrors => {
+  const errors: FieldErrors = {};
+
+  // "?? ''" evita errores si el backend devuelve el campo en null
+  const name = (info.nameRole ?? "").trim();
+  if (!name) {
+    errors.nameRole = "Ingresa el nombre del rol";
+  } else if (name.length < 3) {
+    errors.nameRole = "El nombre debe tener al menos 3 caracteres";
+  } else if (name.length > 100) {
+    errors.nameRole = "El nombre no puede superar los 100 caracteres";
+  }
+
+  return errors;
+};
+
 function RoleButtonModal({ text, action, idRole }: IUserForm) {
   const canCreate = useHasPermission([1]);
   const canUpdate = useHasPermission([1]);
   const canDelete = useHasPermission([1]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [form] = Form.useForm();
 
   const { createNewRole, getOneRole, updateOneRole, deleteOneRole } =
     useRoles();
 
-  const [roleInfo, setRoleInfo] = useState({
-    idRole: 0,
-    nameRole: "",
-  });
+  const [roleInfo, setRoleInfo] = useState(initialRoleInfo);
+  // Solo mostramos el error de un campo después de que el usuario lo tocó
+  const [touched, setTouched] = useState<
+    Partial<Record<ValidatedField, boolean>>
+  >({});
+
+  const errors = useMemo(() => validateRole(roleInfo), [roleInfo]);
+  const isFormValid = Object.keys(errors).length === 0;
+  const requiresValidation = action !== "delete";
 
   const resetRoleInfo = () => {
-    setRoleInfo({
-      idRole: 0,
-      nameRole: "",
-    });
+    setRoleInfo(initialRoleInfo);
+    setTouched({});
 
     form.resetFields();
   };
@@ -52,6 +81,10 @@ function RoleButtonModal({ text, action, idRole }: IUserForm) {
     resetRoleInfo();
   };
 
+  const handleBlur = (field: ValidatedField) => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
+  };
+
   const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
@@ -61,10 +94,29 @@ function RoleButtonModal({ text, action, idRole }: IUserForm) {
     }));
   };
 
+  // Devuelve el estado y el mensaje que espera Form.Item para cada campo
+  const getFieldStatus = (field: ValidatedField) => {
+    const hasError = touched[field] && errors[field];
+    return {
+      validateStatus: hasError ? ("error" as const) : ("" as const),
+      help: hasError ? errors[field] : undefined,
+    };
+  };
+
   const onFinish = async () => {
+    // Protección extra: aunque el botón esté deshabilitado, Enter no debe enviar datos inválidos
+    if (requiresValidation && !isFormValid) {
+      setTouched({ nameRole: true });
+      return;
+    }
+
+    // Enviamos el nombre sin espacios sobrantes
+    const cleanNameRole = (roleInfo.nameRole ?? "").trim();
+
+    setIsSubmitting(true);
     try {
       if (action === "create") {
-        await createNewRole(roleInfo.nameRole);
+        await createNewRole(cleanNameRole);
         message.success("Rol creado correctamente");
         setIsModalOpen(false);
         resetRoleInfo();
@@ -74,7 +126,7 @@ function RoleButtonModal({ text, action, idRole }: IUserForm) {
       if (action === "update" && idRole) {
         await updateOneRole({
           idRole,
-          nameRole: roleInfo.nameRole,
+          nameRole: cleanNameRole,
         });
         message.success("Rol actualizado correctamente");
         return;
@@ -89,6 +141,8 @@ function RoleButtonModal({ text, action, idRole }: IUserForm) {
       }
     } catch {
       message.error("No se pudo realizar la operación");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -103,7 +157,7 @@ function RoleButtonModal({ text, action, idRole }: IUserForm) {
 
         setRoleInfo({
           idRole: result.value.idRole,
-          nameRole: result.value.nameRole,
+          nameRole: result.value.nameRole ?? "",
         });
       } catch {
         message.error("No se pudo cargar el rol");
@@ -144,13 +198,19 @@ function RoleButtonModal({ text, action, idRole }: IUserForm) {
         open={isModalOpen}
         onCancel={handleCancel}
         footer={[
-          <Button key="submit" type="primary" onClick={() => form.submit()}>
+          <Button
+            key="submit"
+            type="primary"
+            onClick={() => form.submit()}
+            loading={isSubmitting}
+            disabled={requiresValidation && !isFormValid}
+          >
             {action === "create" && "Crear"}
             {action === "delete" && "Eliminar"}
             {action === "update" && "Editar"}
           </Button>,
 
-          <Button key="cancel" onClick={handleCancel}>
+          <Button key="cancel" onClick={handleCancel} disabled={isSubmitting}>
             Cancelar
           </Button>,
         ]}
@@ -159,16 +219,18 @@ function RoleButtonModal({ text, action, idRole }: IUserForm) {
           form={form}
           onFinish={onFinish}
           labelCol={{ span: 8 }}
-          wrapperCol={{ span: 10 }}
+          wrapperCol={{ span: 14 }}
           layout="horizontal"
           autoComplete="off"
         >
           {action !== "delete" && (
-            <Form.Item label="Nombres">
+            <Form.Item label="Nombres" required {...getFieldStatus("nameRole")}>
               <Input
                 name="nameRole"
                 value={roleInfo.nameRole}
                 onChange={handleChangeInput}
+                onBlur={() => handleBlur("nameRole")}
+                maxLength={100}
               />
             </Form.Item>
           )}

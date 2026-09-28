@@ -44,8 +44,8 @@ export const getDashboardInfo = createAsyncThunk<
 >("dashboard/getInfoDashboard", async (_, { rejectWithValue }) => {
   try {
     return await getInfoDashboard();
-  } catch (error) {
-    return rejectWithValue(error as IErrorDashboard);
+  } catch (error: any) {
+    return rejectWithValue(error?.message ?? "Error al cargar dashboard");
   }
 });
 
@@ -79,6 +79,8 @@ const dashboardSlice = createSlice({
       })
       .addCase(getDashboardInfo.fulfilled, (state, action) => {
         state.loading = false;
+        const results = action.payload?.results;
+        if (!results) return;
         state.bestSellers = action.payload.results.bestSellers;
         state.lessSellers = action.payload.results.lessSellers;
         state.nearExpiration = action.payload.results.nearExpiration;
