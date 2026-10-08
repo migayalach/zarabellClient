@@ -23,6 +23,7 @@ export const getAllInputRecords = async (page?: number) => {
             dateInputRecord
             expirationDateIRecord
             priceBuyIRecord
+            barCode
             countIRecord
             statusIRecord
           }
