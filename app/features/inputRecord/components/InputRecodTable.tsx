@@ -4,6 +4,7 @@ import { IRecordInput } from "../types";
 import InputRecordButtonModal from "./InputRecordButtonModal";
 import InputRecordBtnAction from "./InputRecordBtnAction";
 import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
+import BarCodePDF from "./BarCodePDF";
 
 type RoleTableRow = {
   key: number;
@@ -18,6 +19,7 @@ type RoleTableRow = {
   expirationDateIRecord: string;
   countIRecord: number;
   priceBuyIRecord: number;
+  barCode: string;
   statusIRecord: boolean;
 };
 
@@ -63,6 +65,13 @@ const columnsInputRecord = [
     dataIndex: "countIRecord",
     key: "countIRecord",
     width: 180,
+  },
+  {
+    title: "Codigo de barras",
+    dataIndex: "barCode",
+    key: "barCode",
+    width: 180,
+    render: (barCode: string) => <BarCodePDF barcode={barCode} />,
   },
   {
     title: "Precio compra",
@@ -128,6 +137,7 @@ const rolesMapInfo = (data: IRecordInput[]): RoleTableRow[] => {
         expirationDateIRecord,
         countIRecord,
         priceBuyIRecord,
+        barCode,
         statusIRecord,
       }: IRecordInput,
       index: number,
@@ -145,6 +155,7 @@ const rolesMapInfo = (data: IRecordInput[]): RoleTableRow[] => {
       expirationDateIRecord,
       countIRecord,
       priceBuyIRecord,
+      barCode,
       statusIRecord,
     }),
   );
