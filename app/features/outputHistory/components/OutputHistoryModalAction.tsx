@@ -41,7 +41,6 @@ function OutputHistoryModalAction({
     idInputRecord: 0,
     nameProduct: "",
     quantity: 0,
-    totalPrice: 0,
   });
 
   const resetOutputHistory = () => {
@@ -50,7 +49,6 @@ function OutputHistoryModalAction({
       idInputRecord: 0,
       nameProduct: "",
       quantity: 0,
-      totalPrice: 0,
     });
   };
 

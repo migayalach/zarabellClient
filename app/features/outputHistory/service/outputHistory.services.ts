@@ -21,7 +21,6 @@ export const getListOutputDetail = async (idOutput: number) => {
               nameProduct
               nameProvider
               quantity
-              totalPrice
             }
           }
         }
@@ -53,7 +52,6 @@ export const getAllOutputHistories = async (
             idInputRecord
             nameProduct
             quantity
-            totalPrice
           }
         }
       }
@@ -81,7 +79,6 @@ export const getOneOutputHistoryByID = async (
             idOutput
             nameProduct
             quantity
-            totalPrice
           }
         }
       }
@@ -108,7 +105,6 @@ export const createNewOutputHistory = async (data: IOutputHistoryCreate) => {
             idOutput
             nameProduct
             quantity
-            totalPrice
           }
         }
       }
@@ -139,7 +135,6 @@ export const updateOneOutputHistory = async (data: IOutputHistoryUpdate) => {
             idOutput
             nameProduct
             quantity
-            totalPrice
           }
         }
       }
@@ -169,7 +164,6 @@ export const deleteOneOutputHistory = async (
             idOutput
             nameProduct
             quantity
-            totalPrice
           }
         }
       }

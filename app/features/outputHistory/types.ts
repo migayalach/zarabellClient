@@ -3,7 +3,6 @@ export interface IOutputHistory {
   idInputRecord: number;
   nameProduct: string;
   quantity: number;
-  totalPrice: number;
 }
 
 export interface IUserOutputData {
@@ -19,7 +18,6 @@ export interface IDetailProductData {
   nameProvider: string;
   nameProduct: string;
   quantity: number;
-  totalPrice: number;
 }
 
 export interface IListProductsData {
