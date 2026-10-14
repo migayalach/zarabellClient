@@ -9,6 +9,15 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+
+  async rewrites() {
+    return [
+      {
+        source: "/api/graphql",
+        destination: "http://5.189.188.6:3001/zarabell/graphql",
+      },
+    ];
+  },
 };
 
 export default nextConfig;
