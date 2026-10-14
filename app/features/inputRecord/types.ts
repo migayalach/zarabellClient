@@ -12,6 +12,7 @@ export interface IRecordInput {
   expirationDateIRecord: string;
   countIRecord: number;
   priceBuyIRecord: number;
+  barCode: string;
   statusIRecord: boolean;
 }
 

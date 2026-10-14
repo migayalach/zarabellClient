@@ -102,7 +102,6 @@ function TicketButton8M({ idOutput }: { idOutput: number }) {
         nameProduct: string;
         nameProvider: string;
         quantity: number;
-        totalPrice: number;
       }) => {
         pdf.setFont("helvetica", "bold");
         pdf.setFontSize(8);

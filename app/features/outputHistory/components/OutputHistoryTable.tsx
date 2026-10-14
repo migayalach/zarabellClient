@@ -10,7 +10,6 @@ type OutputHistoryTableRow = {
   idInputRecord: number;
   nameProduct: string;
   quantity: number;
-  totalPrice: number;
 };
 
 const columnsOutputHistory = [
@@ -30,12 +29,6 @@ const columnsOutputHistory = [
     title: "Cantidad",
     dataIndex: "quantity",
     key: "quantity",
-    width: 180,
-  },
-  {
-    title: "Precio",
-    dataIndex: "totalPrice",
-    key: "totalPrice",
     width: 180,
   },
   {
@@ -70,13 +63,7 @@ const columnsOutputHistory = [
 const rolesMapInfo = (data: IOutputHistory[]): OutputHistoryTableRow[] => {
   return data?.map(
     (
-      {
-        idOutput,
-        idInputRecord,
-        nameProduct,
-        quantity,
-        totalPrice,
-      }: IOutputHistory,
+      { idOutput, idInputRecord, nameProduct, quantity }: IOutputHistory,
       index: number,
     ) => ({
       key: idInputRecord,
@@ -85,7 +72,6 @@ const rolesMapInfo = (data: IOutputHistory[]): OutputHistoryTableRow[] => {
       idInputRecord,
       nameProduct,
       quantity,
-      totalPrice,
     }),
   );
 };

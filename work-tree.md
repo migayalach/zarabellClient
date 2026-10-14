@@ -37,6 +37,8 @@
                 ├── page.tsx
             └── 📁roles
                 ├── page.tsx
+            └── 📁sales
+                ├── page.tsx
             └── 📁typeOutputs
                 ├── page.tsx
             └── 📁users
@@ -142,6 +144,7 @@
                 ├── type.ts
             └── 📁inputRecord
                 └── 📁components
+                    ├── BarCodePDF.tsx
                     ├── index.ts
                     ├── InputRecodTable.tsx
                     ├── InputRecordBtnAction.tsx
@@ -286,6 +289,22 @@
                     ├── role.selector.ts
                     ├── role.slice.ts
                 ├── types.ts
+            └── 📁sales
+                └── 📁components
+                    ├── SalesCart.tsx
+                    ├── SalesCartItem.tsx
+                    ├── SalesPayment.tsx
+                    ├── SalesScanner.tsx
+                    ├── SalesSummary.tsx
+                └── 📁hooks
+                    ├── useSales.ts
+                    ├── useSalesActions.ts
+                └── 📁services
+                    ├── sales.services.ts
+                └── 📁store
+                    ├── sales.selector.ts
+                    ├── sales.slice.ts
+                ├── types.ts
             └── 📁typeOutputs
                 └── 📁components
                     ├── index.ts
@@ -303,6 +322,7 @@
                 ├── types.ts
             └── 📁users
                 └── 📁components
+                    ├── ChangeBranch.tsx
                     ├── UserButtonModal.tsx
                     ├── UserFilter.tsx
                     ├── UserList.tsx

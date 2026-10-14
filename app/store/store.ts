@@ -1,4 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
+import { DEVELOP } from "../helpers/constans.helpers";
 import auth from "@/app/features/auth/store/auth.slice";
 import roles from "@/app/features/roles/store/role.slice";
 import users from "@/app/features/users/store/user.slice";
@@ -31,7 +32,7 @@ export const store = configureStore({
     branchs,
     dashboard,
   },
-  // devTools: process.env.AROUND_DEVELOP === "develop",
+  devTools: DEVELOP,
 });
 
 export type RootState = ReturnType<typeof store.getState>;
