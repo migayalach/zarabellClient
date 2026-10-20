@@ -92,7 +92,8 @@ function InputRecordListDetail({
 
   useEffect(() => {
     if (page === 1) {
-      setList(results);
+      const listResult = results.filter((index) => index.statusIRecord);
+      setList(listResult);
     } else {
       setList((prev) => [...prev, ...results]);
     }

@@ -80,9 +80,9 @@ const OutputTypeMapInfo = (data: ITypeOutput[]): OutputTypeTableRow[] => {
 };
 
 function OutputTypeTable({ info }: { info: ITypeOutput[] }) {
-  const canCreate = useHasPermission([1, 2]);
-  const canUpdate = useHasPermission([1, 2]);
-  const canDelete = useHasPermission([1, 2]);
+  const canCreate = useHasPermission([1]);
+  const canUpdate = useHasPermission([1]);
+  const canDelete = useHasPermission([1]);
 
   const columns =
     canCreate || canUpdate || canDelete

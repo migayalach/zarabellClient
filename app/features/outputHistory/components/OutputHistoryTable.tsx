@@ -77,8 +77,8 @@ const rolesMapInfo = (data: IOutputHistory[]): OutputHistoryTableRow[] => {
 };
 
 function OutputHistoryTable({ infoOH }: { infoOH: IOutputHistory[] }) {
-  const canCreate = useHasPermission([1, 2]);
-  const canUpdate = useHasPermission([1, 2]);
+  const canCreate = useHasPermission([1]);
+  const canUpdate = useHasPermission([1]);
   const canDelete = useHasPermission([1]);
 
   const columns =

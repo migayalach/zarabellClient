@@ -6,7 +6,7 @@ import CustomTooltip from "@/app/shared/components/CustomTooltip";
 import { useHasPermission } from "@/app/features/auth/hooks/useHasPermission";
 
 function OutputBtnAction({ idOutput }: { idOutput: number }) {
-  const canSee = useHasPermission([1, 2]);
+  const canSee = useHasPermission([1, 2, 3]);
 
   if (!canSee) {
     return null;

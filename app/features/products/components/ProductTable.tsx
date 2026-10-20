@@ -95,9 +95,9 @@ const productsMapInfo = (data: IProduct[]): ProductTableRow[] => {
 };
 
 function ProductTable({ info }: { info: IProduct[] }) {
-  const canCreate = useHasPermission([1, 2]);
-  const canUpdate = useHasPermission([1, 2]);
-  const canDelete = useHasPermission([1, 2]);
+  const canCreate = useHasPermission([1]);
+  const canUpdate = useHasPermission([1]);
+  const canDelete = useHasPermission([1]);
 
   const columns =
     canCreate || canUpdate || canDelete

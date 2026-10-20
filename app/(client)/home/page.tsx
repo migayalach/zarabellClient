@@ -27,7 +27,7 @@ export default function Page() {
     totalLotsToExpiration,
     fetchDashboardInfo,
     resetDashboardInfo,
-    loading
+    loading,
   } = useDashboard();
 
   useEffect(() => {
@@ -44,13 +44,13 @@ export default function Page() {
     <main className="dashboard">
       <header className="mb-6 text-left max-sm:text-center">
         <h1 className="text-4xl font-bold text-gray-800">
-          Dashboard <FormOutlined />
+          Zara Bell <FormOutlined />
         </h1>
       </header>
 
       <section className="flex flex-wrap gap-6 justify-center">
-        {todaySales && <SalesReportToday info={todaySales} />}
-        {yesterdaySales && <SalesReportYesterday info={yesterdaySales} />}
+        {/* {todaySales && <SalesReportToday info={todaySales} />}
+        {yesterdaySales && <SalesReportYesterday info={yesterdaySales} />} */}
         <TotalReport text="productos" info={totalProducts} />
         <TotalReport text="ventas" info={totalOutputsCurrentMonth} />
         <TotalReport text="lotes" info={totalLotsToExpiration} />
