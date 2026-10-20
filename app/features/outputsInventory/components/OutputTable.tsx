@@ -121,9 +121,9 @@ const outputMapInfo = (data: IOutput[]): OutputTableRow[] => {
 };
 
 function OutputTable({ info }: { info: IOutput[] }) {
-  const canCreate = useHasPermission([1]);
-  const canUpdate = useHasPermission([1]);
-  const canDelete = useHasPermission([1]);
+  const canCreate = useHasPermission([1, 2, 3]);
+  const canUpdate = useHasPermission([1, 2, 3]);
+  const canDelete = useHasPermission([1, 2, 3]);
 
   const columns =
     canCreate || canUpdate || canDelete

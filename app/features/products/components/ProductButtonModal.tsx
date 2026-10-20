@@ -52,9 +52,9 @@ function ProductButtonModal({
   idProduct,
   idCategory,
 }: IProductForm) {
-  const canCreate = useHasPermission([1, 2]);
-  const canUpdate = useHasPermission([1, 2]);
-  const canDelete = useHasPermission([1, 2]);
+  const canCreate = useHasPermission([1]);
+  const canUpdate = useHasPermission([1]);
+  const canDelete = useHasPermission([1]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
