@@ -85,12 +85,19 @@ const branchsMapInfo = (data: IBranchs[]): BranchTableRow[] => {
 
 function BranchTable({ info }: { info: IBranchs[] }) {
   const canCreate = useHasPermission([1, 2]);
-  const canUpdate = useHasPermission([1, 2]);
-  const canDelete = useHasPermission([1, 2]);
+  const canUpdate = useHasPermission([1]);
+  const canDelete = useHasPermission([1]);
+
+  // El texto "Acciones" solo sale si puede editar o eliminar
+  const showActionsTitle = canUpdate || canDelete;
 
   const columns =
     canCreate || canUpdate || canDelete
-      ? columnsBranchs
+      ? columnsBranchs.map((item) =>
+          item.key === "actions" && !showActionsTitle
+            ? { ...item, title: "" }
+            : item,
+        )
       : columnsBranchs.filter((item) => item.key !== "actions");
 
   return (
