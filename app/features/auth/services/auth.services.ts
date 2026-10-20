@@ -186,7 +186,7 @@ export const signOut = async (): Promise<ISignOut> => {
 export const forgotPasswordRequest = async (
   emailUser: string,
 ): Promise<{ success: boolean; message: string }> => {
-  const response = await api.post("/graphql", {
+  const response = await api.post("", {
     query: `
       mutation forgotPassword($emailUser: String!) {
         forgotPassword(emailUser: $emailUser) {
@@ -211,7 +211,7 @@ export const resetPasswordByEmail = async (
   token: string,
   password: string,
 ): Promise<{ success: boolean; message: string }> => {
-  const response = await api.post("/graphql", {
+  const response = await api.post("", {
     query: `
       mutation resetPasswordByUserFromEmail(
         $token: String!
