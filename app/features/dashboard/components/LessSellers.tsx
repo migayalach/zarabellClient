@@ -30,7 +30,7 @@ export default function LessSellers({ info }: Props) {
   return (
     <div className="less-sellers">
       <div className="less-header">
-        <h3>Productos menos vendidos</h3>
+        <h3>Productos con menos salidas</h3>
       </div>
 
       <div className="less-list">

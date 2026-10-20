@@ -30,7 +30,7 @@ export default function BestSellers({ info }: Props) {
   return (
     <div className="best-sellers">
       <div className="best-header">
-        <h3>Productos más vendidos</h3>
+        <h3>Productos con más salidas</h3>
       </div>
 
       <div className="best-list">
