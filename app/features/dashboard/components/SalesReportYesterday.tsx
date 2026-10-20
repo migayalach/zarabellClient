@@ -21,7 +21,7 @@ function SalesReportYesterday({ info }: { info: ISalesYesterdayData }) {
 
       <div className="flex justify-between items-center gap-6">
         <div>
-          <p className="text-gray-500 text-sm">Productos vendidos</p>
+          <p className="text-gray-500 text-sm">Productos</p>
           <h2 className="text-[18px] font-bold">
             {info.productsSoldYesterday} unidades
           </h2>
@@ -29,7 +29,7 @@ function SalesReportYesterday({ info }: { info: ISalesYesterdayData }) {
 
         {canView && (
           <div>
-            <p className="text-gray-500 text-sm">Total vendido</p>
+            <p className="text-gray-500 text-sm">Total</p>
             <h2 className="text-[18px] font-bold">
               Bs. {info.totalWinYesterday.toFixed(2)}
             </h2>
